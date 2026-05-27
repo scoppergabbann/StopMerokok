@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast-provider";
-import { saveProfile, type TargetType } from "@/lib/mvp-store";
+import { persistProfile } from "@/lib/client-data";
+import { type TargetType } from "@/lib/mvp-store";
 
 const reasons = [
   "Kesehatan",
@@ -36,11 +37,11 @@ export default function OnboardingPage() {
 
         <form
           className="rounded-[2rem] bg-white p-6 shadow-xl shadow-slate-200/70"
-          onSubmit={(event) => {
+          onSubmit={async (event) => {
             event.preventDefault();
             const form = new FormData(event.currentTarget);
 
-            saveProfile({
+            await persistProfile({
               createdAt: new Date().toISOString(),
               name: String(form.get("name") || "Teman"),
               packPrice: Number(form.get("packPrice") || 0),

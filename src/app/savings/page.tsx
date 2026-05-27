@@ -4,14 +4,16 @@ import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { useToast } from "@/components/toast-provider";
 import {
+  loadCheckins,
+  loadProfile,
+  loadReward,
+  persistReward,
+} from "@/lib/client-data";
+import {
   calculateSummary,
   formatRupiahInput,
   formatRupiah,
   parseRupiahInput,
-  readCheckins,
-  readProfile,
-  readReward,
-  saveReward,
   type DailyCheckin,
   type Profile,
   type Reward,
@@ -35,9 +37,9 @@ export default function SavingsPage() {
 
   useEffect(() => {
     const id = window.setTimeout(() => {
-      setProfile(readProfile());
-      setCheckins(readCheckins());
-      setReward(readReward());
+      loadProfile().then(setProfile);
+      loadCheckins().then(setCheckins);
+      loadReward().then(setReward);
     }, 0);
 
     return () => window.clearTimeout(id);
@@ -74,7 +76,7 @@ export default function SavingsPage() {
           </p>
           <form
             className="mt-5 grid gap-3 sm:grid-cols-[1fr_180px_auto]"
-            onSubmit={(event) => {
+            onSubmit={async (event) => {
               event.preventDefault();
               const form = new FormData(event.currentTarget);
               const targetAmount = parseRupiahInput(targetAmountInput);
@@ -94,7 +96,7 @@ export default function SavingsPage() {
                 title: String(form.get("title") || "Target kebaikan"),
               };
 
-              saveReward(nextReward);
+              await persistReward(nextReward);
               setReward(nextReward);
               showToast({
                 message: "Target savings kamu sudah diperbarui.",

@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { useToast } from "@/components/toast-provider";
-import { saveCravingLog } from "@/lib/mvp-store";
+import { persistCravingLog } from "@/lib/client-data";
 
 const checklist = [
   { icon: Droplets, label: "Minum air putih" },
@@ -45,8 +45,8 @@ export default function CravingPage() {
     return `${minutes}:${seconds}`;
   }, [secondsLeft]);
 
-  function save(status: "passed" | "smoked") {
-    saveCravingLog({
+  async function save(status: "passed" | "smoked") {
+    await persistCravingLog({
       createdAt: new Date().toISOString(),
       date: new Date().toISOString(),
       note,

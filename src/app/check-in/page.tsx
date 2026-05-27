@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { useToast } from "@/components/toast-provider";
+import { persistCheckin } from "@/lib/client-data";
 import {
   feedbackForStatus,
-  saveCheckin,
   todayKey,
   type CheckinStatus,
   type Mood,
@@ -68,13 +68,13 @@ export default function CheckInPage() {
 
         <form
           className="mt-6 space-y-5 rounded-[2rem] bg-white p-5 shadow-xl shadow-slate-200/70"
-          onSubmit={(event) => {
+          onSubmit={async (event) => {
             event.preventDefault();
             const form = new FormData(event.currentTarget);
             const smokedCount =
               status === "smoke_free" ? 0 : Number(form.get("smokedCount") || 0);
 
-            saveCheckin({
+            await persistCheckin({
               createdAt: new Date().toISOString(),
               date: todayKey(),
               mood: String(form.get("mood") || "") as Mood,

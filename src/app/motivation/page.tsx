@@ -3,7 +3,8 @@
 import { Droplets, HeartHandshake, TimerReset, Wind } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
-import { readProfile, type Profile } from "@/lib/mvp-store";
+import { loadProfile } from "@/lib/client-data";
+import { type Profile } from "@/lib/mvp-store";
 
 const contents = [
   {
@@ -33,7 +34,7 @@ export default function MotivationPage() {
 
   useEffect(() => {
     const id = window.setTimeout(() => {
-      setProfile(readProfile());
+      loadProfile().then(setProfile);
     }, 0);
 
     return () => window.clearTimeout(id);

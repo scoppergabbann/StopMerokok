@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
+import { loadCheckins } from "@/lib/client-data";
 import {
-  readCheckins,
   statusLabels,
   statusStyles,
   type DailyCheckin,
@@ -14,7 +14,7 @@ export default function ActivityPage() {
 
   useEffect(() => {
     const id = window.setTimeout(() => {
-      setCheckins(readCheckins().reverse());
+      loadCheckins().then((items) => setCheckins(items.reverse()));
     }, 0);
 
     return () => window.clearTimeout(id);

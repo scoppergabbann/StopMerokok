@@ -1,16 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { BookOpenText, CalendarDays, Flame, Trophy } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { BookOpenText, Flame, NotebookPen, Trophy } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { NotificationOptIn } from "@/components/notification-opt-in";
+import { useToast } from "@/components/toast-provider";
+import {
+  loadCheckins,
+  loadCravingLogs,
+  loadProfile,
+  loadUserBadges,
+  persistUnlockedBadges,
+} from "@/lib/client-data";
 import {
   calculateSummary,
   formatRupiah,
+  getMonthDays,
+  getPersonalizedInsight,
+  getRelapseInsights,
   getUnlockedBadges,
-  readCravingLogs,
-  readCheckins,
-  readProfile,
   statusLabels,
   statusStyles,
   todayKey,
@@ -18,28 +27,73 @@ import {
   type DailyCheckin,
   type Profile,
   type CravingLog,
+  type UserBadge,
 } from "@/lib/mvp-store";
 
 export default function DashboardPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [checkins, setCheckins] = useState<DailyCheckin[]>([]);
   const [cravingLogs, setCravingLogs] = useState<CravingLog[]>([]);
+  const [storedBadges, setStoredBadges] = useState<UserBadge[]>([]);
+  const { showToast } = useToast();
 
   useEffect(() => {
     const id = window.setTimeout(() => {
-      setProfile(readProfile());
-      setCheckins(readCheckins());
-      setCravingLogs(readCravingLogs());
+      loadProfile().then(setProfile);
+      loadCheckins().then(setCheckins);
+      loadCravingLogs().then(setCravingLogs);
+      loadUserBadges().then(setStoredBadges);
     }, 0);
 
     return () => window.clearTimeout(id);
   }, []);
 
   const today = checkins.find((item) => item.date === todayKey()) ?? null;
-  const summary = calculateSummary(profile, checkins);
-  const badges = getUnlockedBadges(summary, checkins, cravingLogs);
+  const summary = useMemo(
+    () => calculateSummary(profile, checkins),
+    [profile, checkins],
+  );
+  const badges = useMemo(
+    () => getUnlockedBadges(summary, checkins, cravingLogs),
+    [summary, checkins, cravingLogs],
+  );
   const unlockedBadges = badges.filter((badge) => badge.isUnlocked);
+  const relapseInsights = getRelapseInsights(checkins);
+  const personalizedInsight = getPersonalizedInsight(checkins);
   const progress = Math.min(summary.smokeFreeDays, summary.targetDays);
+  const monthDays = getMonthDays(new Date().getFullYear(), new Date().getMonth());
+  const checkinsByDate = new Map(checkins.map((item) => [item.date, item]));
+
+  useEffect(() => {
+    if (checkins.length === 0) {
+      return;
+    }
+
+    const storedNames = new Set(storedBadges.map((badge) => badge.name));
+    const hasNewBadge = badges.some(
+      (badge) => badge.isUnlocked && !storedNames.has(badge.name),
+    );
+
+    if (!hasNewBadge) {
+      return;
+    }
+
+    persistUnlockedBadges(badges).then((newBadges) => {
+      if (newBadges.length === 0) {
+        return;
+      }
+
+      setStoredBadges((current) => [...current, ...newBadges]);
+      showToast({
+        message:
+          newBadges.length === 1
+            ? `${newBadges[0].name} baru saja terbuka.`
+            : `${newBadges.length} badge baru terbuka.`,
+        title: "Badge baru",
+        variant: "success",
+      });
+    });
+  }, [badges, checkins.length, showToast, storedBadges]);
 
   return (
     <AppShell>
@@ -149,6 +203,60 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        <div className="rounded-[2rem] bg-white p-5 shadow-sm">
+          <div className="mb-5 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-bold text-slate-500">
+                Kalender progress
+              </p>
+              <h2 className="mt-1 text-xl font-extrabold">Bulan ini</h2>
+            </div>
+            <Link
+              className="rounded-full bg-[#DFF3E8] px-4 py-2 text-sm font-extrabold text-[#2F7D57]"
+              href="/calendar"
+            >
+              Detail
+            </Link>
+          </div>
+          <div className="grid grid-cols-7 gap-2">
+            {monthDays.map((day) => {
+              const checkin = checkinsByDate.get(day);
+              const className = checkin
+                ? statusStyles[checkin.status]
+                : "bg-slate-100 text-slate-400";
+
+              return (
+                <Link
+                  className={`grid aspect-square place-items-center rounded-2xl text-xs font-extrabold ${className}`}
+                  href="/calendar"
+                  key={day}
+                  title={day}
+                >
+                  {Number(day.slice(-2))}
+                </Link>
+              );
+            })}
+          </div>
+          <div className="mt-5 grid grid-cols-2 gap-2 text-xs font-bold text-slate-500 sm:grid-cols-4">
+            <span className="flex items-center gap-2">
+              <span className="size-3 rounded-full bg-[#DFF3E8]" />
+              Bebas rokok
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="size-3 rounded-full bg-[#FFF4CC]" />
+              Mengurangi
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="size-3 rounded-full bg-[#FBE3E3]" />
+              Kambuh
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="size-3 rounded-full bg-slate-100" />
+              Belum absen
+            </span>
+          </div>
+        </div>
+
         <Link
           className="flex flex-col gap-4 rounded-[2rem] bg-[#1F2933] p-5 text-white shadow-xl shadow-slate-300/60 sm:flex-row sm:items-center sm:justify-between"
           href="/craving"
@@ -171,17 +279,9 @@ export default function DashboardPage() {
           </span>
         </Link>
 
+        <NotificationOptIn />
+
         <div className="grid gap-4 sm:grid-cols-2">
-          <Link
-            className="rounded-[2rem] bg-white p-5 shadow-sm transition hover:-translate-y-0.5"
-            href="/calendar"
-          >
-            <CalendarDays className="size-7 text-[#4FAE7B]" />
-            <h2 className="mt-4 text-xl font-extrabold">Kalender progress</h2>
-            <p className="mt-2 leading-7 text-slate-600">
-              Lihat warna perjalananmu per hari dalam satu bulan.
-            </p>
-          </Link>
           <Link
             className="rounded-[2rem] bg-white p-5 shadow-sm transition hover:-translate-y-0.5"
             href="/motivation"
@@ -192,6 +292,34 @@ export default function DashboardPage() {
               Tips craving, quote harian, dan reminder alasan berhenti.
             </p>
           </Link>
+          <Link
+            className="rounded-[2rem] bg-white p-5 shadow-sm transition hover:-translate-y-0.5"
+            href="/journal"
+          >
+            <NotebookPen className="size-7 text-[#4FAE7B]" />
+            <h2 className="mt-4 text-xl font-extrabold">Journal harian</h2>
+            <p className="mt-2 leading-7 text-slate-600">
+              Tulis cerita, tantangan, syukur, dan fokus untuk besok.
+            </p>
+          </Link>
+        </div>
+
+        <div className="rounded-[2rem] bg-[#E3F3F7] p-5">
+          <p className="text-sm font-extrabold uppercase text-[#36798D]">
+            Insight personal
+          </p>
+          <p className="mt-3 text-lg font-bold leading-8">
+            {personalizedInsight.title}
+          </p>
+          <p className="mt-3 leading-7 text-slate-700">
+            {personalizedInsight.action}
+          </p>
+          {relapseInsights.topMood && (
+            <p className="mt-3 text-sm font-bold text-[#36798D]">
+              Mood yang sering muncul saat kambuh:{" "}
+              {relapseInsights.topMood.name}
+            </p>
+          )}
         </div>
 
         <div className="rounded-[2rem] bg-white p-5 shadow-sm">

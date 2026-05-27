@@ -1,0 +1,398 @@
+import { supabase } from "@/lib/supabase";
+import type {
+  CheckinStatus,
+  CravingLog,
+  DailyCheckin,
+  JournalEntry,
+  Mood,
+  NotificationSettings,
+  Profile,
+  Reward,
+  TargetType,
+  UserBadge,
+} from "@/lib/mvp-store";
+
+export async function getCurrentUserId() {
+  if (!supabase) {
+    return null;
+  }
+
+  const { data } = await supabase.auth.getUser();
+  return data.user?.id ?? null;
+}
+
+export async function readSupabaseProfile(): Promise<Profile | null> {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return null;
+  }
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return {
+    createdAt: data.created_at,
+    name: data.name,
+    packPrice: Number(data.pack_price),
+    reasons: data.reason_to_quit ?? [],
+    smokingBaselinePerDay: data.smoking_baseline_per_day,
+    sticksPerPack: data.sticks_per_pack,
+    targetType: data.target_type as TargetType,
+  };
+}
+
+export async function saveSupabaseProfile(profile: Profile) {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return false;
+  }
+
+  const { error } = await supabase.from("profiles").upsert({
+    id: userId,
+    name: profile.name,
+    pack_price: profile.packPrice,
+    reason_to_quit: profile.reasons,
+    smoking_baseline_per_day: profile.smokingBaselinePerDay,
+    sticks_per_pack: profile.sticksPerPack,
+    target_type: profile.targetType,
+    updated_at: new Date().toISOString(),
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return true;
+}
+
+export async function readSupabaseCheckins(): Promise<DailyCheckin[]> {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("daily_checkins")
+    .select("*")
+    .eq("user_id", userId)
+    .order("date", { ascending: true });
+
+  if (error) {
+    throw error;
+  }
+
+  return (data ?? []).map((item) => ({
+    createdAt: item.created_at,
+    date: item.date,
+    mood: item.mood as Mood | undefined,
+    note: item.note ?? "",
+    smokedCount: item.smoked_count,
+    status: item.status as CheckinStatus,
+    trigger: item.trigger ?? "",
+  }));
+}
+
+export async function saveSupabaseCheckin(checkin: DailyCheckin) {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return false;
+  }
+
+  const { error } = await supabase.from("daily_checkins").upsert(
+    {
+      date: checkin.date,
+      mood: checkin.mood,
+      note: checkin.note,
+      smoked_count: checkin.smokedCount,
+      status: checkin.status,
+      trigger: checkin.trigger || null,
+      updated_at: new Date().toISOString(),
+      user_id: userId,
+    },
+    { onConflict: "user_id,date" },
+  );
+
+  if (error) {
+    throw error;
+  }
+
+  return true;
+}
+
+export async function readSupabaseCravingLogs(): Promise<CravingLog[]> {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("craving_logs")
+    .select("*")
+    .eq("user_id", userId)
+    .order("date", { ascending: true });
+
+  if (error) {
+    throw error;
+  }
+
+  return (data ?? []).map((item) => ({
+    createdAt: item.created_at,
+    date: item.date,
+    note: item.note ?? "",
+    status: item.status as CravingLog["status"],
+  }));
+}
+
+export async function saveSupabaseCravingLog(log: CravingLog) {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return false;
+  }
+
+  const { error } = await supabase.from("craving_logs").insert({
+    date: log.date,
+    note: log.note,
+    status: log.status,
+    user_id: userId,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return true;
+}
+
+export async function readSupabaseJournals(): Promise<JournalEntry[]> {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("journals")
+    .select("*")
+    .eq("user_id", userId)
+    .order("date", { ascending: true });
+
+  if (error) {
+    throw error;
+  }
+
+  return (data ?? []).map((item) => ({
+    challenge: item.challenge ?? "",
+    createdAt: item.created_at,
+    date: item.date,
+    gratitude: item.gratitude ?? "",
+    mood: item.mood as Mood | undefined,
+    story: item.story ?? "",
+    tomorrowFocus: item.tomorrow_focus ?? "",
+  }));
+}
+
+export async function saveSupabaseJournal(entry: JournalEntry) {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return false;
+  }
+
+  const { error } = await supabase.from("journals").upsert(
+    {
+      challenge: entry.challenge,
+      date: entry.date,
+      gratitude: entry.gratitude,
+      mood: entry.mood,
+      story: entry.story,
+      tomorrow_focus: entry.tomorrowFocus,
+      updated_at: new Date().toISOString(),
+      user_id: userId,
+    },
+    { onConflict: "user_id,date" },
+  );
+
+  if (error) {
+    throw error;
+  }
+
+  return true;
+}
+
+export async function readSupabaseReward(): Promise<Reward | null> {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return null;
+  }
+
+  const { data, error } = await supabase
+    .from("rewards")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return {
+    createdAt: data.created_at,
+    targetAmount: Number(data.target_amount),
+    title: data.title,
+  };
+}
+
+export async function saveSupabaseReward(reward: Reward) {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return false;
+  }
+
+  const { error } = await supabase.from("rewards").insert({
+    target_amount: reward.targetAmount,
+    title: reward.title,
+    user_id: userId,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return true;
+}
+
+export async function readSupabaseUserBadges(): Promise<UserBadge[]> {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("user_badges")
+    .select("*")
+    .eq("user_id", userId)
+    .order("unlocked_at", { ascending: true });
+
+  if (error) {
+    throw error;
+  }
+
+  return (data ?? []).map((item) => ({
+    description: item.badge_description,
+    name: item.badge_name,
+    unlockedAt: item.unlocked_at,
+  }));
+}
+
+export async function unlockSupabaseUserBadges(
+  badges: Pick<UserBadge, "description" | "name">[],
+): Promise<UserBadge[]> {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId || badges.length === 0) {
+    return [];
+  }
+
+  const existingBadges = await readSupabaseUserBadges();
+  const existingNames = new Set(existingBadges.map((badge) => badge.name));
+  const now = new Date().toISOString();
+  const newlyUnlocked = badges
+    .filter((badge) => !existingNames.has(badge.name))
+    .map((badge) => ({
+      description: badge.description,
+      name: badge.name,
+      unlockedAt: now,
+    }));
+
+  if (newlyUnlocked.length === 0) {
+    return [];
+  }
+
+  const { error } = await supabase.from("user_badges").upsert(
+    newlyUnlocked.map((badge) => ({
+      badge_description: badge.description,
+      badge_name: badge.name,
+      unlocked_at: badge.unlockedAt,
+      user_id: userId,
+    })),
+    { onConflict: "user_id,badge_name" },
+  );
+
+  if (error) {
+    throw error;
+  }
+
+  return newlyUnlocked;
+}
+
+export async function readSupabaseNotificationSettings(): Promise<NotificationSettings> {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return {
+      enabled: false,
+      reminderHour: 20,
+    };
+  }
+
+  const { data, error } = await supabase
+    .from("notification_settings")
+    .select("*")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error || !data) {
+    return {
+      enabled: false,
+      reminderHour: 20,
+    };
+  }
+
+  return {
+    enabled: data.enabled,
+    lastNotifiedDate: data.last_notified_date ?? undefined,
+    reminderHour: data.reminder_hour,
+  };
+}
+
+export async function saveSupabaseNotificationSettings(
+  settings: NotificationSettings,
+) {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return false;
+  }
+
+  const { error } = await supabase.from("notification_settings").upsert({
+    enabled: settings.enabled,
+    last_notified_date: settings.lastNotifiedDate ?? null,
+    reminder_hour: settings.reminderHour,
+    updated_at: new Date().toISOString(),
+    user_id: userId,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return true;
+}

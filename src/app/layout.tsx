@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/plus-jakarta-sans";
+import { NotificationReminder } from "@/components/notification-reminder";
 import { PwaBootstrap } from "@/components/pwa-bootstrap";
 import { ToastProvider } from "@/components/toast-provider";
 import "./globals.css";
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col">
         <ToastProvider>
           <PwaBootstrap />
+          <NotificationReminder />
           {children}
         </ToastProvider>
       </body>

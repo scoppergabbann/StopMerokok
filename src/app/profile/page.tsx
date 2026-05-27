@@ -2,15 +2,50 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
-import { readProfile, targetLabels, type Profile } from "@/lib/mvp-store";
+import { useToast } from "@/components/toast-provider";
+import { loadProfile, persistProfile } from "@/lib/client-data";
+import {
+  formatRupiahInput,
+  parseRupiahInput,
+  targetLabels,
+  type Profile,
+  type TargetType,
+} from "@/lib/mvp-store";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+
+const reasons = [
+  "Kesehatan",
+  "Keluarga",
+  "Finansial",
+  "Ibadah / spiritual",
+  "Pasangan",
+  "Anak",
+  "Lainnya",
+];
+
+const targets: { label: string; value: TargetType }[] = [
+  { label: "Berhenti total", value: "quit_total" },
+  { label: "Mengurangi perlahan", value: "reduce_slowly" },
+  { label: "Coba 7 hari tanpa rokok", value: "seven_days" },
+  { label: "Coba 30 hari tanpa rokok", value: "thirty_days" },
+];
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [packPriceInput, setPackPriceInput] = useState("");
+  const router = useRouter();
+  const { showToast } = useToast();
 
   useEffect(() => {
     const id = window.setTimeout(() => {
-      setProfile(readProfile());
+      loadProfile().then((nextProfile) => {
+        setProfile(nextProfile);
+        setPackPriceInput(
+          nextProfile ? formatRupiahInput(String(nextProfile.packPrice)) : "",
+        );
+      });
     }, 0);
 
     return () => window.clearTimeout(id);
@@ -38,41 +73,158 @@ export default function ProfilePage() {
               </Link>
             </>
           ) : (
-            <div className="space-y-4">
-              <Info label="Nama" value={profile.name} />
-              <Info
-                label="Baseline"
-                value={`${profile.smokingBaselinePerDay} batang per hari`}
-              />
-              <Info label="Harga bungkus" value={`Rp${profile.packPrice}`} />
-              <Info
-                label="Batang per bungkus"
-                value={`${profile.sticksPerPack} batang`}
-              />
-              <Info label="Target" value={targetLabels[profile.targetType]} />
-              <Info
-                label="Alasan saya berhenti"
-                value={profile.reasons.join(", ") || "Belum diisi"}
-              />
-              <Link
-                className="inline-flex rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white"
-                href="/onboarding"
+            <form
+              className="space-y-5"
+              onSubmit={async (event) => {
+                event.preventDefault();
+                const form = new FormData(event.currentTarget);
+                const nextProfile: Profile = {
+                  createdAt: profile.createdAt,
+                  name: String(form.get("name") || "Teman"),
+                  packPrice: parseRupiahInput(packPriceInput),
+                  reasons: form.getAll("reasons").map(String),
+                  smokingBaselinePerDay: Number(form.get("baseline") || 0),
+                  sticksPerPack: Number(form.get("sticksPerPack") || 20),
+                  targetType: String(form.get("targetType")) as TargetType,
+                };
+
+                await persistProfile(nextProfile);
+                setProfile(nextProfile);
+                showToast({
+                  message: "Profil perjalanan kamu sudah diperbarui.",
+                  title: "Profile tersimpan",
+                  variant: "success",
+                });
+              }}
+            >
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block sm:col-span-2">
+                  <span className="text-sm font-bold text-slate-600">
+                    Nama panggilan
+                  </span>
+                  <input
+                    className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
+                    defaultValue={profile.name}
+                    name="name"
+                    required
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-sm font-bold text-slate-600">
+                    Baseline rokok per hari
+                  </span>
+                  <input
+                    className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
+                    defaultValue={profile.smokingBaselinePerDay}
+                    min={0}
+                    name="baseline"
+                    required
+                    type="number"
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-sm font-bold text-slate-600">
+                    Harga satu bungkus
+                  </span>
+                  <input
+                    className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
+                    inputMode="numeric"
+                    onChange={(event) =>
+                      setPackPriceInput(formatRupiahInput(event.target.value))
+                    }
+                    required
+                    type="text"
+                    value={packPriceInput}
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-sm font-bold text-slate-600">
+                    Batang per bungkus
+                  </span>
+                  <input
+                    className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
+                    defaultValue={profile.sticksPerPack}
+                    min={1}
+                    name="sticksPerPack"
+                    required
+                    type="number"
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-sm font-bold text-slate-600">
+                    Target berhenti
+                  </span>
+                  <select
+                    className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-[#4FAE7B]"
+                    defaultValue={profile.targetType}
+                    name="targetType"
+                  >
+                    {targets.map((target) => (
+                      <option key={target.value} value={target.value}>
+                        {target.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
+              <fieldset>
+                <legend className="text-sm font-bold text-slate-600">
+                  Alasan saya berhenti
+                </legend>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  {reasons.map((reason) => (
+                    <label
+                      className="flex items-center gap-3 rounded-2xl border border-slate-200 px-4 py-3 font-semibold"
+                      key={reason}
+                    >
+                      <input
+                        className="size-4 accent-[#4FAE7B]"
+                        defaultChecked={profile.reasons.includes(reason)}
+                        name="reasons"
+                        type="checkbox"
+                        value={reason}
+                      />
+                      {reason}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <div className="rounded-2xl bg-[#F6F8F7] p-4">
+                <p className="text-sm font-bold text-slate-500">
+                  Target aktif
+                </p>
+                <p className="mt-1 font-extrabold">
+                  {targetLabels[profile.targetType]}
+                </p>
+              </div>
+
+              <button className="inline-flex rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white">
+                Simpan perubahan
+              </button>
+              <button
+                className="ml-0 inline-flex rounded-2xl border border-slate-200 bg-white px-5 py-3 font-extrabold text-slate-700 sm:ml-3"
+                onClick={async () => {
+                  if (isSupabaseConfigured && supabase) {
+                    await supabase.auth.signOut();
+                  }
+
+                  showToast({
+                    message: "Kamu keluar dari sesi saat ini.",
+                    title: "Logout berhasil",
+                    variant: "success",
+                  });
+                  window.setTimeout(() => router.push("/"), 400);
+                }}
+                type="button"
               >
-                Edit data awal
-              </Link>
-            </div>
+                Logout
+              </button>
+            </form>
           )}
         </div>
       </section>
     </AppShell>
-  );
-}
-
-function Info({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl bg-[#F6F8F7] p-4">
-      <p className="text-sm font-bold text-slate-500">{label}</p>
-      <p className="mt-1 font-extrabold">{value}</p>
-    </div>
   );
 }

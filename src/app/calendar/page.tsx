@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/app-shell";
+import { loadCheckins } from "@/lib/client-data";
 import {
   getMonthDays,
-  readCheckins,
   statusLabels,
   statusStyles,
   type DailyCheckin,
@@ -22,9 +22,10 @@ export default function CalendarPage() {
 
   useEffect(() => {
     const id = window.setTimeout(() => {
-      const items = readCheckins();
+      loadCheckins().then((items) => {
       setCheckins(items);
       setSelectedDate(items[items.length - 1]?.date ?? null);
+      });
     }, 0);
 
     return () => window.clearTimeout(id);

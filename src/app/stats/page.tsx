@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
+import { loadCheckins, loadProfile } from "@/lib/client-data";
 import {
   calculateSummary,
   formatRupiah,
-  readCheckins,
-  readProfile,
+  getRelapseInsights,
   statusLabels,
   statusStyles,
   type DailyCheckin,
@@ -19,14 +19,15 @@ export default function StatsPage() {
 
   useEffect(() => {
     const id = window.setTimeout(() => {
-      setProfile(readProfile());
-      setCheckins(readCheckins());
+      loadProfile().then(setProfile);
+      loadCheckins().then(setCheckins);
     }, 0);
 
     return () => window.clearTimeout(id);
   }, []);
 
   const summary = calculateSummary(profile, checkins);
+  const insights = getRelapseInsights(checkins);
   const maxSmoked = Math.max(1, ...checkins.map((item) => item.smokedCount));
 
   return (
@@ -96,6 +97,45 @@ export default function StatsPage() {
                   </p>
                 </div>
               ))}
+            </div>
+          )}
+        </div>
+
+        <div className="mt-6 rounded-[2rem] bg-[#E3F3F7] p-5">
+          <p className="text-sm font-extrabold uppercase text-[#36798D]">
+            Insight kambuh
+          </p>
+          {insights.relapseCount === 0 ? (
+            <p className="mt-3 text-lg font-bold leading-8">
+              Belum ada data kambuh. Kalau suatu hari terjadi, catatanmu akan
+              membantu membaca polanya.
+            </p>
+          ) : (
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-2xl bg-white/75 p-4">
+                <p className="text-sm font-bold text-slate-500">
+                  Trigger paling sering
+                </p>
+                <p className="mt-1 text-xl font-extrabold">
+                  {insights.topTrigger?.name ?? "Belum tercatat"}
+                </p>
+                <p className="mt-2 text-sm font-semibold text-slate-600">
+                  {insights.topTrigger
+                    ? `${insights.topTrigger.count} kali muncul saat kambuh.`
+                    : "Isi trigger saat check-in kambuh."}
+                </p>
+              </div>
+              <div className="rounded-2xl bg-white/75 p-4">
+                <p className="text-sm font-bold text-slate-500">
+                  Mood saat kambuh
+                </p>
+                <p className="mt-1 text-xl font-extrabold">
+                  {insights.topMood?.name ?? "Belum tercatat"}
+                </p>
+                <p className="mt-2 text-sm font-semibold text-slate-600">
+                  Coba siapkan alternatif kecil sebelum mood ini memuncak.
+                </p>
+              </div>
             </div>
           )}
         </div>

@@ -41,6 +41,16 @@ export type CravingLog = {
   status: "passed" | "smoked";
 };
 
+export type JournalEntry = {
+  challenge?: string;
+  createdAt: string;
+  date: string;
+  gratitude?: string;
+  mood?: Mood;
+  story?: string;
+  tomorrowFocus?: string;
+};
+
 export type Summary = {
   currentStreak: number;
   longestStreak: number;
@@ -58,16 +68,31 @@ export type Badge = {
   name: string;
 };
 
+export type UserBadge = {
+  description: string;
+  name: string;
+  unlockedAt: string;
+};
+
 export type Reward = {
   createdAt: string;
   targetAmount: number;
   title: string;
 };
 
+export type NotificationSettings = {
+  enabled: boolean;
+  lastNotifiedDate?: string;
+  reminderHour: number;
+};
+
 const PROFILE_KEY = "stopmerokok.profile";
 const CHECKINS_KEY = "stopmerokok.checkins";
 const REWARD_KEY = "stopmerokok.reward";
 const CRAVING_LOGS_KEY = "stopmerokok.cravingLogs";
+const NOTIFICATION_SETTINGS_KEY = "stopmerokok.notificationSettings";
+const JOURNALS_KEY = "stopmerokok.journals";
+const USER_BADGES_KEY = "stopmerokok.userBadges";
 
 export const targetLabels: Record<TargetType, string> = {
   quit_total: "Berhenti total",
@@ -143,6 +168,33 @@ export function saveCravingLog(log: CravingLog) {
   );
 }
 
+export function readJournals(): JournalEntry[] {
+  if (!canUseStorage()) {
+    return [];
+  }
+
+  const raw = window.localStorage.getItem(JOURNALS_KEY);
+  return raw ? (JSON.parse(raw) as JournalEntry[]) : [];
+}
+
+export function saveJournal(entry: JournalEntry) {
+  if (!canUseStorage()) {
+    return;
+  }
+
+  const journals = readJournals();
+  const next = [
+    ...journals.filter((journal) => journal.date !== entry.date),
+    entry,
+  ].sort((a, b) => a.date.localeCompare(b.date));
+
+  window.localStorage.setItem(JOURNALS_KEY, JSON.stringify(next));
+}
+
+export function getTodayJournal() {
+  return readJournals().find((journal) => journal.date === todayKey()) ?? null;
+}
+
 export function saveCheckin(checkin: DailyCheckin) {
   if (!canUseStorage()) {
     return;
@@ -172,6 +224,74 @@ export function saveReward(reward: Reward) {
   }
 
   window.localStorage.setItem(REWARD_KEY, JSON.stringify(reward));
+}
+
+export function readNotificationSettings(): NotificationSettings {
+  if (!canUseStorage()) {
+    return {
+      enabled: false,
+      reminderHour: 20,
+    };
+  }
+
+  const raw = window.localStorage.getItem(NOTIFICATION_SETTINGS_KEY);
+
+  return raw
+    ? (JSON.parse(raw) as NotificationSettings)
+    : {
+        enabled: false,
+        reminderHour: 20,
+      };
+}
+
+export function saveNotificationSettings(settings: NotificationSettings) {
+  if (!canUseStorage()) {
+    return;
+  }
+
+  window.localStorage.setItem(
+    NOTIFICATION_SETTINGS_KEY,
+    JSON.stringify(settings),
+  );
+}
+
+export function readUserBadges(): UserBadge[] {
+  if (!canUseStorage()) {
+    return [];
+  }
+
+  const raw = window.localStorage.getItem(USER_BADGES_KEY);
+  return raw ? (JSON.parse(raw) as UserBadge[]) : [];
+}
+
+export function saveUserBadges(badges: UserBadge[]) {
+  if (!canUseStorage()) {
+    return;
+  }
+
+  window.localStorage.setItem(USER_BADGES_KEY, JSON.stringify(badges));
+}
+
+export function unlockUserBadges(badges: Badge[]) {
+  const storedBadges = readUserBadges();
+  const storedNames = new Set(storedBadges.map((badge) => badge.name));
+  const newlyUnlocked = badges
+    .filter((badge) => badge.isUnlocked && !storedNames.has(badge.name))
+    .map((badge) => ({
+      description: badge.description,
+      name: badge.name,
+      unlockedAt: new Date().toISOString(),
+    }));
+
+  if (newlyUnlocked.length > 0) {
+    saveUserBadges([...storedBadges, ...newlyUnlocked]);
+  }
+
+  return newlyUnlocked;
+}
+
+export function hasCheckedInToday() {
+  return readCheckins().some((checkin) => checkin.date === todayKey());
 }
 
 export function getTodayCheckin() {
@@ -340,4 +460,103 @@ export function getMonthDays(year: number, month: number) {
   }
 
   return days;
+}
+
+export function getRelapseInsights(checkins: DailyCheckin[]) {
+  const relapses = checkins.filter((checkin) => checkin.status === "relapsed");
+  const triggerCounts = new Map<string, number>();
+  const moodCounts = new Map<string, number>();
+
+  for (const relapse of relapses) {
+    if (relapse.trigger) {
+      triggerCounts.set(
+        relapse.trigger,
+        (triggerCounts.get(relapse.trigger) ?? 0) + 1,
+      );
+    }
+
+    if (relapse.mood) {
+      moodCounts.set(relapse.mood, (moodCounts.get(relapse.mood) ?? 0) + 1);
+    }
+  }
+
+  const topTrigger = [...triggerCounts.entries()].sort((a, b) => b[1] - a[1])[0];
+  const topMood = [...moodCounts.entries()].sort((a, b) => b[1] - a[1])[0];
+
+  return {
+    relapseCount: relapses.length,
+    topMood: topMood
+      ? {
+          count: topMood[1],
+          name: topMood[0],
+        }
+      : null,
+    topTrigger: topTrigger
+      ? {
+          count: topTrigger[1],
+          name: topTrigger[0],
+        }
+      : null,
+  };
+}
+
+export function getPersonalizedInsight(checkins: DailyCheckin[]) {
+  const sorted = [...checkins].sort((a, b) => b.date.localeCompare(a.date));
+  const recent = sorted.slice(0, 7);
+  const recentRelapses = recent.filter(
+    (checkin) => checkin.status === "relapsed",
+  );
+  const recentReduced = recent.filter((checkin) => checkin.status === "reduced");
+  const recentSmokeFree = recent.filter(
+    (checkin) => checkin.status === "smoke_free",
+  );
+  const lastThree = sorted.slice(0, 3);
+  const lastThreeRelapses = lastThree.filter(
+    (checkin) => checkin.status === "relapsed",
+  );
+
+  if (lastThreeRelapses.length >= 2) {
+    const trigger =
+      lastThreeRelapses.find((checkin) => Boolean(checkin.trigger))?.trigger ??
+      "momen tertentu";
+
+    return {
+      action:
+        "Siapkan pengganti kecil sebelum momen itu datang: minum air, jalan 5 menit, atau tarik napas 10 kali.",
+      title: `Dalam 3 hari terakhir kamu beberapa kali rawan saat ${trigger}.`,
+    };
+  }
+
+  if (recentRelapses.length > 0) {
+    const insight = getRelapseInsights(recent);
+    const trigger = insight.topTrigger?.name ?? "trigger yang mirip";
+
+    return {
+      action:
+        "Coba tulis satu rencana cadangan untuk trigger itu hari ini. Kecil saja, yang penting bisa dilakukan.",
+      title: `Minggu ini pola rawanmu mulai terlihat: ${trigger}.`,
+    };
+  }
+
+  if (recentSmokeFree.length >= 3) {
+    return {
+      action:
+        "Pertahankan ritme yang sama. Jangan tunggu craving datang untuk menyiapkan strategi.",
+      title: "Beberapa hari terakhir kamu sedang membangun momentum bagus.",
+    };
+  }
+
+  if (recentReduced.length >= 2) {
+    return {
+      action:
+        "Besok coba turunkan satu batang lagi atau geser jam rokok pertama lebih lambat.",
+      title: "Mengurangi tetap progress. Tubuhmu sedang belajar pola baru.",
+    };
+  }
+
+  return {
+    action:
+      "Mulai dari satu check-in jujur hari ini. Data kecil itu nanti jadi kompas perjalananmu.",
+    title: "Belum banyak data, tapi kamu sudah mulai punya sistem.",
+  };
 }
