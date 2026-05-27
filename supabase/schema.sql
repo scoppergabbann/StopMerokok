@@ -1,7 +1,12 @@
 create table if not exists profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   name text not null,
+  age integer check (age is null or age >= 18),
+  cigarette_brand text,
   smoking_baseline_per_day integer not null check (smoking_baseline_per_day >= 0),
+  smoking_started_age integer check (smoking_started_age is null or smoking_started_age >= 0),
+  smoking_started_year integer check (smoking_started_year is null or smoking_started_year >= 1900),
+  today_smoked_count integer check (today_smoked_count is null or today_smoked_count >= 0),
   pack_price numeric not null check (pack_price >= 0),
   sticks_per_pack integer not null check (sticks_per_pack > 0),
   target_type text not null check (target_type in ('quit_total', 'reduce_slowly', 'seven_days', 'thirty_days')),
@@ -9,6 +14,12 @@ create table if not exists profiles (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table profiles add column if not exists age integer check (age is null or age >= 18);
+alter table profiles add column if not exists cigarette_brand text;
+alter table profiles add column if not exists smoking_started_age integer check (smoking_started_age is null or smoking_started_age >= 0);
+alter table profiles add column if not exists smoking_started_year integer check (smoking_started_year is null or smoking_started_year >= 1900);
+alter table profiles add column if not exists today_smoked_count integer check (today_smoked_count is null or today_smoked_count >= 0);
 
 create table if not exists daily_checkins (
   id uuid primary key default gen_random_uuid(),
@@ -142,3 +153,84 @@ create policy "notification_settings own data"
 on notification_settings for all
 using (auth.uid() = user_id)
 with check (auth.uid() = user_id);
+
+create or replace function public.get_leaderboard(limit_count integer default 20)
+returns table (
+  user_id uuid,
+  name text,
+  checkin_count bigint,
+  smoke_free_days bigint,
+  reduced_days bigint,
+  relapse_days bigint,
+  current_streak bigint,
+  last_checkin date,
+  consistency_score numeric
+)
+language sql
+security definer
+set search_path = public
+as $$
+  with checkin_days as (
+    select distinct user_id, date
+    from daily_checkins
+  ),
+  numbered_days as (
+    select
+      user_id,
+      date,
+      date - (row_number() over (partition by user_id order by date))::int as streak_group
+    from checkin_days
+  ),
+  latest_groups as (
+    select distinct on (user_id)
+      user_id,
+      streak_group
+    from numbered_days
+    order by user_id, date desc
+  ),
+  streaks as (
+    select
+      numbered_days.user_id,
+      count(*)::bigint as current_streak
+    from numbered_days
+    join latest_groups
+      on latest_groups.user_id = numbered_days.user_id
+      and latest_groups.streak_group = numbered_days.streak_group
+    group by numbered_days.user_id
+  ),
+  aggregates as (
+    select
+      profiles.id as user_id,
+      profiles.name,
+      count(daily_checkins.id)::bigint as checkin_count,
+      count(*) filter (where daily_checkins.status = 'smoke_free')::bigint as smoke_free_days,
+      count(*) filter (where daily_checkins.status = 'reduced')::bigint as reduced_days,
+      count(*) filter (where daily_checkins.status = 'relapsed')::bigint as relapse_days,
+      max(daily_checkins.date) as last_checkin
+    from profiles
+    join daily_checkins on daily_checkins.user_id = profiles.id
+    group by profiles.id, profiles.name
+  )
+  select
+    aggregates.user_id,
+    aggregates.name,
+    aggregates.checkin_count,
+    aggregates.smoke_free_days,
+    aggregates.reduced_days,
+    aggregates.relapse_days,
+    coalesce(streaks.current_streak, 0)::bigint as current_streak,
+    aggregates.last_checkin,
+    (
+      aggregates.checkin_count * 10
+      + coalesce(streaks.current_streak, 0) * 5
+      + aggregates.smoke_free_days * 2
+      + aggregates.reduced_days
+    )::numeric as consistency_score
+  from aggregates
+  left join streaks on streaks.user_id = aggregates.user_id
+  order by consistency_score desc, aggregates.checkin_count desc, aggregates.last_checkin desc
+  limit greatest(1, least(limit_count, 100));
+$$;
+
+revoke all on function public.get_leaderboard(integer) from public;
+grant execute on function public.get_leaderboard(integer) to authenticated;

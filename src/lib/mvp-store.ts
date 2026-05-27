@@ -15,11 +15,16 @@ export type Mood =
   | "Semangat";
 
 export type Profile = {
+  age?: number;
+  cigaretteBrand?: string;
   name: string;
   smokingBaselinePerDay: number;
+  smokingStartedAge?: number;
+  smokingStartedYear?: number;
   packPrice: number;
   sticksPerPack: number;
   targetType: TargetType;
+  todaySmokedCount?: number;
   reasons: string[];
   createdAt: string;
 };
@@ -89,6 +94,18 @@ export type DonationAllocation = {
   note?: string;
   rewardId: string;
   title: string;
+};
+
+export type LeaderboardEntry = {
+  checkinCount: number;
+  consistencyScore: number;
+  currentStreak: number;
+  lastCheckin?: string;
+  name: string;
+  rank: number;
+  reducedDays: number;
+  relapseDays: number;
+  smokeFreeDays: number;
 };
 
 export type NotificationSettings = {
@@ -634,4 +651,30 @@ export function getPersonalizedInsight(checkins: DailyCheckin[]) {
       "Mulai dari satu check-in jujur hari ini. Data kecil itu nanti jadi kompas perjalananmu.",
     title: "Belum banyak data, tapi kamu sudah mulai punya sistem.",
   };
+}
+
+export function buildLocalLeaderboard(
+  profile: Profile | null,
+  checkins: DailyCheckin[],
+): LeaderboardEntry[] {
+  if (!profile || checkins.length === 0) {
+    return [];
+  }
+
+  const summary = calculateSummary(profile, checkins);
+
+  return [
+    {
+      checkinCount: checkins.length,
+      consistencyScore:
+        checkins.length * 10 + summary.currentStreak * 5 + summary.smokeFreeDays,
+      currentStreak: summary.currentStreak,
+      lastCheckin: checkins[checkins.length - 1]?.date,
+      name: profile.name,
+      rank: 1,
+      reducedDays: summary.reducedDays,
+      relapseDays: summary.relapseDays,
+      smokeFreeDays: summary.smokeFreeDays,
+    },
+  ];
 }

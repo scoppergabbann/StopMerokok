@@ -9,6 +9,7 @@ import {
   HomeIcon,
   PencilLine,
 } from "lucide-react";
+import Image from "next/image";
 import { Reveal } from "@/components/reveal";
 
 const features = [
@@ -144,17 +145,13 @@ export default function Home() {
         </p>
         <nav className="animate-[fade-up_700ms_ease-out_both] flex items-center justify-between py-3">
           <a className="flex items-center gap-3" href="#">
-            <span className="grid size-10 place-items-center rounded-2xl bg-[#4FAE7B] text-lg font-extrabold text-white shadow-sm">
-              S
-            </span>
-            <span>
-              <span className="block text-lg font-extrabold tracking-normal">
-                StopMerokok
-              </span>
-              <span className="block text-xs font-medium text-slate-500">
-                ruang kecil untuk mulai lega
-              </span>
-            </span>
+            <Image
+              alt="StopMerokok"
+              className="h-12 w-auto"
+              height={48}
+              src="/images/logo-noto-header-transparent.png"
+              width={230}
+            />
           </a>
           <a
             className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-[#4FAE7B] hover:text-[#2F7D57]"
@@ -521,7 +518,13 @@ export default function Home() {
       <footer className="relative z-10 bg-white px-5 py-10 sm:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 border-t border-slate-200 pt-8 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-lg font-extrabold">StopMerokok</p>
+            <Image
+              alt="StopMerokok"
+              className="h-11 w-auto"
+              height={44}
+              src="/images/logo-noto-header-transparent.png"
+              width={210}
+            />
             <p className="mt-1 text-sm font-medium text-slate-500">
               Teman harian untuk berhenti merokok dengan lebih manusiawi.
             </p>

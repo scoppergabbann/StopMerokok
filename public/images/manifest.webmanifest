@@ -1,0 +1,23 @@
+{
+  "name": "StopRokok",
+  "short_name": "StopRokok",
+  "description": "Daily check-in app untuk membantu berhenti merokok satu hari demi satu hari.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#7BC65A",
+  "icons": [
+    {
+      "src": "/brand/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/brand/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

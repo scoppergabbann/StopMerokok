@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
-import { loadCheckins, loadProfile } from "@/lib/client-data";
+import { loadCheckins, loadLeaderboard, loadProfile } from "@/lib/client-data";
 import {
   calculateSummary,
   formatRupiah,
@@ -10,17 +10,24 @@ import {
   statusLabels,
   statusStyles,
   type DailyCheckin,
+  type LeaderboardEntry,
   type Profile,
 } from "@/lib/mvp-store";
 
 export default function StatsPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [checkins, setCheckins] = useState<DailyCheckin[]>([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
 
   useEffect(() => {
     const id = window.setTimeout(() => {
-      loadProfile().then(setProfile);
-      loadCheckins().then(setCheckins);
+      Promise.all([loadProfile(), loadCheckins()]).then(
+        ([nextProfile, nextCheckins]) => {
+          setProfile(nextProfile);
+          setCheckins(nextCheckins);
+          loadLeaderboard(nextProfile, nextCheckins).then(setLeaderboard);
+        },
+      );
     }, 0);
 
     return () => window.clearTimeout(id);
@@ -59,6 +66,74 @@ export default function StatsPage() {
             <p className="mt-2 text-2xl font-extrabold">
               {summary.relapseDays} hari
             </p>
+          </div>
+        </div>
+
+        <div className="mt-6 rounded-[2rem] bg-white p-5 shadow-xl shadow-slate-200/70">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
+                Leaderboard
+              </p>
+              <h2 className="mt-2 text-2xl font-extrabold">
+                Ranking konsistensi absen
+              </h2>
+              <p className="mt-2 leading-7 text-slate-600">
+                Ranking ini menghargai user yang rajin check-in setiap hari.
+                Bukan untuk menghakimi, tapi untuk saling menyemangati.
+              </p>
+            </div>
+            <span className="rounded-full bg-[#DFF3E8] px-4 py-2 text-sm font-extrabold text-[#2F7D57]">
+              {leaderboard.length} peserta
+            </span>
+          </div>
+
+          <div className="mt-5 space-y-3">
+            {leaderboard.length === 0 ? (
+              <p className="rounded-2xl bg-[#F6F8F7] p-4 font-semibold text-slate-600">
+                Belum ada peserta leaderboard. Mulai dari check-in hari ini.
+              </p>
+            ) : (
+              leaderboard.map((entry) => (
+                <div
+                  className="grid gap-4 rounded-2xl border border-slate-100 bg-[#F6F8F7] p-4 sm:grid-cols-[56px_1fr_auto]"
+                  key={`${entry.rank}-${entry.name}`}
+                >
+                  <div className="grid size-12 place-items-center rounded-2xl bg-white text-lg font-extrabold text-[#2F7D57]">
+                    #{entry.rank}
+                  </div>
+                  <div>
+                    <p className="text-lg font-extrabold">{entry.name}</p>
+                    <p className="mt-1 text-sm font-semibold text-slate-500">
+                      {entry.checkinCount}x absen · streak absen{" "}
+                      {entry.currentStreak} hari
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2 text-xs font-extrabold">
+                      <span className="rounded-full bg-[#DFF3E8] px-3 py-1 text-[#2F7D57]">
+                        Bebas {entry.smokeFreeDays}
+                      </span>
+                      <span className="rounded-full bg-[#FFF4CC] px-3 py-1 text-[#9B6B00]">
+                        Mengurangi {entry.reducedDays}
+                      </span>
+                      <span className="rounded-full bg-[#FBE3E3] px-3 py-1 text-[#B75D5D]">
+                        Kambuh {entry.relapseDays}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="self-center rounded-2xl bg-white px-4 py-3 text-left sm:text-right">
+                    <p className="text-xs font-bold text-slate-500">Skor</p>
+                    <p className="text-xl font-extrabold">
+                      {Math.round(entry.consistencyScore)}
+                    </p>
+                    {entry.lastCheckin && (
+                      <p className="mt-1 text-xs font-semibold text-slate-400">
+                        Last: {entry.lastCheckin}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
 

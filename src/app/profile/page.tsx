@@ -79,13 +79,21 @@ export default function ProfilePage() {
                 event.preventDefault();
                 const form = new FormData(event.currentTarget);
                 const nextProfile: Profile = {
+                  age: Number(form.get("age") || 0) || undefined,
+                  cigaretteBrand: String(form.get("cigaretteBrand") || ""),
                   createdAt: profile.createdAt,
                   name: String(form.get("name") || "Teman"),
                   packPrice: parseRupiahInput(packPriceInput),
                   reasons: form.getAll("reasons").map(String),
                   smokingBaselinePerDay: Number(form.get("baseline") || 0),
+                  smokingStartedAge:
+                    Number(form.get("smokingStartedAge") || 0) || undefined,
+                  smokingStartedYear:
+                    Number(form.get("smokingStartedYear") || 0) || undefined,
                   sticksPerPack: Number(form.get("sticksPerPack") || 20),
                   targetType: String(form.get("targetType")) as TargetType,
+                  todaySmokedCount:
+                    Number(form.get("todaySmokedCount") || 0) || undefined,
                 };
 
                 await persistProfile(nextProfile);
@@ -107,6 +115,29 @@ export default function ProfilePage() {
                     defaultValue={profile.name}
                     name="name"
                     required
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-sm font-bold text-slate-600">
+                    Umur
+                  </span>
+                  <input
+                    className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
+                    defaultValue={profile.age}
+                    min={18}
+                    name="age"
+                    type="number"
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-sm font-bold text-slate-600">
+                    Produk rokok yang sering dipakai
+                  </span>
+                  <input
+                    className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
+                    defaultValue={profile.cigaretteBrand}
+                    name="cigaretteBrand"
+                    placeholder="Contoh: Sampoerna"
                   />
                 </label>
                 <label className="block">
@@ -135,6 +166,42 @@ export default function ProfilePage() {
                     required
                     type="text"
                     value={packPriceInput}
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-sm font-bold text-slate-600">
+                    Hari ini merokok berapa batang
+                  </span>
+                  <input
+                    className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
+                    defaultValue={profile.todaySmokedCount}
+                    min={0}
+                    name="todaySmokedCount"
+                    type="number"
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-sm font-bold text-slate-600">
+                    Mulai merokok umur
+                  </span>
+                  <input
+                    className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
+                    defaultValue={profile.smokingStartedAge}
+                    min={0}
+                    name="smokingStartedAge"
+                    type="number"
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-sm font-bold text-slate-600">
+                    Mulai merokok tahun
+                  </span>
+                  <input
+                    className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
+                    defaultValue={profile.smokingStartedYear}
+                    min={1900}
+                    name="smokingStartedYear"
+                    type="number"
                   />
                 </label>
                 <label className="block">

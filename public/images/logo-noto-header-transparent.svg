@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="200" viewBox="0 0 960 200" role="img" aria-label="StopRokok header logo">
+
+<defs>
+  <linearGradient id="greenGrad" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#36B85B"/>
+    <stop offset="100%" stop-color="#9AD65B"/>
+  </linearGradient>
+  <linearGradient id="blueGrad" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#70C7F5"/>
+    <stop offset="100%" stop-color="#2E9FE3"/>
+  </linearGradient>
+  <linearGradient id="orangeGrad" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#FFAA3B"/>
+    <stop offset="100%" stop-color="#F58218"/>
+  </linearGradient>
+  <linearGradient id="paperGrad" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#FFFFFF"/>
+    <stop offset="100%" stop-color="#DDE1E5"/>
+  </linearGradient>
+  <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0F172A" flood-opacity="0.10"/>
+  </filter>
+</defs>
+
+<rect width="960" height="200" fill="none"/>
+<g transform="translate(30 -74) scale(0.55)">
+<g filter="url(#softShadow)">
+  <!-- blue fresh breath swoosh -->
+  <path d="M84 292 C156 251, 210 329, 278 326 C332 324, 368 282, 426 258 C383 318, 335 370, 266 366 C196 362, 151 303, 84 292 Z" fill="url(#blueGrad)" opacity="0.96"/>
+
+  <!-- cigarette -->
+  <g transform="translate(144 132) rotate(22)">
+    <rect x="0" y="0" width="168" height="46" rx="21" fill="url(#paperGrad)"/>
+    <rect x="0" y="0" width="72" height="46" rx="21" fill="url(#orangeGrad)"/>
+    <circle cx="18" cy="13" r="3" fill="#FFC56F" opacity="0.8"/><circle cx="34" cy="9" r="2.7" fill="#FFC56F" opacity="0.75"/><circle cx="51" cy="16" r="3" fill="#FFC56F" opacity="0.75"/><circle cx="24" cy="31" r="3" fill="#FFC56F" opacity="0.75"/><circle cx="48" cy="33" r="2.6" fill="#FFC56F" opacity="0.75"/>
+    <path d="M72 0 C92 10, 105 36, 122 46 L72 46 Z" fill="#FFFFFF" opacity="0.25"/>
+  </g>
+
+  <!-- ash particles -->
+  <g fill="#6B7280" opacity="0.9">
+    <circle cx="248" cy="225" r="7"/><circle cx="270" cy="228" r="5"/><circle cx="262" cy="249" r="8"/><circle cx="286" cy="248" r="6"/><circle cx="280" cy="272" r="7"/><circle cx="238" cy="252" r="5"/><circle cx="302" cy="228" r="4.5"/><circle cx="300" cy="266" r="4"/>
+  </g>
+
+  <!-- green check stem -->
+  <path d="M279 289 C304 321, 343 245, 379 176" fill="none" stroke="url(#greenGrad)" stroke-width="42" stroke-linecap="round"/>
+  <!-- leaf -->
+  <path d="M362 159 C398 82, 467 70, 484 62 C474 132, 439 189, 363 215 C350 190, 351 175, 362 159 Z" fill="url(#greenGrad)"/>
+  <path d="M380 177 C412 154, 438 133, 463 97" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round" opacity="0.9"/>
+</g>
+</g>
+<text x="540" y="126" text-anchor="middle" font-family="Inter, Nunito, Arial, sans-serif" font-size="94" font-weight="700">
+  <tspan fill="#7BC65A">Stop</tspan><tspan fill="#56AEEA">Rokok</tspan>
+</text>
+</svg>

@@ -21,9 +21,11 @@ import {
   type DailyCheckin,
   type DonationAllocation,
   type JournalEntry,
+  type LeaderboardEntry,
   type NotificationSettings,
   type Profile,
   type Reward,
+  buildLocalLeaderboard,
 } from "@/lib/mvp-store";
 import {
   readSupabaseCheckins,
@@ -31,6 +33,7 @@ import {
   readSupabaseDonationAllocations,
   readSupabaseJournals,
   readSupabaseNotificationSettings,
+  readSupabaseLeaderboard,
   readSupabaseProfile,
   readSupabaseReward,
   readSupabaseRewards,
@@ -166,4 +169,15 @@ export async function persistNotificationSettings(
 
   saveNotificationSettings(settings);
   return true;
+}
+
+export async function loadLeaderboard(
+  profile?: Profile | null,
+  checkins?: DailyCheckin[],
+): Promise<LeaderboardEntry[]> {
+  if (isSupabaseConfigured) {
+    return readSupabaseLeaderboard();
+  }
+
+  return buildLocalLeaderboard(profile ?? null, checkins ?? []);
 }

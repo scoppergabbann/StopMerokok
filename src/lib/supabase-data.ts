@@ -5,6 +5,7 @@ import type {
   DailyCheckin,
   DonationAllocation,
   JournalEntry,
+  LeaderboardEntry,
   Mood,
   NotificationSettings,
   Profile,
@@ -12,6 +13,17 @@ import type {
   TargetType,
   UserBadge,
 } from "@/lib/mvp-store";
+
+type SupabaseLeaderboardRow = {
+  checkin_count: number | string;
+  consistency_score: number | string;
+  current_streak: number | string;
+  last_checkin: string | null;
+  name: string;
+  reduced_days: number | string;
+  relapse_days: number | string;
+  smoke_free_days: number | string;
+};
 
 export async function getCurrentUserId() {
   if (!supabase) {
@@ -40,13 +52,18 @@ export async function readSupabaseProfile(): Promise<Profile | null> {
   }
 
   return {
+    age: data.age ?? undefined,
+    cigaretteBrand: data.cigarette_brand ?? undefined,
     createdAt: data.created_at,
     name: data.name,
     packPrice: Number(data.pack_price),
     reasons: data.reason_to_quit ?? [],
+    smokingStartedAge: data.smoking_started_age ?? undefined,
+    smokingStartedYear: data.smoking_started_year ?? undefined,
     smokingBaselinePerDay: data.smoking_baseline_per_day,
     sticksPerPack: data.sticks_per_pack,
     targetType: data.target_type as TargetType,
+    todaySmokedCount: data.today_smoked_count ?? undefined,
   };
 }
 
@@ -58,13 +75,18 @@ export async function saveSupabaseProfile(profile: Profile) {
   }
 
   const { error } = await supabase.from("profiles").upsert({
+    age: profile.age ?? null,
+    cigarette_brand: profile.cigaretteBrand ?? null,
     id: userId,
     name: profile.name,
     pack_price: profile.packPrice,
     reason_to_quit: profile.reasons,
     smoking_baseline_per_day: profile.smokingBaselinePerDay,
+    smoking_started_age: profile.smokingStartedAge ?? null,
+    smoking_started_year: profile.smokingStartedYear ?? null,
     sticks_per_pack: profile.sticksPerPack,
     target_type: profile.targetType,
+    today_smoked_count: profile.todaySmokedCount ?? null,
     updated_at: new Date().toISOString(),
   });
 
@@ -457,4 +479,30 @@ export async function saveSupabaseNotificationSettings(
   }
 
   return true;
+}
+
+export async function readSupabaseLeaderboard(): Promise<LeaderboardEntry[]> {
+  if (!supabase) {
+    return [];
+  }
+
+  const { data, error } = await supabase.rpc("get_leaderboard", {
+    limit_count: 20,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return ((data ?? []) as SupabaseLeaderboardRow[]).map((item, index) => ({
+    checkinCount: Number(item.checkin_count),
+    consistencyScore: Number(item.consistency_score),
+    currentStreak: Number(item.current_streak),
+    lastCheckin: item.last_checkin ?? undefined,
+    name: item.name,
+    rank: index + 1,
+    reducedDays: Number(item.reduced_days),
+    relapseDays: Number(item.relapse_days),
+    smokeFreeDays: Number(item.smoke_free_days),
+  }));
 }

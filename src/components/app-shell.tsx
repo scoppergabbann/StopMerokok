@@ -7,6 +7,7 @@ import {
   HandHeart,
   HomeIcon,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -72,11 +73,14 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
       <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-[#F6F8F7]/90 px-5 py-4 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <Link className="flex items-center gap-3" href="/dashboard">
-            <span className="grid size-10 place-items-center rounded-2xl bg-[#4FAE7B] font-extrabold text-white">
-              S
-            </span>
+            <Image
+              alt={title}
+              className="h-10 w-auto"
+              height={40}
+              src="/images/logo-noto-header-transparent.png"
+              width={192}
+            />
             <span>
-              <span className="block text-base font-extrabold">{title}</span>
               <span className="block text-xs font-semibold text-slate-500">
                 mulai lagi hari ini
               </span>

@@ -1,5 +1,5 @@
 const CACHE_NAME = "stopmerokok-shell-v1";
-const APP_SHELL = ["/", "/manifest.webmanifest", "/icon.svg"];
+const APP_SHELL = ["/", "/manifest.webmanifest", "/images/icon-192.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

@@ -16,7 +16,7 @@ async function showReminderNotification() {
   const title = "Jangan lupa check-in hari ini";
   const options: NotificationOptions = {
     body: "Catat sebentar saja. Jujur hari ini lebih penting daripada sempurna.",
-    icon: "/icon.svg",
+    icon: "/images/icon-192.png",
     tag: "daily-checkin-reminder",
   };
 
