@@ -1,0 +1,442 @@
+import {
+  Activity,
+  BarChart3,
+  CircleCheckBig,
+  HandHeart,
+  HomeIcon,
+} from "lucide-react";
+import { Reveal } from "@/components/reveal";
+
+const features = [
+  {
+    title: "Absen harian",
+    description:
+      "Pilih bebas rokok, mengurangi, atau kambuh. Semua dicatat tanpa rasa dihakimi.",
+  },
+  {
+    title: "Progress yang terasa",
+    description:
+      "Lihat streak, kalender, grafik, uang dihemat, dan batang rokok yang berhasil dihindari.",
+  },
+  {
+    title: "Bantuan saat craving",
+    description:
+      "Timer 5 menit, napas pelan, checklist kecil, dan kalimat yang bantu kamu melewati momen berat.",
+  },
+];
+
+const stats = [
+  { label: "Streak", value: "7 hari" },
+  { label: "Uang dihemat", value: "Rp84rb" },
+  { label: "Batang dihindari", value: "56" },
+];
+
+const supportSteps = [
+  {
+    title: "Catat tanpa takut dihakimi",
+    description:
+      "Pilih kondisi hari ini dengan jujur. Bebas rokok, mengurangi, atau kambuh tetap jadi data untuk memahami diri.",
+  },
+  {
+    title: "Lihat pola yang berulang",
+    description:
+      "StopMerokok bantu menampilkan streak, mood, trigger, dan momen yang paling sering membuat kamu ingin merokok.",
+  },
+  {
+    title: "Ubah hemat jadi makna",
+    description:
+      "Uang yang biasanya habis untuk rokok bisa diarahkan ke reward pribadi atau target berbagi.",
+  },
+];
+
+const donationIdeas = [
+  "Anak yatim",
+  "Fakir miskin",
+  "Lansia",
+  "Keluarga",
+  "Masjid",
+  "Panti asuhan",
+];
+
+const calendarDays = [
+  "free",
+  "free",
+  "reduced",
+  "empty",
+  "free",
+  "relapsed",
+  "free",
+  "reduced",
+  "free",
+  "free",
+  "empty",
+  "free",
+  "reduced",
+  "free",
+];
+
+const statusClass = {
+  free: "bg-[#DFF3E8] text-[#2F7D57]",
+  reduced: "bg-[#FFF4CC] text-[#9B6B00]",
+  relapsed: "bg-[#FBE3E3] text-[#B75D5D]",
+  empty: "bg-slate-100 text-slate-400",
+};
+
+const bottomNavItems = [
+  { label: "Home", icon: HomeIcon, active: true },
+  { label: "Statistic", icon: BarChart3 },
+  { label: "Check-in", icon: CircleCheckBig, featured: true },
+  { label: "Activity", icon: Activity },
+  { label: "Berbagi", icon: HandHeart },
+];
+
+export default function Home() {
+  return (
+    <main className="relative min-h-screen overflow-hidden bg-[#F6F8F7] text-[#1F2933]">
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(31,41,51,0.055)_1px,transparent_1px),linear-gradient(to_bottom,rgba(31,41,51,0.045)_1px,transparent_1px)] bg-[size:24vw_100%,100%_9rem]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[42rem] bg-[radial-gradient(circle_at_20%_18%,rgba(79,174,123,0.15),transparent_28rem),radial-gradient(circle_at_85%_20%,rgba(123,183,201,0.14),transparent_24rem)]" />
+
+      <section className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-5 py-6 sm:px-8 lg:min-h-screen lg:px-10">
+        <p className="pointer-events-none absolute right-0 top-28 hidden text-[8rem] font-extrabold leading-none text-slate-900/[0.04] xl:block">
+          LEGA
+        </p>
+        <nav className="animate-[fade-up_700ms_ease-out_both] flex items-center justify-between py-3">
+          <a className="flex items-center gap-3" href="#">
+            <span className="grid size-10 place-items-center rounded-2xl bg-[#4FAE7B] text-lg font-extrabold text-white shadow-sm">
+              S
+            </span>
+            <span>
+              <span className="block text-lg font-extrabold tracking-normal">
+                StopMerokok
+              </span>
+              <span className="block text-xs font-medium text-slate-500">
+                ruang kecil untuk mulai lega
+              </span>
+            </span>
+          </a>
+          <a
+            className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-[#4FAE7B] hover:text-[#2F7D57]"
+            href="/login"
+          >
+            Masuk
+          </a>
+        </nav>
+
+        <div className="grid flex-1 items-center gap-14 py-16 lg:grid-cols-[1fr_0.92fr] lg:py-20">
+          <div className="animate-[fade-up_800ms_ease-out_120ms_both] max-w-3xl">
+            <p className="mb-5 inline-flex rounded-full bg-[#E3F3F7] px-4 py-2 text-sm font-semibold text-[#36798D]">
+              Tidak harus sempurna. Cukup mulai lagi hari ini.
+            </p>
+            <h1 className="max-w-4xl text-[3.25rem] font-extrabold leading-[1.02] tracking-normal text-[#18212B] sm:text-6xl lg:text-[5.75rem]">
+              Berhenti merokok tidak harus sendirian.
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-slate-600 sm:text-xl">
+              Catat progress harianmu, lihat uang yang kamu hemat, dan bangun
+              kebiasaan baru satu hari demi satu hari dengan cara yang lebih
+              manusiawi.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <a
+                className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#4FAE7B] px-6 py-3 text-base font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20 transition hover:bg-[#438F69]"
+                href="/register"
+              >
+                Mulai perjalanan hari ini
+              </a>
+              <a
+                className="inline-flex min-h-12 items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-3 text-base font-extrabold text-slate-700 shadow-sm transition hover:border-[#7BB7C9] hover:text-[#36798D]"
+                href="#fitur"
+              >
+                Lihat cara kerjanya
+              </a>
+            </div>
+          </div>
+
+          <div className="animate-[fade-up_800ms_ease-out_260ms_both] relative">
+            <div className="mx-auto max-w-md rounded-[2rem] border border-white/80 bg-white p-3 shadow-2xl shadow-slate-200/80">
+              <div className="relative overflow-hidden rounded-[1.65rem] bg-[#F6F8F7] p-4 pb-28">
+                <div className="rounded-3xl bg-white p-5 shadow-sm">
+                  <p className="text-sm font-semibold text-slate-500">
+                    Halo Fawwaz,
+                  </p>
+                  <h2 className="mt-1 text-2xl font-extrabold tracking-normal">
+                    Gimana kabarmu hari ini?
+                  </h2>
+                  <div className="mt-5 rounded-3xl bg-[#DFF3E8] p-4">
+                    <p className="text-sm font-semibold text-[#2F7D57]">
+                      Status hari ini
+                    </p>
+                    <p className="mt-1 text-xl font-extrabold text-[#1F2933]">
+                      Belum absen
+                    </p>
+                    <button className="mt-4 w-full rounded-2xl bg-[#4FAE7B] px-4 py-3 font-extrabold text-white">
+                      Absen Hari Ini
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mt-4 grid grid-cols-3 gap-3">
+                  {stats.map((item) => (
+                    <div key={item.label} className="rounded-3xl bg-white p-4">
+                      <p className="text-xs font-semibold text-slate-500">
+                        {item.label}
+                      </p>
+                      <p className="mt-2 text-lg font-extrabold">
+                        {item.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-4 rounded-3xl bg-white p-5">
+                  <div className="mb-4 flex items-center justify-between">
+                    <p className="font-extrabold">Progress Mei</p>
+                    <span className="text-sm font-semibold text-slate-500">
+                      12/30 hari
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-7 gap-2">
+                    {calendarDays.map((status, index) => (
+                      <span
+                        className={`grid aspect-square place-items-center rounded-xl text-xs font-bold ${
+                          statusClass[status as keyof typeof statusClass]
+                        }`}
+                        key={`${status}-${index}`}
+                      >
+                        {index + 1}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-4 rounded-3xl bg-[#E3F3F7] p-5">
+                  <p className="text-sm font-bold text-[#36798D]">
+                    Motivasi hari ini
+                  </p>
+                  <p className="mt-2 text-base font-semibold leading-7">
+                    Mengurangi tetap progress. Terima kasih sudah jujur sama
+                    dirimu sendiri.
+                  </p>
+                </div>
+
+                <div className="absolute inset-x-3 bottom-3">
+                  <div className="relative grid h-20 grid-cols-5 items-center rounded-[1.75rem] border border-slate-100 bg-white px-2 py-2 shadow-xl shadow-slate-200/80">
+                    {bottomNavItems.map((item) => {
+                      const Icon = item.icon;
+
+                      if (item.featured) {
+                        return (
+                          <a
+                            aria-label="Absen harian"
+                            className="group relative flex min-w-0 items-center justify-center"
+                            href="/check-in"
+                            key={item.label}
+                          >
+                            <span className="absolute -top-12 grid size-[4.35rem] place-items-center rounded-full bg-[#4FAE7B] text-white shadow-xl shadow-[#4FAE7B]/35 ring-8 ring-[#F6F8F7] transition group-hover:-translate-y-0.5">
+                              <Icon aria-hidden="true" className="size-7" />
+                            </span>
+                            <span className="sr-only">{item.label}</span>
+                          </a>
+                        );
+                      }
+
+                      return (
+                        <a
+                          className={`flex min-w-0 flex-col items-center justify-center gap-1 rounded-2xl py-1 text-[10px] font-bold transition ${
+                            item.active
+                              ? "text-[#1F2933]"
+                              : "text-slate-400 hover:text-[#4FAE7B]"
+                          }`}
+                          href="#"
+                          key={item.label}
+                        >
+                          <Icon aria-hidden="true" className="size-5" />
+                          <span>{item.label}</span>
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="fitur"
+        className="relative z-10 border-y border-slate-200 bg-white px-5 py-28 sm:px-8"
+      >
+        <p className="pointer-events-none absolute -right-6 top-10 hidden text-[7rem] font-extrabold leading-none text-slate-900/[0.035] lg:block">
+          CHECK-IN
+        </p>
+        <div className="mx-auto max-w-7xl">
+          <Reveal className="max-w-2xl">
+            <p className="text-sm font-extrabold uppercase tracking-normal text-[#4FAE7B]">
+              Cara kerjanya
+            </p>
+            <h2 className="mt-3 text-3xl font-extrabold tracking-normal sm:text-4xl">
+              Sistem sederhana untuk hari-hari yang tidak selalu mudah.
+            </h2>
+          </Reveal>
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {features.map((feature) => (
+              <Reveal
+                className="rounded-3xl border border-slate-100 bg-[#F6F8F7] p-6"
+                delay={80}
+                key={feature.title}
+              >
+                <h3 className="text-xl font-extrabold">{feature.title}</h3>
+                <p className="mt-3 leading-7 text-slate-600">
+                  {feature.description}
+                </p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative z-10 bg-[#F6F8F7]/92 px-5 py-28 sm:px-8">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.9fr_1fr]">
+          <Reveal>
+            <p className="text-sm font-extrabold uppercase tracking-normal text-[#36798D]">
+              Kenapa ini ada
+            </p>
+            <h2 className="mt-3 text-3xl font-extrabold tracking-normal sm:text-4xl">
+              Banyak orang tidak butuh ceramah. Mereka butuh tempat mencatat,
+              memahami pola, dan mulai lagi.
+            </h2>
+          </Reveal>
+          <div className="grid gap-5 sm:grid-cols-2">
+            {[
+              "Streak bebas rokok yang tetap terasa suportif.",
+              "Savings tracker yang bisa diarahkan ke reward pribadi atau donasi.",
+              "Insight trigger agar user belajar dari pola kambuh.",
+              "Ruang berbagi untuk anak yatim, fakir miskin, lansia, atau tujuan baik lain.",
+            ].map((item) => (
+              <Reveal className="rounded-3xl bg-white p-5 shadow-sm" key={item}>
+                <p className="font-semibold leading-7 text-slate-700">{item}</p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative z-10 bg-white px-5 py-28 sm:px-8">
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(31,41,51,0.05)_1px,transparent_1px)] bg-[size:25%_100%]" />
+        <div className="mx-auto max-w-7xl">
+          <Reveal className="mx-auto max-w-3xl text-center">
+            <p className="text-sm font-extrabold uppercase tracking-normal text-[#4FAE7B]">
+              Alur harian
+            </p>
+            <h2 className="mt-3 text-3xl font-extrabold tracking-normal sm:text-4xl">
+              Dibuat untuk dibuka sebentar, tapi terasa menemani.
+            </h2>
+          </Reveal>
+
+          <div className="mt-12 grid gap-6 lg:grid-cols-3">
+            {supportSteps.map((step, index) => (
+              <Reveal
+                className="rounded-3xl border border-slate-100 bg-[#F6F8F7] p-7"
+                delay={index * 90}
+                key={step.title}
+              >
+                <span className="grid size-11 place-items-center rounded-2xl bg-[#DFF3E8] text-base font-extrabold text-[#2F7D57]">
+                  {index + 1}
+                </span>
+                <h3 className="mt-6 text-xl font-extrabold">{step.title}</h3>
+                <p className="mt-3 leading-7 text-slate-600">
+                  {step.description}
+                </p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative z-10 bg-[#F6F8F7]/92 px-5 py-28 sm:px-8">
+        <p className="pointer-events-none absolute left-4 top-8 hidden text-[6rem] font-extrabold leading-none text-slate-900/[0.035] lg:block">
+          BERBAGI
+        </p>
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.85fr_1fr] lg:items-center">
+          <Reveal>
+            <p className="text-sm font-extrabold uppercase tracking-normal text-[#36798D]">
+              Savings jadi kebaikan
+            </p>
+            <h2 className="mt-3 text-3xl font-extrabold tracking-normal sm:text-4xl">
+              Uang yang tidak jadi terbakar bisa jadi sesuatu yang berarti.
+            </h2>
+            <p className="mt-5 text-lg font-medium leading-8 text-slate-600">
+              User bisa membuat target pribadi: beli sesuatu yang sehat,
+              traktir keluarga, atau menyisihkan sebagian penghematan untuk
+              donasi.
+            </p>
+          </Reveal>
+
+          <Reveal className="rounded-[2rem] bg-white p-6 shadow-xl shadow-slate-200/70">
+            <div className="rounded-3xl bg-[#DFF3E8] p-5">
+              <p className="text-sm font-bold text-[#2F7D57]">
+                Simulasi bulan ini
+              </p>
+              <p className="mt-2 text-4xl font-extrabold">Rp184.000</p>
+              <p className="mt-2 font-medium text-slate-600">
+                Bisa kamu simpan, rayakan, atau bagikan.
+              </p>
+            </div>
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {donationIdeas.map((idea) => (
+                <div
+                  className="rounded-2xl border border-slate-100 bg-[#F6F8F7] px-4 py-3 text-sm font-extrabold text-slate-700"
+                  key={idea}
+                >
+                  {idea}
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="relative z-10 bg-[#1F2933] px-5 py-20 text-white sm:px-8">
+        <Reveal className="mx-auto max-w-4xl text-center">
+          <p className="text-sm font-extrabold uppercase tracking-normal text-[#9DE5BD]">
+            Mulai dari satu hari
+          </p>
+          <h2 className="mt-4 text-4xl font-extrabold tracking-normal sm:text-5xl">
+            Kamu tidak harus langsung sempurna untuk mulai berubah.
+          </h2>
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-300">
+            Cukup absen hari ini. Sisanya kita pahami pelan-pelan.
+          </p>
+          <a
+            className="mt-8 inline-flex min-h-12 items-center justify-center rounded-full bg-[#4FAE7B] px-7 py-3 font-extrabold text-white shadow-lg shadow-black/20 transition hover:bg-[#438F69]"
+            href="/register"
+          >
+            Mulai perjalanan hari ini
+          </a>
+        </Reveal>
+      </section>
+
+      <footer className="relative z-10 bg-white px-5 py-10 sm:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 border-t border-slate-200 pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-lg font-extrabold">StopMerokok</p>
+            <p className="mt-1 text-sm font-medium text-slate-500">
+              Teman harian untuk berhenti merokok dengan lebih manusiawi.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-4 text-sm font-bold text-slate-500">
+            <a className="hover:text-[#4FAE7B]" href="#fitur">
+              Fitur
+            </a>
+            <a className="hover:text-[#4FAE7B]" href="/login">
+              Masuk
+            </a>
+            <a className="hover:text-[#4FAE7B]" href="/register">
+              Daftar
+            </a>
+          </div>
+        </div>
+      </footer>
+    </main>
+  );
+}

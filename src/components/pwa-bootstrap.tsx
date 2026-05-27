@@ -1,0 +1,27 @@
+"use client";
+
+import { useEffect } from "react";
+
+export function PwaBootstrap() {
+  useEffect(() => {
+    if (!("serviceWorker" in navigator)) {
+      return;
+    }
+
+    if (process.env.NODE_ENV !== "production") {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((registration) => {
+          registration.unregister();
+        });
+      });
+
+      return;
+    }
+
+    navigator.serviceWorker.register("/sw.js").catch(() => {
+      // Registration failure should never block the app experience.
+    });
+  }, []);
+
+  return null;
+}
