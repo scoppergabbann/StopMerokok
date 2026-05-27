@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { useToast } from "@/components/toast-provider";
-import { persistCheckin } from "@/lib/client-data";
+import { loadCheckins, persistCheckin } from "@/lib/client-data";
 import {
   feedbackForStatus,
   todayKey,
+  type DailyCheckin,
   type CheckinStatus,
   type Mood,
 } from "@/lib/mvp-store";
@@ -46,8 +47,31 @@ const options: Array<{
 
 export default function CheckInPage() {
   const [status, setStatus] = useState<CheckinStatus>("smoke_free");
+  const [date, setDate] = useState(todayKey());
+  const [existingCheckin, setExistingCheckin] = useState<DailyCheckin | null>(
+    null,
+  );
   const [feedback, setFeedback] = useState<string | null>(null);
   const { showToast } = useToast();
+
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      const selectedDate = params.get("date") || todayKey();
+
+      setDate(selectedDate);
+      loadCheckins().then((items) => {
+        const match = items.find((item) => item.date === selectedDate) ?? null;
+        setExistingCheckin(match);
+
+        if (match) {
+          setStatus(match.status);
+        }
+      });
+    }, 0);
+
+    return () => window.clearTimeout(id);
+  }, []);
 
   return (
     <AppShell>
@@ -55,9 +79,12 @@ export default function CheckInPage() {
         <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
           Check-in
         </p>
-        <h1 className="mt-2 text-4xl font-extrabold">Absen hari ini</h1>
+        <h1 className="mt-2 text-4xl font-extrabold">
+          {date === todayKey() ? "Absen hari ini" : "Koreksi check-in"}
+        </h1>
         <p className="mt-3 leading-7 text-slate-600">
-          Jawab dengan jujur. Ini bukan ujian, ini bahan belajar untuk dirimu.
+          Pilih tanggal yang mau dicatat atau dikoreksi. Ini bukan ujian, ini
+          bahan belajar untuk dirimu.
         </p>
 
         {feedback && (
@@ -68,6 +95,7 @@ export default function CheckInPage() {
 
         <form
           className="mt-6 space-y-5 rounded-[2rem] bg-white p-5 shadow-xl shadow-slate-200/70"
+          key={`${date}-${existingCheckin?.createdAt ?? "new"}`}
           onSubmit={async (event) => {
             event.preventDefault();
             const form = new FormData(event.currentTarget);
@@ -76,7 +104,7 @@ export default function CheckInPage() {
 
             await persistCheckin({
               createdAt: new Date().toISOString(),
-              date: todayKey(),
+              date,
               mood: String(form.get("mood") || "") as Mood,
               note: String(form.get("note") || ""),
               smokedCount,
@@ -89,11 +117,34 @@ export default function CheckInPage() {
             setFeedback(message);
             showToast({
               message,
-              title: "Absen tersimpan",
+              title: existingCheckin ? "Absen diperbarui" : "Absen tersimpan",
               variant: "success",
             });
           }}
         >
+          <label className="block">
+            <span className="text-sm font-bold text-slate-600">
+              Tanggal check-in
+            </span>
+            <input
+              className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
+              max={todayKey()}
+              onChange={(event) => {
+                const nextDate = event.target.value;
+                setDate(nextDate);
+                loadCheckins().then((items) => {
+                  const match =
+                    items.find((item) => item.date === nextDate) ?? null;
+                  setExistingCheckin(match);
+                  setStatus(match?.status ?? "smoke_free");
+                });
+              }}
+              required
+              type="date"
+              value={date}
+            />
+          </label>
+
           <div className="grid gap-3">
             {options.map((option) => (
               <button
@@ -121,6 +172,11 @@ export default function CheckInPage() {
               </span>
               <input
                 className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
+                defaultValue={
+                  existingCheckin?.status === "smoke_free"
+                    ? undefined
+                    : existingCheckin?.smokedCount
+                }
                 min={0}
                 name="smokedCount"
                 required
@@ -136,6 +192,7 @@ export default function CheckInPage() {
               </span>
               <select
                 className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-[#4FAE7B]"
+                defaultValue={existingCheckin?.trigger}
                 name="trigger"
                 required
               >
@@ -154,6 +211,7 @@ export default function CheckInPage() {
             </span>
             <select
               className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-[#4FAE7B]"
+              defaultValue={existingCheckin?.mood}
               name="mood"
             >
               {moods.map((mood) => (
@@ -170,13 +228,14 @@ export default function CheckInPage() {
             </span>
             <textarea
               className="mt-2 min-h-28 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
+              defaultValue={existingCheckin?.note}
               name="note"
               placeholder="Opsional. Tulis apa yang kamu rasakan hari ini."
             />
           </label>
 
           <button className="w-full rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20">
-            Simpan absen
+            {existingCheckin ? "Simpan koreksi" : "Simpan absen"}
           </button>
         </form>
       </section>

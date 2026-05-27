@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useToast } from "@/components/toast-provider";
 import { loadProfile } from "@/lib/client-data";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 
@@ -29,6 +30,7 @@ type AppShellProps = {
 export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { showToast } = useToast();
   const [isCheckingSession, setIsCheckingSession] = useState(
     isSupabaseConfigured,
   );
@@ -80,12 +82,32 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
               </span>
             </span>
           </Link>
-          <Link
-            className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-sm"
-            href="/profile"
-          >
-            Profil
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-sm"
+              href="/profile"
+            >
+              Profil
+            </Link>
+            <button
+              className="rounded-full bg-[#1F2933] px-4 py-2 text-sm font-bold text-white shadow-sm"
+              onClick={async () => {
+                if (isSupabaseConfigured && supabase) {
+                  await supabase.auth.signOut();
+                }
+
+                showToast({
+                  message: "Kamu keluar dari sesi saat ini.",
+                  title: "Logout berhasil",
+                  variant: "success",
+                });
+                window.setTimeout(() => router.push("/"), 350);
+              }}
+              type="button"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </header>
 

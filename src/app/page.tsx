@@ -1,9 +1,13 @@
 import {
   Activity,
   BarChart3,
+  BellRing,
+  CalendarClock,
   CircleCheckBig,
+  Download,
   HandHeart,
   HomeIcon,
+  PencilLine,
 } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 
@@ -14,12 +18,27 @@ const features = [
       "Pilih bebas rokok, mengurangi, atau kambuh. Semua dicatat tanpa rasa dihakimi.",
   },
   {
+    title: "Koreksi riwayat",
+    description:
+      "Lupa isi kemarin? Pilih tanggal lama, koreksi status, mood, trigger, dan catatan tanpa drama.",
+  },
+  {
     title: "Progress yang terasa",
     description:
       "Lihat streak, kalender, grafik, uang dihemat, dan batang rokok yang berhasil dihindari.",
   },
   {
-    title: "Bantuan saat craving",
+    title: "Savings jadi kebaikan",
+    description:
+      "Buat beberapa target reward atau donasi, lalu catat riwayat savings yang sudah dialokasikan.",
+  },
+  {
+    title: "Backup data pribadi",
+    description:
+      "Download CSV progress untuk refleksi bulanan atau sekadar menyimpan perjalananmu sendiri.",
+  },
+  {
+    title: "Reminder dan craving help",
     description:
       "Timer 5 menit, napas pelan, checklist kecil, dan kalimat yang bantu kamu melewati momen berat.",
   },
@@ -46,6 +65,29 @@ const supportSteps = [
     title: "Ubah hemat jadi makna",
     description:
       "Uang yang biasanya habis untuk rokok bisa diarahkan ke reward pribadi atau target berbagi.",
+  },
+];
+
+const previewFeatures = [
+  {
+    icon: CalendarClock,
+    label: "Edit history",
+    value: "Koreksi 12 Mei",
+  },
+  {
+    icon: HandHeart,
+    label: "Target berbagi",
+    value: "3 target aktif",
+  },
+  {
+    icon: Download,
+    label: "Backup",
+    value: "CSV siap",
+  },
+  {
+    icon: BellRing,
+    label: "Reminder",
+    value: "20:00",
   },
 ];
 
@@ -125,29 +167,48 @@ export default function Home() {
         <div className="grid flex-1 items-center gap-14 py-16 lg:grid-cols-[1fr_0.92fr] lg:py-20">
           <div className="animate-[fade-up_800ms_ease-out_120ms_both] max-w-3xl">
             <p className="mb-5 inline-flex rounded-full bg-[#E3F3F7] px-4 py-2 text-sm font-semibold text-[#36798D]">
-              Tidak harus sempurna. Cukup mulai lagi hari ini.
+              Tracking berhenti merokok yang suportif, bukan menghakimi.
             </p>
             <h1 className="max-w-4xl text-[3.25rem] font-extrabold leading-[1.02] tracking-normal text-[#18212B] sm:text-6xl lg:text-[5.75rem]">
               Berhenti merokok tidak harus sendirian.
             </h1>
             <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-slate-600 sm:text-xl">
-              Catat progress harianmu, lihat uang yang kamu hemat, dan bangun
-              kebiasaan baru satu hari demi satu hari dengan cara yang lebih
-              manusiawi.
+              Check-in harian, koreksi riwayat, insight trigger, reminder, dan
+              savings tracker yang bisa diarahkan ke reward atau donasi.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
                 className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#4FAE7B] px-6 py-3 text-base font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20 transition hover:bg-[#438F69]"
                 href="/register"
               >
-                Mulai perjalanan hari ini
+                Mulai gratis hari ini
               </a>
               <a
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-3 text-base font-extrabold text-slate-700 shadow-sm transition hover:border-[#7BB7C9] hover:text-[#36798D]"
                 href="#fitur"
               >
-                Lihat cara kerjanya
+                Lihat fitur MVP
               </a>
+            </div>
+            <div className="mt-8 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4">
+              {previewFeatures.map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <div
+                    className="rounded-3xl border border-white/80 bg-white/80 p-4 shadow-sm backdrop-blur"
+                    key={item.label}
+                  >
+                    <Icon className="size-5 text-[#4FAE7B]" />
+                    <p className="mt-3 text-xs font-bold text-slate-500">
+                      {item.label}
+                    </p>
+                    <p className="mt-1 text-sm font-extrabold">
+                      {item.value}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -218,6 +279,27 @@ export default function Home() {
                   </p>
                 </div>
 
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  <div className="rounded-3xl bg-white p-4">
+                    <PencilLine className="size-5 text-[#4FAE7B]" />
+                    <p className="mt-3 text-xs font-bold text-slate-500">
+                      Koreksi
+                    </p>
+                    <p className="mt-1 text-sm font-extrabold">
+                      Riwayat kemarin
+                    </p>
+                  </div>
+                  <div className="rounded-3xl bg-white p-4">
+                    <HandHeart className="size-5 text-[#36798D]" />
+                    <p className="mt-3 text-xs font-bold text-slate-500">
+                      Donasi
+                    </p>
+                    <p className="mt-1 text-sm font-extrabold">
+                      Rp40.000 tersalur
+                    </p>
+                  </div>
+                </div>
+
                 <div className="absolute inset-x-3 bottom-3">
                   <div className="relative grid h-20 grid-cols-5 items-center rounded-[1.75rem] border border-slate-100 bg-white px-2 py-2 shadow-xl shadow-slate-200/80">
                     {bottomNavItems.map((item) => {
@@ -278,11 +360,11 @@ export default function Home() {
               Sistem sederhana untuk hari-hari yang tidak selalu mudah.
             </h2>
           </Reveal>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {features.map((feature) => (
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {features.map((feature, index) => (
               <Reveal
                 className="rounded-3xl border border-slate-100 bg-[#F6F8F7] p-6"
-                delay={80}
+                delay={index * 70}
                 key={feature.title}
               >
                 <h3 className="text-xl font-extrabold">{feature.title}</h3>
@@ -309,9 +391,11 @@ export default function Home() {
           <div className="grid gap-5 sm:grid-cols-2">
             {[
               "Streak bebas rokok yang tetap terasa suportif.",
-              "Savings tracker yang bisa diarahkan ke reward pribadi atau donasi.",
+              "Check-in bisa dikoreksi kalau user lupa isi kemarin.",
+              "Savings tracker multi target untuk reward pribadi dan donasi.",
+              "Export CSV agar perjalanan pribadi bisa dibackup.",
               "Insight trigger agar user belajar dari pola kambuh.",
-              "Ruang berbagi untuk anak yatim, fakir miskin, lansia, atau tujuan baik lain.",
+              "Reminder harian agar kebiasaan check-in makin konsisten.",
             ].map((item) => (
               <Reveal className="rounded-3xl bg-white p-5 shadow-sm" key={item}>
                 <p className="font-semibold leading-7 text-slate-700">{item}</p>
@@ -363,12 +447,11 @@ export default function Home() {
               Savings jadi kebaikan
             </p>
             <h2 className="mt-3 text-3xl font-extrabold tracking-normal sm:text-4xl">
-              Uang yang tidak jadi terbakar bisa jadi sesuatu yang berarti.
+              Uang yang biasanya hilang bisa berubah jadi target yang terlihat.
             </h2>
             <p className="mt-5 text-lg font-medium leading-8 text-slate-600">
-              User bisa membuat target pribadi: beli sesuatu yang sehat,
-              traktir keluarga, atau menyisihkan sebagian penghematan untuk
-              donasi.
+              Buat beberapa target sekaligus, lihat progress per target, lalu
+              catat riwayat saat savings benar-benar dialokasikan.
             </p>
           </Reveal>
 
@@ -381,6 +464,24 @@ export default function Home() {
               <p className="mt-2 font-medium text-slate-600">
                 Bisa kamu simpan, rayakan, atau bagikan.
               </p>
+            </div>
+            <div className="mt-4 space-y-3">
+              {[
+                ["Donasi anak yatim", "Rp40.000 / Rp100.000"],
+                ["Traktir keluarga", "Rp75.000 / Rp150.000"],
+              ].map(([title, progress]) => (
+                <div className="rounded-2xl bg-[#F6F8F7] p-4" key={title}>
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="font-extrabold">{title}</p>
+                    <p className="text-sm font-bold text-[#2F7D57]">
+                      {progress}
+                    </p>
+                  </div>
+                  <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
+                    <div className="h-full w-2/5 rounded-full bg-[#4FAE7B]" />
+                  </div>
+                </div>
+              ))}
             </div>
             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
               {donationIdeas.map((idea) => (
@@ -402,16 +503,17 @@ export default function Home() {
             Mulai dari satu hari
           </p>
           <h2 className="mt-4 text-4xl font-extrabold tracking-normal sm:text-5xl">
-            Kamu tidak harus langsung sempurna untuk mulai berubah.
+            Mulai dari satu check-in jujur hari ini.
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-300">
-            Cukup absen hari ini. Sisanya kita pahami pelan-pelan.
+            Tidak perlu menunggu siap total. Catat dulu, pahami polanya, lalu
+            mulai lagi dengan lebih sadar.
           </p>
           <a
             className="mt-8 inline-flex min-h-12 items-center justify-center rounded-full bg-[#4FAE7B] px-7 py-3 font-extrabold text-white shadow-lg shadow-black/20 transition hover:bg-[#438F69]"
             href="/register"
           >
-            Mulai perjalanan hari ini
+            Buat akun dan mulai
           </a>
         </Reveal>
       </section>

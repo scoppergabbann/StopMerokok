@@ -76,7 +76,18 @@ export type UserBadge = {
 
 export type Reward = {
   createdAt: string;
+  category?: string;
+  id: string;
   targetAmount: number;
+  title: string;
+};
+
+export type DonationAllocation = {
+  amount: number;
+  createdAt: string;
+  id: string;
+  note?: string;
+  rewardId: string;
   title: string;
 };
 
@@ -89,6 +100,8 @@ export type NotificationSettings = {
 const PROFILE_KEY = "stopmerokok.profile";
 const CHECKINS_KEY = "stopmerokok.checkins";
 const REWARD_KEY = "stopmerokok.reward";
+const REWARDS_KEY = "stopmerokok.rewards";
+const DONATION_ALLOCATIONS_KEY = "stopmerokok.donationAllocations";
 const CRAVING_LOGS_KEY = "stopmerokok.cravingLogs";
 const NOTIFICATION_SETTINGS_KEY = "stopmerokok.notificationSettings";
 const JOURNALS_KEY = "stopmerokok.journals";
@@ -214,8 +227,42 @@ export function readReward(): Reward | null {
     return null;
   }
 
+  const rewards = readRewards();
+  if (rewards.length > 0) {
+    return rewards[0];
+  }
+
   const raw = window.localStorage.getItem(REWARD_KEY);
-  return raw ? (JSON.parse(raw) as Reward) : null;
+  const reward = raw ? (JSON.parse(raw) as Omit<Reward, "id">) : null;
+  return reward
+    ? {
+        ...reward,
+        id: crypto.randomUUID(),
+      }
+    : null;
+}
+
+export function readRewards(): Reward[] {
+  if (!canUseStorage()) {
+    return [];
+  }
+
+  const raw = window.localStorage.getItem(REWARDS_KEY);
+  const rewards = raw ? (JSON.parse(raw) as Reward[]) : [];
+
+  if (rewards.length > 0) {
+    return rewards;
+  }
+
+  const legacyReward = window.localStorage.getItem(REWARD_KEY);
+  return legacyReward
+    ? [
+        {
+          ...(JSON.parse(legacyReward) as Omit<Reward, "id">),
+          id: crypto.randomUUID(),
+        },
+      ]
+    : [];
 }
 
 export function saveReward(reward: Reward) {
@@ -223,7 +270,35 @@ export function saveReward(reward: Reward) {
     return;
   }
 
-  window.localStorage.setItem(REWARD_KEY, JSON.stringify(reward));
+  const rewards = readRewards();
+  const next = [
+    reward,
+    ...rewards.filter((item) => item.id !== reward.id),
+  ].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+
+  window.localStorage.setItem(REWARDS_KEY, JSON.stringify(next));
+}
+
+export function readDonationAllocations(): DonationAllocation[] {
+  if (!canUseStorage()) {
+    return [];
+  }
+
+  const raw = window.localStorage.getItem(DONATION_ALLOCATIONS_KEY);
+  return raw ? (JSON.parse(raw) as DonationAllocation[]) : [];
+}
+
+export function saveDonationAllocation(allocation: DonationAllocation) {
+  if (!canUseStorage()) {
+    return;
+  }
+
+  const allocations = readDonationAllocations();
+  const next = [allocation, ...allocations].sort((a, b) =>
+    b.createdAt.localeCompare(a.createdAt),
+  );
+
+  window.localStorage.setItem(DONATION_ALLOCATIONS_KEY, JSON.stringify(next));
 }
 
 export function readNotificationSettings(): NotificationSettings {

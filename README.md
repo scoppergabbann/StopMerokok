@@ -38,6 +38,7 @@ Tabel awal yang tersedia:
 - `craving_logs`
 - `journals`
 - `rewards`
+- `donation_allocations`
 - `user_badges`
 - `notification_settings`
 
@@ -55,9 +56,13 @@ PRD awal ada di [docs/StopRokok_PRD.md](docs/StopRokok_PRD.md).
 - Streak dan statistik dasar
 - Kalender progress
 - Savings/donasi
+- Reward/donasi multi-target
+- Riwayat alokasi savings
 - Journal harian
 - Insight trigger kambuh
 - Push notification opt-in
 - Auth redirect berdasarkan kelengkapan profile
 - Badge unlock tersimpan per user
 - Setting jam reminder harian
+- Koreksi check-in tanggal sebelumnya
+- Export CSV progress pribadi

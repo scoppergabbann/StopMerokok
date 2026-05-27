@@ -51,9 +51,22 @@ create table if not exists rewards (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references profiles(id) on delete cascade,
   title text not null,
+  category text,
   target_amount numeric not null check (target_amount >= 0),
   created_at timestamptz not null default now(),
   completed_at timestamptz
+);
+
+alter table rewards add column if not exists category text;
+
+create table if not exists donation_allocations (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references profiles(id) on delete cascade,
+  reward_id uuid references rewards(id) on delete set null,
+  title text not null,
+  amount numeric not null check (amount > 0),
+  note text,
+  created_at timestamptz not null default now()
 );
 
 create table if not exists user_badges (
@@ -78,6 +91,7 @@ alter table daily_checkins enable row level security;
 alter table craving_logs enable row level security;
 alter table journals enable row level security;
 alter table rewards enable row level security;
+alter table donation_allocations enable row level security;
 alter table user_badges enable row level security;
 alter table notification_settings enable row level security;
 
@@ -108,6 +122,12 @@ with check (auth.uid() = user_id);
 drop policy if exists "rewards own data" on rewards;
 create policy "rewards own data"
 on rewards for all
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
+drop policy if exists "donation_allocations own data" on donation_allocations;
+create policy "donation_allocations own data"
+on donation_allocations for all
 using (auth.uid() = user_id)
 with check (auth.uid() = user_id);
 

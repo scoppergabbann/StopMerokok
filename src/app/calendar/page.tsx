@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { loadCheckins } from "@/lib/client-data";
 import {
@@ -98,6 +99,12 @@ export default function CalendarPage() {
                 <Info label="Mood" value={selected.mood || "-"} />
                 <Info label="Trigger" value={selected.trigger || "-"} />
                 <Info label="Catatan" value={selected.note || "-"} />
+                <Link
+                  className="inline-flex rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white"
+                  href={`/check-in?date=${selected.date}`}
+                >
+                  Koreksi absen tanggal ini
+                </Link>
               </div>
             ) : (
               <p className="mt-4 leading-7 text-slate-600">

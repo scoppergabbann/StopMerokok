@@ -3,6 +3,7 @@ import type {
   CheckinStatus,
   CravingLog,
   DailyCheckin,
+  DonationAllocation,
   JournalEntry,
   Mood,
   NotificationSettings,
@@ -233,29 +234,34 @@ export async function saveSupabaseJournal(entry: JournalEntry) {
 }
 
 export async function readSupabaseReward(): Promise<Reward | null> {
+  const rewards = await readSupabaseRewards();
+  return rewards[0] ?? null;
+}
+
+export async function readSupabaseRewards(): Promise<Reward[]> {
   const userId = await getCurrentUserId();
 
   if (!supabase || !userId) {
-    return null;
+    return [];
   }
 
   const { data, error } = await supabase
     .from("rewards")
     .select("*")
     .eq("user_id", userId)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .order("created_at", { ascending: false });
 
-  if (error || !data) {
-    return null;
+  if (error) {
+    throw error;
   }
 
-  return {
-    createdAt: data.created_at,
-    targetAmount: Number(data.target_amount),
-    title: data.title,
-  };
+  return (data ?? []).map((item) => ({
+    category: item.category ?? undefined,
+    createdAt: item.created_at,
+    id: item.id,
+    targetAmount: Number(item.target_amount),
+    title: item.title,
+  }));
 }
 
 export async function saveSupabaseReward(reward: Reward) {
@@ -265,9 +271,65 @@ export async function saveSupabaseReward(reward: Reward) {
     return false;
   }
 
-  const { error } = await supabase.from("rewards").insert({
+  const { error } = await supabase.from("rewards").upsert({
+    category: reward.category ?? null,
+    id: reward.id,
     target_amount: reward.targetAmount,
     title: reward.title,
+    user_id: userId,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return true;
+}
+
+export async function readSupabaseDonationAllocations(): Promise<
+  DonationAllocation[]
+> {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("donation_allocations")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return (data ?? []).map((item) => ({
+    amount: Number(item.amount),
+    createdAt: item.created_at,
+    id: item.id,
+    note: item.note ?? "",
+    rewardId: item.reward_id ?? "",
+    title: item.title,
+  }));
+}
+
+export async function saveSupabaseDonationAllocation(
+  allocation: DonationAllocation,
+) {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return false;
+  }
+
+  const { error } = await supabase.from("donation_allocations").insert({
+    amount: allocation.amount,
+    id: allocation.id,
+    note: allocation.note || null,
+    reward_id: allocation.rewardId || null,
+    title: allocation.title,
     user_id: userId,
   });
 

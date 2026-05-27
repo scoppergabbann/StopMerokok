@@ -1,13 +1,16 @@
 import {
   readCheckins,
   readCravingLogs,
+  readDonationAllocations,
   readJournals,
   readNotificationSettings,
   readProfile,
   readReward,
+  readRewards,
   readUserBadges,
   saveCheckin,
   saveCravingLog,
+  saveDonationAllocation,
   saveJournal,
   saveNotificationSettings,
   saveProfile,
@@ -16,6 +19,7 @@ import {
   type Badge,
   type CravingLog,
   type DailyCheckin,
+  type DonationAllocation,
   type JournalEntry,
   type NotificationSettings,
   type Profile,
@@ -24,13 +28,16 @@ import {
 import {
   readSupabaseCheckins,
   readSupabaseCravingLogs,
+  readSupabaseDonationAllocations,
   readSupabaseJournals,
   readSupabaseNotificationSettings,
   readSupabaseProfile,
   readSupabaseReward,
+  readSupabaseRewards,
   readSupabaseUserBadges,
   saveSupabaseCheckin,
   saveSupabaseCravingLog,
+  saveSupabaseDonationAllocation,
   saveSupabaseJournal,
   saveSupabaseNotificationSettings,
   saveSupabaseProfile,
@@ -95,12 +102,33 @@ export async function loadReward() {
   return isSupabaseConfigured ? readSupabaseReward() : readReward();
 }
 
+export async function loadRewards() {
+  return isSupabaseConfigured ? readSupabaseRewards() : readRewards();
+}
+
 export async function persistReward(reward: Reward) {
   if (isSupabaseConfigured) {
     return saveSupabaseReward(reward);
   }
 
   saveReward(reward);
+  return true;
+}
+
+export async function loadDonationAllocations() {
+  return isSupabaseConfigured
+    ? readSupabaseDonationAllocations()
+    : readDonationAllocations();
+}
+
+export async function persistDonationAllocation(
+  allocation: DonationAllocation,
+) {
+  if (isSupabaseConfigured) {
+    return saveSupabaseDonationAllocation(allocation);
+  }
+
+  saveDonationAllocation(allocation);
   return true;
 }
 
