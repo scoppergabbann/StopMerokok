@@ -147,11 +147,15 @@ export default function Home() {
           <a className="flex items-center gap-3" href="#">
             <Image
               alt="StopMerokok"
-              className="h-12 w-auto"
+              className="size-12"
               height={48}
-              src="/images/logo-noto-header-transparent.png"
-              width={230}
+              src="/images/logo-noto-mark-transparent.png"
+              width={48}
             />
+            <span className="text-2xl font-extrabold tracking-normal">
+              <span className="text-[#5DCB4F]">Stop</span>
+              <span className="text-[#42A9E8]">Merokok</span>
+            </span>
           </a>
           <a
             className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-[#4FAE7B] hover:text-[#2F7D57]"
@@ -520,11 +524,15 @@ export default function Home() {
           <div>
             <Image
               alt="StopMerokok"
-              className="h-11 w-auto"
+              className="size-11"
               height={44}
-              src="/images/logo-noto-header-transparent.png"
-              width={210}
+              src="/images/logo-noto-mark-transparent.png"
+              width={44}
             />
+            <p className="mt-2 text-lg font-extrabold">
+              <span className="text-[#5DCB4F]">Stop</span>
+              <span className="text-[#42A9E8]">Merokok</span>
+            </p>
             <p className="mt-1 text-sm font-medium text-slate-500">
               Teman harian untuk berhenti merokok dengan lebih manusiawi.
             </p>

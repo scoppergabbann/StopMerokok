@@ -72,18 +72,16 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
     <main className="min-h-screen bg-[#F6F8F7] pb-28 text-[#1F2933]">
       <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-[#F6F8F7]/90 px-5 py-4 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <Link className="flex items-center gap-3" href="/dashboard">
+          <Link className="flex min-w-0 items-center gap-2" href="/dashboard">
             <Image
               alt={title}
-              className="h-10 w-auto"
+              className="size-10 shrink-0"
               height={40}
-              src="/images/logo-noto-header-transparent.png"
-              width={192}
+              src="/images/logo-noto-mark-transparent.png"
+              width={40}
             />
-            <span>
-              <span className="block text-xs font-semibold text-slate-500">
-                mulai lagi hari ini
-              </span>
+            <span className="truncate text-base font-extrabold tracking-normal">
+              StopMerokok
             </span>
           </Link>
           <div className="flex items-center gap-2">
