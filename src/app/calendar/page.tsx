@@ -7,6 +7,7 @@ import { AppShell } from "@/components/app-shell";
 import { loadCheckins } from "@/lib/client-data";
 import {
   getMonthDays,
+  getMonthStartOffset,
   statusLabels,
   statusStyles,
   type DailyCheckin,
@@ -46,6 +47,14 @@ export default function CalendarPage() {
   const days = useMemo(() => {
     return getMonthDays(visibleMonth.getFullYear(), visibleMonth.getMonth());
   }, [visibleMonth]);
+  const monthStartOffset = useMemo(
+    () =>
+      getMonthStartOffset(
+        visibleMonth.getFullYear(),
+        visibleMonth.getMonth(),
+      ),
+    [visibleMonth],
+  );
   const monthLabel = visibleMonth.toLocaleDateString("id-ID", {
     month: "long",
     year: "numeric",
@@ -121,6 +130,13 @@ export default function CalendarPage() {
                 >
                   {day}
                 </div>
+              ))}
+              {Array.from({ length: monthStartOffset }).map((_, index) => (
+                <div
+                  aria-hidden="true"
+                  className="aspect-square rounded-2xl bg-transparent"
+                  key={`blank-${index}`}
+                />
               ))}
               {days.map((day) => {
                 const checkin = byDate.get(day);

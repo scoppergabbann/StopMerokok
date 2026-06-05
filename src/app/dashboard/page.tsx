@@ -24,6 +24,7 @@ import {
   calculateSummary,
   formatRupiah,
   getMonthDays,
+  getMonthStartOffset,
   getPersonalizedInsight,
   getRelapseInsights,
   getUnlockedBadges,
@@ -80,6 +81,14 @@ export default function DashboardPage() {
   }, []);
   const monthDays = useMemo(
     () => getMonthDays(visibleMonth.getFullYear(), visibleMonth.getMonth()),
+    [visibleMonth],
+  );
+  const monthStartOffset = useMemo(
+    () =>
+      getMonthStartOffset(
+        visibleMonth.getFullYear(),
+        visibleMonth.getMonth(),
+      ),
     [visibleMonth],
   );
   const monthLabel = visibleMonth.toLocaleDateString("id-ID", {
@@ -293,6 +302,13 @@ export default function DashboardPage() {
               >
                 {day}
               </div>
+            ))}
+            {Array.from({ length: monthStartOffset }).map((_, index) => (
+              <div
+                aria-hidden="true"
+                className="aspect-square rounded-2xl bg-transparent"
+                key={`blank-${index}`}
+              />
             ))}
             {monthDays.map((day) => {
               const checkin = checkinsByDate.get(day);

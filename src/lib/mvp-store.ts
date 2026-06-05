@@ -148,7 +148,15 @@ function canUseStorage() {
 }
 
 export function todayKey() {
-  return new Date().toISOString().slice(0, 10);
+  return formatDateKey(new Date());
+}
+
+export function formatDateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 }
 
 export function readProfile(): Profile | null {
@@ -556,11 +564,16 @@ export function getMonthDays(year: number, month: number) {
   const days: string[] = [];
 
   while (date.getMonth() === month) {
-    days.push(date.toISOString().slice(0, 10));
+    days.push(formatDateKey(date));
     date.setDate(date.getDate() + 1);
   }
 
   return days;
+}
+
+export function getMonthStartOffset(year: number, month: number) {
+  const sundayBasedDay = new Date(year, month, 1).getDay();
+  return (sundayBasedDay + 6) % 7;
 }
 
 export function getRelapseInsights(checkins: DailyCheckin[]) {
