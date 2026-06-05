@@ -37,6 +37,8 @@ import {
   type UserBadge,
 } from "@/lib/mvp-store";
 
+const weekdayLabels = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+
 export default function DashboardPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [checkins, setCheckins] = useState<DailyCheckin[]>([]);
@@ -284,6 +286,14 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="grid grid-cols-7 gap-2">
+            {weekdayLabels.map((day) => (
+              <div
+                className="grid h-8 place-items-center text-xs font-extrabold text-slate-500"
+                key={day}
+              >
+                {day}
+              </div>
+            ))}
             {monthDays.map((day) => {
               const checkin = checkinsByDate.get(day);
               const className = checkin

@@ -18,6 +18,8 @@ const statusDot = {
   relapsed: "bg-[#E98080]",
 };
 
+const weekdayLabels = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+
 export default function CalendarPage() {
   const [checkins, setCheckins] = useState<DailyCheckin[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -112,6 +114,14 @@ export default function CalendarPage() {
               </div>
             </div>
             <div className="grid grid-cols-7 gap-2">
+              {weekdayLabels.map((day) => (
+                <div
+                  className="grid h-8 place-items-center text-xs font-extrabold text-slate-500"
+                  key={day}
+                >
+                  {day}
+                </div>
+              ))}
               {days.map((day) => {
                 const checkin = byDate.get(day);
 
