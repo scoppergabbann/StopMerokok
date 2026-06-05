@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { loadCheckins } from "@/lib/client-data";
 import {
@@ -20,24 +21,48 @@ const statusDot = {
 export default function CalendarPage() {
   const [checkins, setCheckins] = useState<DailyCheckin[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [visibleMonth, setVisibleMonth] = useState(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+  });
 
   useEffect(() => {
     const id = window.setTimeout(() => {
       loadCheckins().then((items) => {
-      setCheckins(items);
-      setSelectedDate(items[items.length - 1]?.date ?? null);
+        setCheckins(items);
+        setSelectedDate(items[items.length - 1]?.date ?? null);
       });
     }, 0);
 
     return () => window.clearTimeout(id);
   }, []);
 
-  const days = useMemo(() => {
+  const currentMonth = useMemo(() => {
     const now = new Date();
-    return getMonthDays(now.getFullYear(), now.getMonth());
+    return new Date(now.getFullYear(), now.getMonth(), 1);
   }, []);
+  const days = useMemo(() => {
+    return getMonthDays(visibleMonth.getFullYear(), visibleMonth.getMonth());
+  }, [visibleMonth]);
+  const monthLabel = visibleMonth.toLocaleDateString("id-ID", {
+    month: "long",
+    year: "numeric",
+  });
+  const isCurrentMonth =
+    visibleMonth.getFullYear() === currentMonth.getFullYear() &&
+    visibleMonth.getMonth() === currentMonth.getMonth();
   const byDate = new Map(checkins.map((item) => [item.date, item]));
   const selected = selectedDate ? byDate.get(selectedDate) : null;
+
+  function changeVisibleMonth(direction: -1 | 1) {
+    setVisibleMonth(
+      (month) => new Date(month.getFullYear(), month.getMonth() + direction, 1),
+    );
+  }
+
+  function showCurrentMonth() {
+    setVisibleMonth(currentMonth);
+  }
 
   return (
     <AppShell>
@@ -53,6 +78,39 @@ export default function CalendarPage() {
 
         <div className="mt-6 grid gap-5 lg:grid-cols-[1fr_0.8fr]">
           <div className="rounded-[2rem] bg-white p-5 shadow-xl shadow-slate-200/70">
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-xl font-extrabold capitalize">
+                {isCurrentMonth ? "Bulan ini" : monthLabel}
+              </h2>
+              <div className="flex items-center gap-2">
+                <button
+                  aria-label="Bulan sebelumnya"
+                  className="grid size-10 place-items-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200"
+                  onClick={() => changeVisibleMonth(-1)}
+                  type="button"
+                >
+                  <ChevronLeft className="size-5" />
+                </button>
+                {!isCurrentMonth && (
+                  <button
+                    className="rounded-full bg-[#E3F3F7] px-3 py-2 text-xs font-extrabold text-[#36798D]"
+                    onClick={showCurrentMonth}
+                    type="button"
+                  >
+                    Bulan ini
+                  </button>
+                )}
+                <button
+                  aria-label="Bulan berikutnya"
+                  className="grid size-10 place-items-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-40"
+                  disabled={isCurrentMonth}
+                  onClick={() => changeVisibleMonth(1)}
+                  type="button"
+                >
+                  <ChevronRight className="size-5" />
+                </button>
+              </div>
+            </div>
             <div className="grid grid-cols-7 gap-2">
               {days.map((day) => {
                 const checkin = byDate.get(day);

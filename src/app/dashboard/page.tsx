@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { BookOpenText, Flame, NotebookPen, Trophy } from "lucide-react";
+import {
+  BookOpenText,
+  ChevronLeft,
+  ChevronRight,
+  Flame,
+  NotebookPen,
+  Trophy,
+} from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { NotificationOptIn } from "@/components/notification-opt-in";
 import { useToast } from "@/components/toast-provider";
@@ -35,6 +42,10 @@ export default function DashboardPage() {
   const [checkins, setCheckins] = useState<DailyCheckin[]>([]);
   const [cravingLogs, setCravingLogs] = useState<CravingLog[]>([]);
   const [storedBadges, setStoredBadges] = useState<UserBadge[]>([]);
+  const [visibleMonth, setVisibleMonth] = useState(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+  });
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -61,8 +72,32 @@ export default function DashboardPage() {
   const relapseInsights = getRelapseInsights(checkins);
   const personalizedInsight = getPersonalizedInsight(checkins);
   const progress = Math.min(summary.smokeFreeDays, summary.targetDays);
-  const monthDays = getMonthDays(new Date().getFullYear(), new Date().getMonth());
+  const currentMonth = useMemo(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+  }, []);
+  const monthDays = useMemo(
+    () => getMonthDays(visibleMonth.getFullYear(), visibleMonth.getMonth()),
+    [visibleMonth],
+  );
+  const monthLabel = visibleMonth.toLocaleDateString("id-ID", {
+    month: "long",
+    year: "numeric",
+  });
+  const isCurrentMonth =
+    visibleMonth.getFullYear() === currentMonth.getFullYear() &&
+    visibleMonth.getMonth() === currentMonth.getMonth();
   const checkinsByDate = new Map(checkins.map((item) => [item.date, item]));
+
+  function changeVisibleMonth(direction: -1 | 1) {
+    setVisibleMonth(
+      (month) => new Date(month.getFullYear(), month.getMonth() + direction, 1),
+    );
+  }
+
+  function showCurrentMonth() {
+    setVisibleMonth(currentMonth);
+  }
 
   useEffect(() => {
     if (checkins.length === 0) {
@@ -209,14 +244,44 @@ export default function DashboardPage() {
               <p className="text-sm font-bold text-slate-500">
                 Kalender progress
               </p>
-              <h2 className="mt-1 text-xl font-extrabold">Bulan ini</h2>
+              <h2 className="mt-1 text-xl font-extrabold capitalize">
+                {isCurrentMonth ? "Bulan ini" : monthLabel}
+              </h2>
             </div>
-            <Link
-              className="rounded-full bg-[#DFF3E8] px-4 py-2 text-sm font-extrabold text-[#2F7D57]"
-              href="/calendar"
-            >
-              Detail
-            </Link>
+            <div className="flex items-center gap-2">
+              <button
+                aria-label="Bulan sebelumnya"
+                className="grid size-10 place-items-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200"
+                onClick={() => changeVisibleMonth(-1)}
+                type="button"
+              >
+                <ChevronLeft className="size-5" />
+              </button>
+              {!isCurrentMonth && (
+                <button
+                  className="rounded-full bg-[#E3F3F7] px-3 py-2 text-xs font-extrabold text-[#36798D]"
+                  onClick={showCurrentMonth}
+                  type="button"
+                >
+                  Bulan ini
+                </button>
+              )}
+              <button
+                aria-label="Bulan berikutnya"
+                className="grid size-10 place-items-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-40"
+                disabled={isCurrentMonth}
+                onClick={() => changeVisibleMonth(1)}
+                type="button"
+              >
+                <ChevronRight className="size-5" />
+              </button>
+              <Link
+                className="rounded-full bg-[#DFF3E8] px-4 py-2 text-sm font-extrabold text-[#2F7D57]"
+                href="/calendar"
+              >
+                Detail
+              </Link>
+            </div>
           </div>
           <div className="grid grid-cols-7 gap-2">
             {monthDays.map((day) => {
