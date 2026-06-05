@@ -16,6 +16,7 @@ import {
   saveProfile,
   saveReward,
   unlockUserBadges,
+  deleteCheckin,
   type Badge,
   type CravingLog,
   type DailyCheckin,
@@ -39,6 +40,7 @@ import {
   readSupabaseRewards,
   readSupabaseUserBadges,
   saveSupabaseCheckin,
+  deleteSupabaseCheckin,
   saveSupabaseCravingLog,
   saveSupabaseDonationAllocation,
   saveSupabaseJournal,
@@ -72,6 +74,15 @@ export async function persistCheckin(checkin: DailyCheckin) {
   }
 
   saveCheckin(checkin);
+  return true;
+}
+
+export async function removeCheckin(date: string) {
+  if (isSupabaseConfigured) {
+    return deleteSupabaseCheckin(date);
+  }
+
+  deleteCheckin(date);
   return true;
 }
 

@@ -239,6 +239,15 @@ export function saveCheckin(checkin: DailyCheckin) {
   window.localStorage.setItem(CHECKINS_KEY, JSON.stringify(next));
 }
 
+export function deleteCheckin(date: string) {
+  if (!canUseStorage()) {
+    return;
+  }
+
+  const next = readCheckins().filter((item) => item.date !== date);
+  window.localStorage.setItem(CHECKINS_KEY, JSON.stringify(next));
+}
+
 export function readReward(): Reward | null {
   if (!canUseStorage()) {
     return null;

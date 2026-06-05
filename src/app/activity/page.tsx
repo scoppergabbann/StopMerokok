@@ -4,7 +4,12 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { useToast } from "@/components/toast-provider";
-import { loadCheckins, loadJournals, loadProfile } from "@/lib/client-data";
+import {
+  loadCheckins,
+  loadJournals,
+  loadProfile,
+  removeCheckin,
+} from "@/lib/client-data";
 import {
   statusLabels,
   statusStyles,
@@ -17,6 +22,7 @@ export default function ActivityPage() {
   const [checkins, setCheckins] = useState<DailyCheckin[]>([]);
   const [journals, setJournals] = useState<JournalEntry[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [deletingDate, setDeletingDate] = useState<string | null>(null);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -28,6 +34,36 @@ export default function ActivityPage() {
 
     return () => window.clearTimeout(id);
   }, []);
+
+  async function handleDeleteCheckin(date: string) {
+    const confirmed = window.confirm(
+      `Hapus data absen tanggal ${date}? Data yang sudah dihapus tidak bisa dikembalikan.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setDeletingDate(date);
+
+    try {
+      await removeCheckin(date);
+      setCheckins((items) => items.filter((item) => item.date !== date));
+      showToast({
+        message: "Data absen berhasil dihapus.",
+        title: "Absen terhapus",
+        variant: "success",
+      });
+    } catch {
+      showToast({
+        message: "Coba lagi sebentar lagi.",
+        title: "Gagal menghapus absen",
+        variant: "info",
+      });
+    } finally {
+      setDeletingDate(null);
+    }
+  }
 
   return (
     <AppShell>
@@ -92,12 +128,22 @@ export default function ActivityPage() {
                     {checkin.note}
                   </p>
                 )}
-                <Link
-                  className="mt-4 inline-flex rounded-2xl bg-[#DFF3E8] px-4 py-2 text-sm font-extrabold text-[#2F7D57]"
-                  href={`/check-in?date=${checkin.date}`}
-                >
-                  Koreksi absen
-                </Link>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <Link
+                    className="inline-flex rounded-2xl bg-[#DFF3E8] px-4 py-2 text-sm font-extrabold text-[#2F7D57]"
+                    href={`/check-in?date=${checkin.date}`}
+                  >
+                    Koreksi absen
+                  </Link>
+                  <button
+                    className="inline-flex rounded-2xl bg-[#FBE3E3] px-4 py-2 text-sm font-extrabold text-[#B75D5D] disabled:cursor-not-allowed disabled:opacity-60"
+                    disabled={deletingDate === checkin.date}
+                    onClick={() => handleDeleteCheckin(checkin.date)}
+                    type="button"
+                  >
+                    {deletingDate === checkin.date ? "Menghapus..." : "Hapus"}
+                  </button>
+                </div>
               </article>
             ))
           )}

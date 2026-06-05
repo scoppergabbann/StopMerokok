@@ -153,6 +153,26 @@ export async function saveSupabaseCheckin(checkin: DailyCheckin) {
   return true;
 }
 
+export async function deleteSupabaseCheckin(date: string) {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return false;
+  }
+
+  const { error } = await supabase
+    .from("daily_checkins")
+    .delete()
+    .eq("user_id", userId)
+    .eq("date", date);
+
+  if (error) {
+    throw error;
+  }
+
+  return true;
+}
+
 export async function readSupabaseCravingLogs(): Promise<CravingLog[]> {
   const userId = await getCurrentUserId();
 
