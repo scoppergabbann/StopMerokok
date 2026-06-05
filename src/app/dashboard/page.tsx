@@ -23,8 +23,7 @@ import {
 import {
   calculateSummary,
   formatRupiah,
-  getMonthDays,
-  getMonthStartOffset,
+  getCalendarMonthDays,
   getPersonalizedInsight,
   getRelapseInsights,
   getUnlockedBadges,
@@ -38,7 +37,7 @@ import {
   type UserBadge,
 } from "@/lib/mvp-store";
 
-const weekdayLabels = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+const weekdayLabels = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
 
 export default function DashboardPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -80,12 +79,8 @@ export default function DashboardPage() {
     return new Date(now.getFullYear(), now.getMonth(), 1);
   }, []);
   const monthDays = useMemo(
-    () => getMonthDays(visibleMonth.getFullYear(), visibleMonth.getMonth()),
-    [visibleMonth],
-  );
-  const monthStartOffset = useMemo(
     () =>
-      getMonthStartOffset(
+      getCalendarMonthDays(
         visibleMonth.getFullYear(),
         visibleMonth.getMonth(),
       ),
@@ -303,27 +298,22 @@ export default function DashboardPage() {
                 {day}
               </div>
             ))}
-            {Array.from({ length: monthStartOffset }).map((_, index) => (
-              <div
-                aria-hidden="true"
-                className="aspect-square rounded-2xl bg-transparent"
-                key={`blank-${index}`}
-              />
-            ))}
             {monthDays.map((day) => {
-              const checkin = checkinsByDate.get(day);
-              const className = checkin
-                ? statusStyles[checkin.status]
-                : "bg-slate-100 text-slate-400";
+              const checkin = checkinsByDate.get(day.date);
+              const className = !day.isCurrentMonth
+                ? "bg-white text-slate-300"
+                : checkin
+                  ? statusStyles[checkin.status]
+                  : "bg-slate-100 text-slate-400";
 
               return (
                 <Link
                   className={`grid aspect-square place-items-center rounded-2xl text-xs font-extrabold ${className}`}
                   href="/calendar"
-                  key={day}
-                  title={day}
+                  key={day.date}
+                  title={day.date}
                 >
-                  {Number(day.slice(-2))}
+                  {Number(day.date.slice(-2))}
                 </Link>
               );
             })}

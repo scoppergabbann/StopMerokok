@@ -114,6 +114,11 @@ export type NotificationSettings = {
   reminderHour: number;
 };
 
+export type CalendarMonthDay = {
+  date: string;
+  isCurrentMonth: boolean;
+};
+
 const PROFILE_KEY = "stopmerokok.profile";
 const CHECKINS_KEY = "stopmerokok.checkins";
 const REWARD_KEY = "stopmerokok.reward";
@@ -572,8 +577,38 @@ export function getMonthDays(year: number, month: number) {
 }
 
 export function getMonthStartOffset(year: number, month: number) {
-  const sundayBasedDay = new Date(year, month, 1).getDay();
-  return (sundayBasedDay + 6) % 7;
+  return new Date(year, month, 1).getDay();
+}
+
+export function getCalendarMonthDays(
+  year: number,
+  month: number,
+): CalendarMonthDay[] {
+  const currentMonthDays = getMonthDays(year, month).map((date) => ({
+    date,
+    isCurrentMonth: true,
+  }));
+  const startOffset = getMonthStartOffset(year, month);
+  const previousMonthDays =
+    startOffset === 0
+      ? []
+      : getMonthDays(year, month - 1)
+          .slice(-startOffset)
+          .map((date) => ({
+            date,
+            isCurrentMonth: false,
+          }));
+  const totalVisibleDays = previousMonthDays.length + currentMonthDays.length;
+  const nextMonthDayCount =
+    totalVisibleDays % 7 === 0 ? 0 : 7 - (totalVisibleDays % 7);
+  const nextMonthDays = getMonthDays(year, month + 1)
+    .slice(0, nextMonthDayCount)
+    .map((date) => ({
+      date,
+      isCurrentMonth: false,
+    }));
+
+  return [...previousMonthDays, ...currentMonthDays, ...nextMonthDays];
 }
 
 export function getRelapseInsights(checkins: DailyCheckin[]) {

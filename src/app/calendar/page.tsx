@@ -6,8 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { loadCheckins } from "@/lib/client-data";
 import {
-  getMonthDays,
-  getMonthStartOffset,
+  getCalendarMonthDays,
   statusLabels,
   statusStyles,
   type DailyCheckin,
@@ -19,7 +18,7 @@ const statusDot = {
   relapsed: "bg-[#E98080]",
 };
 
-const weekdayLabels = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+const weekdayLabels = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
 
 export default function CalendarPage() {
   const [checkins, setCheckins] = useState<DailyCheckin[]>([]);
@@ -45,16 +44,11 @@ export default function CalendarPage() {
     return new Date(now.getFullYear(), now.getMonth(), 1);
   }, []);
   const days = useMemo(() => {
-    return getMonthDays(visibleMonth.getFullYear(), visibleMonth.getMonth());
+    return getCalendarMonthDays(
+      visibleMonth.getFullYear(),
+      visibleMonth.getMonth(),
+    );
   }, [visibleMonth]);
-  const monthStartOffset = useMemo(
-    () =>
-      getMonthStartOffset(
-        visibleMonth.getFullYear(),
-        visibleMonth.getMonth(),
-      ),
-    [visibleMonth],
-  );
   const monthLabel = visibleMonth.toLocaleDateString("id-ID", {
     month: "long",
     year: "numeric",
@@ -131,31 +125,26 @@ export default function CalendarPage() {
                   {day}
                 </div>
               ))}
-              {Array.from({ length: monthStartOffset }).map((_, index) => (
-                <div
-                  aria-hidden="true"
-                  className="aspect-square rounded-2xl bg-transparent"
-                  key={`blank-${index}`}
-                />
-              ))}
               {days.map((day) => {
-                const checkin = byDate.get(day);
+                const checkin = byDate.get(day.date);
 
                 return (
                   <button
                     className={`aspect-square rounded-2xl text-sm font-extrabold transition ${
-                      selectedDate === day
+                      selectedDate === day.date
                         ? "ring-2 ring-[#4FAE7B] ring-offset-2"
                         : ""
                     } ${
-                      checkin
+                      !day.isCurrentMonth
+                        ? "bg-white text-slate-300"
+                        : checkin
                         ? statusStyles[checkin.status]
                         : "bg-slate-100 text-slate-400"
                     }`}
-                    key={day}
-                    onClick={() => setSelectedDate(day)}
+                    key={day.date}
+                    onClick={() => setSelectedDate(day.date)}
                   >
-                    {Number(day.slice(-2))}
+                    {Number(day.date.slice(-2))}
                   </button>
                 );
               })}
