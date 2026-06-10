@@ -3,8 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Check, LockKeyhole, Mail } from "lucide-react";
+import {
+  hasTurnstileSiteKey,
+  TurnstileCaptcha,
+  type TurnstileCaptchaHandle,
+} from "@/components/turnstile-captcha";
 import { useToast } from "@/components/toast-provider";
 import { loadProfile } from "@/lib/client-data";
 import {
@@ -21,6 +26,13 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSendingReset, setIsSendingReset] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const captchaRef = useRef<TurnstileCaptchaHandle | null>(null);
+
+  function resetCaptcha() {
+    setCaptchaToken("");
+    captchaRef.current?.reset();
+  }
 
   async function sendResetEmail() {
     if (!isSupabaseConfigured || !supabase) {
@@ -41,11 +53,34 @@ export default function LoginPage() {
       return;
     }
 
+    if (!hasTurnstileSiteKey) {
+      showToast({
+        message: "Tambahkan NEXT_PUBLIC_TURNSTILE_SITE_KEY di environment Vercel.",
+        title: "CAPTCHA belum aktif",
+        variant: "info",
+      });
+      return;
+    }
+
+    if (!captchaToken) {
+      showToast({
+        message: "Selesaikan verifikasi keamanan dulu.",
+        title: "CAPTCHA dibutuhkan",
+        variant: "info",
+      });
+      return;
+    }
+
     setIsSendingReset(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/login`,
-    });
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      email,
+      {
+        captchaToken,
+        redirectTo: `${window.location.origin}/login`,
+      },
+    );
     setIsSendingReset(false);
+    resetCaptcha();
 
     if (error) {
       showToast({
@@ -164,13 +199,38 @@ export default function LoginPage() {
                 let nextPath = "/dashboard";
 
                 if (isSupabaseConfigured && supabase) {
+                  if (!hasTurnstileSiteKey) {
+                    setIsSubmitting(false);
+                    showToast({
+                      message:
+                        "Tambahkan NEXT_PUBLIC_TURNSTILE_SITE_KEY di environment Vercel.",
+                      title: "CAPTCHA belum aktif",
+                      variant: "info",
+                    });
+                    return;
+                  }
+
+                  if (!captchaToken) {
+                    setIsSubmitting(false);
+                    showToast({
+                      message: "Selesaikan verifikasi keamanan dulu.",
+                      title: "CAPTCHA dibutuhkan",
+                      variant: "info",
+                    });
+                    return;
+                  }
+
                   const { error } = await supabase.auth.signInWithPassword({
                     email,
+                    options: {
+                      captchaToken,
+                    },
                     password,
                   });
 
                   if (error) {
                     setIsSubmitting(false);
+                    resetCaptcha();
                     showToast({
                       message: error.message,
                       title: "Login gagal",
@@ -246,7 +306,7 @@ export default function LoginPage() {
                   Remember Me
                 </label>
                 <button
-                  className="text-sm font-extrabold text-[#36798D] transition hover:text-[#2F7D57] disabled:opacity-60"
+                className="text-sm font-extrabold text-[#36798D] transition hover:text-[#2F7D57] disabled:opacity-60"
                   disabled={isSendingReset}
                   onClick={sendResetEmail}
                   type="button"
@@ -254,6 +314,11 @@ export default function LoginPage() {
                   {isSendingReset ? "Mengirim..." : "Lupa password?"}
                 </button>
               </div>
+
+              <TurnstileCaptcha
+                ref={captchaRef}
+                onTokenChange={setCaptchaToken}
+              />
 
               <button
                 className="w-full rounded-2xl bg-[#4FAE7B] px-5 py-4 font-extrabold text-white shadow-xl shadow-[#4FAE7B]/25 transition hover:-translate-y-0.5 hover:bg-[#449F6E] disabled:cursor-not-allowed disabled:opacity-70"

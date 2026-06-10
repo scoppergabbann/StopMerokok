@@ -170,33 +170,35 @@ language sql
 security definer
 set search_path = public
 as $$
-  with checkin_days as (
+  with smoke_free_days as (
     select distinct user_id, date
     from daily_checkins
+    where status = 'smoke_free'
   ),
-  numbered_days as (
+  numbered_smoke_free_days as (
     select
       user_id,
       date,
       date - (row_number() over (partition by user_id order by date))::int as streak_group
-    from checkin_days
+    from smoke_free_days
   ),
   latest_groups as (
     select distinct on (user_id)
       user_id,
       streak_group
-    from numbered_days
+    from numbered_smoke_free_days
     order by user_id, date desc
   ),
   streaks as (
     select
-      numbered_days.user_id,
-      count(*)::bigint as current_streak
-    from numbered_days
+      numbered_smoke_free_days.user_id,
+      count(*)::bigint as current_streak,
+      max(numbered_smoke_free_days.date) as last_smoke_free_date
+    from numbered_smoke_free_days
     join latest_groups
-      on latest_groups.user_id = numbered_days.user_id
-      and latest_groups.streak_group = numbered_days.streak_group
-    group by numbered_days.user_id
+      on latest_groups.user_id = numbered_smoke_free_days.user_id
+      and latest_groups.streak_group = numbered_smoke_free_days.streak_group
+    group by numbered_smoke_free_days.user_id
   ),
   aggregates as (
     select
@@ -221,14 +223,15 @@ as $$
     coalesce(streaks.current_streak, 0)::bigint as current_streak,
     aggregates.last_checkin,
     (
-      aggregates.checkin_count * 10
-      + coalesce(streaks.current_streak, 0) * 5
+      coalesce(streaks.current_streak, 0) * 100
       + aggregates.smoke_free_days * 2
-      + aggregates.reduced_days
     )::numeric as consistency_score
   from aggregates
-  left join streaks on streaks.user_id = aggregates.user_id
-  order by consistency_score desc, aggregates.checkin_count desc, aggregates.last_checkin desc
+  join streaks on streaks.user_id = aggregates.user_id
+  where
+    streaks.last_smoke_free_date = (timezone('Asia/Jakarta', now()))::date
+    and coalesce(streaks.current_streak, 0) > 0
+  order by streaks.current_streak desc, consistency_score desc, aggregates.checkin_count desc
   limit greatest(1, least(limit_count, 100));
 $$;
 

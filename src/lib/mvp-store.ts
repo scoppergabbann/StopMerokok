@@ -97,6 +97,7 @@ export type DonationAllocation = {
 };
 
 export type LeaderboardEntry = {
+  activeBadge?: string;
   checkinCount: number;
   consistencyScore: number;
   currentStreak: number;
@@ -478,6 +479,50 @@ export function calculateSummary(
   };
 }
 
+function addDays(dateKey: string, days: number) {
+  const [year, month, day] = dateKey.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  date.setDate(date.getDate() + days);
+  return formatDateKey(date);
+}
+
+export function getCurrentSmokeFreeStreak(checkins: DailyCheckin[]) {
+  const byDate = new Map(checkins.map((checkin) => [checkin.date, checkin]));
+  let date = todayKey();
+  let streak = 0;
+
+  while (byDate.get(date)?.status === "smoke_free") {
+    streak += 1;
+    date = addDays(date, -1);
+  }
+
+  return streak;
+}
+
+export function getStreakBadge(streak: number) {
+  if (streak >= 365) {
+    return "Legenda 1 Tahun";
+  }
+
+  if (streak >= 180) {
+    return "6 Bulan Konsisten";
+  }
+
+  if (streak >= 90) {
+    return "3 Bulan Bertahan";
+  }
+
+  if (streak >= 30) {
+    return "30 Hari Bebas Rokok";
+  }
+
+  if (streak >= 7) {
+    return "1 Minggu Tanpa Rokok";
+  }
+
+  return undefined;
+}
+
 export function formatRupiah(value: number) {
   return new Intl.NumberFormat("id-ID", {
     currency: "IDR",
@@ -535,9 +580,29 @@ export function getUnlockedBadges(
       name: "3 Hari Bertahan",
     },
     {
-      description: "Satu minggu penuh untuk napas yang lebih lega.",
+      description: "Satu minggu penuh tanpa rokok. Ini badge spesial pertamamu.",
       isUnlocked: summary.longestStreak >= 7,
-      name: "7 Hari Bebas Rokok",
+      name: "1 Minggu Tanpa Rokok",
+    },
+    {
+      description: "Tiga puluh hari membangun ulang ritme tubuh dan pikiran.",
+      isUnlocked: summary.longestStreak >= 30,
+      name: "30 Hari Bebas Rokok",
+    },
+    {
+      description: "Tiga bulan bertahan adalah bukti sistemmu mulai kuat.",
+      isUnlocked: summary.longestStreak >= 90,
+      name: "3 Bulan Bertahan",
+    },
+    {
+      description: "Enam bulan menjaga komitmen. Napas baru makin nyata.",
+      isUnlocked: summary.longestStreak >= 180,
+      name: "6 Bulan Konsisten",
+    },
+    {
+      description: "Satu tahun bebas rokok. Ini pencapaian besar.",
+      isUnlocked: summary.longestStreak >= 365,
+      name: "Legenda 1 Tahun",
     },
     {
       description: "Penghematan pertama yang mulai terasa.",
@@ -718,20 +783,34 @@ export function buildLocalLeaderboard(
     return [];
   }
 
-  const summary = calculateSummary(profile, checkins);
+  const activeSmokeFreeStreak = getCurrentSmokeFreeStreak(checkins);
+
+  if (activeSmokeFreeStreak === 0) {
+    return [];
+  }
+
+  const smokeFreeDays = checkins.filter(
+    (checkin) => checkin.status === "smoke_free",
+  ).length;
+  const reducedDays = checkins.filter(
+    (checkin) => checkin.status === "reduced",
+  ).length;
+  const relapseDays = checkins.filter(
+    (checkin) => checkin.status === "relapsed",
+  ).length;
 
   return [
     {
+      activeBadge: getStreakBadge(activeSmokeFreeStreak),
       checkinCount: checkins.length,
-      consistencyScore:
-        checkins.length * 10 + summary.currentStreak * 5 + summary.smokeFreeDays,
-      currentStreak: summary.currentStreak,
+      consistencyScore: activeSmokeFreeStreak * 100 + smokeFreeDays * 2,
+      currentStreak: activeSmokeFreeStreak,
       lastCheckin: checkins[checkins.length - 1]?.date,
       name: profile.name,
       rank: 1,
-      reducedDays: summary.reducedDays,
-      relapseDays: summary.relapseDays,
-      smokeFreeDays: summary.smokeFreeDays,
+      reducedDays,
+      relapseDays,
+      smokeFreeDays,
     },
   ];
 }

@@ -76,22 +76,24 @@ export default function StatsPage() {
                 Leaderboard
               </p>
               <h2 className="mt-2 text-2xl font-extrabold">
-                Ranking konsistensi absen
+                Ranking streak bebas rokok
               </h2>
               <p className="mt-2 leading-7 text-slate-600">
-                Ranking ini menghargai user yang rajin check-in setiap hari.
-                Bukan untuk menghakimi, tapi untuk saling menyemangati.
+                Peserta hanya masuk ranking kalau masih check-in bebas rokok
+                beruntun sampai hari ini. Satu hari terlewat atau kambuh,
+                otomatis gugur dari leaderboard aktif.
               </p>
             </div>
             <span className="rounded-full bg-[#DFF3E8] px-4 py-2 text-sm font-extrabold text-[#2F7D57]">
-              {leaderboard.length} peserta
+              {leaderboard.length} aktif
             </span>
           </div>
 
           <div className="mt-5 space-y-3">
             {leaderboard.length === 0 ? (
               <p className="rounded-2xl bg-[#F6F8F7] p-4 font-semibold text-slate-600">
-                Belum ada peserta leaderboard. Mulai dari check-in hari ini.
+                Belum ada peserta aktif. Masuk ranking dimulai dari check-in
+                bebas rokok hari ini.
               </p>
             ) : (
               leaderboard.map((entry) => (
@@ -105,10 +107,17 @@ export default function StatsPage() {
                   <div>
                     <p className="text-lg font-extrabold">{entry.name}</p>
                     <p className="mt-1 text-sm font-semibold text-slate-500">
-                      {entry.checkinCount}x absen · streak absen{" "}
-                      {entry.currentStreak} hari
+                      Streak bebas rokok aktif {entry.currentStreak} hari
+                      {entry.checkinCount > 0
+                        ? ` - ${entry.checkinCount}x total absen`
+                        : ""}
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2 text-xs font-extrabold">
+                      {entry.activeBadge && (
+                        <span className="rounded-full bg-[#E3F3F7] px-3 py-1 text-[#36798D]">
+                          {entry.activeBadge}
+                        </span>
+                      )}
                       <span className="rounded-full bg-[#DFF3E8] px-3 py-1 text-[#2F7D57]">
                         Bebas {entry.smokeFreeDays}
                       </span>
@@ -121,9 +130,9 @@ export default function StatsPage() {
                     </div>
                   </div>
                   <div className="self-center rounded-2xl bg-white px-4 py-3 text-left sm:text-right">
-                    <p className="text-xs font-bold text-slate-500">Skor</p>
+                    <p className="text-xs font-bold text-slate-500">Streak</p>
                     <p className="text-xl font-extrabold">
-                      {Math.round(entry.consistencyScore)}
+                      {entry.currentStreak} hari
                     </p>
                     {entry.lastCheckin && (
                       <p className="mt-1 text-xs font-semibold text-slate-400">

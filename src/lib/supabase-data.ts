@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { getStreakBadge } from "@/lib/mvp-store";
 import type {
   CheckinStatus,
   CravingLog,
@@ -515,6 +516,7 @@ export async function readSupabaseLeaderboard(): Promise<LeaderboardEntry[]> {
   }
 
   return ((data ?? []) as SupabaseLeaderboardRow[]).map((item, index) => ({
+    activeBadge: getStreakBadge(Number(item.current_streak)),
     checkinCount: Number(item.checkin_count),
     consistencyScore: Number(item.consistency_score),
     currentStreak: Number(item.current_streak),

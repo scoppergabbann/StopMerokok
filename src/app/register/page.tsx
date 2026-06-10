@@ -3,8 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Check, LockKeyhole, Mail, ShieldCheck } from "lucide-react";
+import {
+  hasTurnstileSiteKey,
+  TurnstileCaptcha,
+  type TurnstileCaptchaHandle,
+} from "@/components/turnstile-captcha";
 import { useToast } from "@/components/toast-provider";
 import {
   isSupabaseConfigured,
@@ -18,89 +23,16 @@ const benefits = [
   "Penghematan rokok terlihat jelas",
 ];
 
-const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
-
-declare global {
-  interface Window {
-    turnstile?: {
-      render: (
-        container: HTMLElement,
-        options: {
-          callback: (token: string) => void;
-          "error-callback": () => void;
-          "expired-callback": () => void;
-          sitekey: string;
-          theme: "light";
-        },
-      ) => string;
-      reset: (widgetId: string) => void;
-    };
-  }
-}
-
 export default function RegisterPage() {
   const router = useRouter();
   const { showToast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
-  const captchaContainerRef = useRef<HTMLDivElement | null>(null);
-  const captchaWidgetIdRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    if (!turnstileSiteKey || captchaWidgetIdRef.current) {
-      return;
-    }
-
-    function renderCaptcha() {
-      if (
-        !window.turnstile ||
-        !captchaContainerRef.current ||
-        captchaWidgetIdRef.current
-      ) {
-        return;
-      }
-
-      captchaWidgetIdRef.current = window.turnstile.render(
-        captchaContainerRef.current,
-        {
-          callback: (token) => setCaptchaToken(token),
-          "error-callback": () => setCaptchaToken(""),
-          "expired-callback": () => setCaptchaToken(""),
-          sitekey: turnstileSiteKey,
-          theme: "light",
-        },
-      );
-    }
-
-    if (window.turnstile) {
-      renderCaptcha();
-      return;
-    }
-
-    const existingScript = document.querySelector<HTMLScriptElement>(
-      'script[src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"]',
-    );
-
-    if (existingScript) {
-      existingScript.addEventListener("load", renderCaptcha, { once: true });
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.async = true;
-    script.defer = true;
-    script.src =
-      "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
-    script.addEventListener("load", renderCaptcha, { once: true });
-    document.head.appendChild(script);
-  }, []);
+  const captchaRef = useRef<TurnstileCaptchaHandle | null>(null);
 
   function resetCaptcha() {
     setCaptchaToken("");
-
-    if (captchaWidgetIdRef.current && window.turnstile) {
-      window.turnstile.reset(captchaWidgetIdRef.current);
-    }
+    captchaRef.current?.reset();
   }
 
   return (
@@ -207,7 +139,7 @@ export default function RegisterPage() {
                 const password = String(form.get("password") || "");
 
                 if (isSupabaseConfigured && supabase) {
-                  if (!turnstileSiteKey) {
+                  if (!hasTurnstileSiteKey) {
                     setIsSubmitting(false);
                     showToast({
                       message:
@@ -310,15 +242,10 @@ export default function RegisterPage() {
                 <span>Progressmu tersimpan aman dan pribadi.</span>
               </div>
 
-              <div className="rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-sm">
-                {turnstileSiteKey ? (
-                  <div ref={captchaContainerRef} />
-                ) : (
-                  <p className="text-sm font-bold leading-6 text-slate-500">
-                    CAPTCHA belum dikonfigurasi.
-                  </p>
-                )}
-              </div>
+              <TurnstileCaptcha
+                ref={captchaRef}
+                onTokenChange={setCaptchaToken}
+              />
 
               <button
                 className="w-full rounded-2xl bg-[#4FAE7B] px-5 py-4 font-extrabold text-white shadow-xl shadow-[#4FAE7B]/25 transition hover:-translate-y-0.5 hover:bg-[#449F6E] disabled:cursor-not-allowed disabled:opacity-70"
