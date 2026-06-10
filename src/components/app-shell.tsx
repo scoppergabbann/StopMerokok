@@ -13,7 +13,12 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useToast } from "@/components/toast-provider";
 import { loadProfile } from "@/lib/client-data";
-import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+import {
+  clearRememberedAuthSession,
+  hasRememberedAuthSessionExpired,
+  isSupabaseConfigured,
+  supabase,
+} from "@/lib/supabase";
 
 const navItems = [
   { href: "/dashboard", icon: HomeIcon, label: "Home" },
@@ -42,13 +47,26 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
     }
 
     let isMounted = true;
+    const authClient = supabase;
 
-    supabase.auth.getSession().then(async ({ data }) => {
+    authClient.auth.getSession().then(async ({ data }) => {
       if (!isMounted) {
         return;
       }
 
       if (!data.session) {
+        router.replace("/login");
+        return;
+      }
+
+      if (hasRememberedAuthSessionExpired()) {
+        await authClient.auth.signOut();
+        clearRememberedAuthSession();
+        showToast({
+          message: "Masuk lagi untuk melanjutkan progress kamu.",
+          title: "Sesi 7 hari selesai",
+          variant: "info",
+        });
         router.replace("/login");
         return;
       }
@@ -66,7 +84,7 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
     return () => {
       isMounted = false;
     };
-  }, [router]);
+  }, [router, showToast]);
 
   return (
     <main className="min-h-screen bg-[#F6F8F7] pb-28 text-[#1F2933]">
@@ -97,6 +115,8 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
                 if (isSupabaseConfigured && supabase) {
                   await supabase.auth.signOut();
                 }
+
+                clearRememberedAuthSession();
 
                 showToast({
                   message: "Kamu keluar dari sesi saat ini.",
