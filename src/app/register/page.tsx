@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, LockKeyhole, Mail, ShieldCheck } from "lucide-react";
 import { useToast } from "@/components/toast-provider";
 import {
@@ -18,10 +18,90 @@ const benefits = [
   "Penghematan rokok terlihat jelas",
 ];
 
+const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (
+        container: HTMLElement,
+        options: {
+          callback: (token: string) => void;
+          "error-callback": () => void;
+          "expired-callback": () => void;
+          sitekey: string;
+          theme: "light";
+        },
+      ) => string;
+      reset: (widgetId: string) => void;
+    };
+  }
+}
+
 export default function RegisterPage() {
   const router = useRouter();
   const { showToast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const captchaContainerRef = useRef<HTMLDivElement | null>(null);
+  const captchaWidgetIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!turnstileSiteKey || captchaWidgetIdRef.current) {
+      return;
+    }
+
+    function renderCaptcha() {
+      if (
+        !window.turnstile ||
+        !captchaContainerRef.current ||
+        captchaWidgetIdRef.current
+      ) {
+        return;
+      }
+
+      captchaWidgetIdRef.current = window.turnstile.render(
+        captchaContainerRef.current,
+        {
+          callback: (token) => setCaptchaToken(token),
+          "error-callback": () => setCaptchaToken(""),
+          "expired-callback": () => setCaptchaToken(""),
+          sitekey: turnstileSiteKey,
+          theme: "light",
+        },
+      );
+    }
+
+    if (window.turnstile) {
+      renderCaptcha();
+      return;
+    }
+
+    const existingScript = document.querySelector<HTMLScriptElement>(
+      'script[src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"]',
+    );
+
+    if (existingScript) {
+      existingScript.addEventListener("load", renderCaptcha, { once: true });
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.async = true;
+    script.defer = true;
+    script.src =
+      "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+    script.addEventListener("load", renderCaptcha, { once: true });
+    document.head.appendChild(script);
+  }, []);
+
+  function resetCaptcha() {
+    setCaptchaToken("");
+
+    if (captchaWidgetIdRef.current && window.turnstile) {
+      window.turnstile.reset(captchaWidgetIdRef.current);
+    }
+  }
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[linear-gradient(145deg,#F7FBF9_0%,#EEF8F5_48%,#F7FBFF_100%)] px-5 py-8 text-[#1F2933]">
@@ -127,13 +207,38 @@ export default function RegisterPage() {
                 const password = String(form.get("password") || "");
 
                 if (isSupabaseConfigured && supabase) {
+                  if (!turnstileSiteKey) {
+                    setIsSubmitting(false);
+                    showToast({
+                      message:
+                        "Tambahkan NEXT_PUBLIC_TURNSTILE_SITE_KEY di environment Vercel.",
+                      title: "CAPTCHA belum aktif",
+                      variant: "info",
+                    });
+                    return;
+                  }
+
+                  if (!captchaToken) {
+                    setIsSubmitting(false);
+                    showToast({
+                      message: "Selesaikan verifikasi keamanan dulu.",
+                      title: "CAPTCHA dibutuhkan",
+                      variant: "info",
+                    });
+                    return;
+                  }
+
                   const { data, error } = await supabase.auth.signUp({
                     email,
+                    options: {
+                      captchaToken,
+                    },
                     password,
                   });
 
                   if (error) {
                     setIsSubmitting(false);
+                    resetCaptcha();
                     showToast({
                       message: error.message,
                       title: "Registrasi gagal",
@@ -144,6 +249,7 @@ export default function RegisterPage() {
 
                   if (!data.session) {
                     setIsSubmitting(false);
+                    resetCaptcha();
                     showToast({
                       message:
                         "Akun dibuat, tapi Supabase masih meminta verifikasi email. Matikan Confirm email agar user langsung masuk.",
@@ -202,6 +308,16 @@ export default function RegisterPage() {
               <div className="flex items-start gap-3 rounded-2xl bg-[#E3F3F7]/70 px-4 py-3 text-sm font-bold leading-6 text-[#36798D]">
                 <ShieldCheck className="mt-0.5 size-5 shrink-0" />
                 <span>Progressmu tersimpan aman dan pribadi.</span>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-sm">
+                {turnstileSiteKey ? (
+                  <div ref={captchaContainerRef} />
+                ) : (
+                  <p className="text-sm font-bold leading-6 text-slate-500">
+                    CAPTCHA belum dikonfigurasi.
+                  </p>
+                )}
               </div>
 
               <button
