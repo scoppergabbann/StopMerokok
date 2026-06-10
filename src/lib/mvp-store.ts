@@ -120,6 +120,16 @@ export type CalendarMonthDay = {
   isCurrentMonth: boolean;
 };
 
+export type CommunityPost = {
+  authorName: string;
+  badge?: string;
+  createdAt: string;
+  id: string;
+  message: string;
+  streakAtPost: number;
+  supportCount: number;
+};
+
 const PROFILE_KEY = "stopmerokok.profile";
 const CHECKINS_KEY = "stopmerokok.checkins";
 const REWARD_KEY = "stopmerokok.reward";
@@ -129,6 +139,7 @@ const CRAVING_LOGS_KEY = "stopmerokok.cravingLogs";
 const NOTIFICATION_SETTINGS_KEY = "stopmerokok.notificationSettings";
 const JOURNALS_KEY = "stopmerokok.journals";
 const USER_BADGES_KEY = "stopmerokok.userBadges";
+const COMMUNITY_POSTS_KEY = "stopmerokok.communityPosts";
 
 export const targetLabels: Record<TargetType, string> = {
   quit_total: "Berhenti total",
@@ -403,6 +414,46 @@ export function unlockUserBadges(badges: Badge[]) {
   }
 
   return newlyUnlocked;
+}
+
+export function readCommunityPosts(): CommunityPost[] {
+  if (!canUseStorage()) {
+    return [];
+  }
+
+  const raw = window.localStorage.getItem(COMMUNITY_POSTS_KEY);
+  return raw ? (JSON.parse(raw) as CommunityPost[]) : [];
+}
+
+export function saveCommunityPost(post: CommunityPost) {
+  if (!canUseStorage()) {
+    return;
+  }
+
+  const posts = readCommunityPosts();
+  const next = [post, ...posts].sort((a, b) =>
+    b.createdAt.localeCompare(a.createdAt),
+  );
+
+  window.localStorage.setItem(COMMUNITY_POSTS_KEY, JSON.stringify(next));
+}
+
+export function supportCommunityPost(postId: string) {
+  if (!canUseStorage()) {
+    return;
+  }
+
+  const posts = readCommunityPosts();
+  const next = posts.map((post) =>
+    post.id === postId
+      ? {
+          ...post,
+          supportCount: post.supportCount + 1,
+        }
+      : post,
+  );
+
+  window.localStorage.setItem(COMMUNITY_POSTS_KEY, JSON.stringify(next));
 }
 
 export function hasCheckedInToday() {

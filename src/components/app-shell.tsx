@@ -1,11 +1,11 @@
 "use client";
 
 import {
-  Activity,
   BarChart3,
   CircleCheckBig,
   HandHeart,
   HomeIcon,
+  UsersRound,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,7 +24,7 @@ const navItems = [
   { href: "/dashboard", icon: HomeIcon, label: "Home" },
   { href: "/stats", icon: BarChart3, label: "Statistic" },
   { href: "/check-in", icon: CircleCheckBig, label: "Check-in", primary: true },
-  { href: "/activity", icon: Activity, label: "Activity" },
+  { href: "/community", icon: UsersRound, label: "Komunitas" },
   { href: "/savings", icon: HandHeart, label: "Berbagi" },
 ];
 

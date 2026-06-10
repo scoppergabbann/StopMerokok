@@ -1,5 +1,4 @@
 import {
-  Activity,
   BarChart3,
   BellRing,
   CalendarClock,
@@ -8,6 +7,7 @@ import {
   HandHeart,
   HomeIcon,
   PencilLine,
+  UsersRound,
 } from "lucide-react";
 import Image from "next/image";
 import { Reveal } from "@/components/reveal";
@@ -129,7 +129,7 @@ const bottomNavItems = [
   { label: "Home", icon: HomeIcon, active: true },
   { label: "Statistic", icon: BarChart3 },
   { label: "Check-in", icon: CircleCheckBig, featured: true },
-  { label: "Activity", icon: Activity },
+  { label: "Komunitas", icon: UsersRound },
   { label: "Berbagi", icon: HandHeart },
 ];
 

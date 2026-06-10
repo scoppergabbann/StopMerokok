@@ -2,6 +2,7 @@ import { supabase } from "@/lib/supabase";
 import { getStreakBadge } from "@/lib/mvp-store";
 import type {
   CheckinStatus,
+  CommunityPost,
   CravingLog,
   DailyCheckin,
   DonationAllocation,
@@ -89,6 +90,86 @@ export async function saveSupabaseProfile(profile: Profile) {
     target_type: profile.targetType,
     today_smoked_count: profile.todaySmokedCount ?? null,
     updated_at: new Date().toISOString(),
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return true;
+}
+
+export async function readSupabaseCommunityPosts(): Promise<CommunityPost[]> {
+  if (!supabase) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("community_posts")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(30);
+
+  if (error) {
+    throw error;
+  }
+
+  return (data ?? []).map((item) => ({
+    authorName: item.author_name,
+    badge: item.badge ?? undefined,
+    createdAt: item.created_at,
+    id: item.id,
+    message: item.message,
+    streakAtPost: item.streak_at_post,
+    supportCount: item.support_count,
+  }));
+}
+
+export async function saveSupabaseCommunityPost(
+  post: Omit<CommunityPost, "id" | "supportCount">,
+) {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return null;
+  }
+
+  const { data, error } = await supabase
+    .from("community_posts")
+    .insert({
+      author_name: post.authorName,
+      badge: post.badge ?? null,
+      created_at: post.createdAt,
+      message: post.message,
+      streak_at_post: post.streakAtPost,
+      support_count: 0,
+      user_id: userId,
+    })
+    .select("*")
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return {
+    authorName: data.author_name,
+    badge: data.badge ?? undefined,
+    createdAt: data.created_at,
+    id: data.id,
+    message: data.message,
+    streakAtPost: data.streak_at_post,
+    supportCount: data.support_count,
+  } satisfies CommunityPost;
+}
+
+export async function supportSupabaseCommunityPost(postId: string) {
+  if (!supabase) {
+    return false;
+  }
+
+  const { error } = await supabase.rpc("support_community_post", {
+    post_id: postId,
   });
 
   if (error) {

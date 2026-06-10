@@ -1,8 +1,15 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
-import { loadCheckins, loadLeaderboard, loadProfile } from "@/lib/client-data";
+import { useToast } from "@/components/toast-provider";
+import {
+  loadCheckins,
+  loadLeaderboard,
+  loadProfile,
+  removeCheckin,
+} from "@/lib/client-data";
 import {
   calculateSummary,
   formatRupiah,
@@ -18,6 +25,8 @@ export default function StatsPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [checkins, setCheckins] = useState<DailyCheckin[]>([]);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [deletingDate, setDeletingDate] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   useEffect(() => {
     const id = window.setTimeout(() => {
@@ -36,6 +45,41 @@ export default function StatsPage() {
   const summary = calculateSummary(profile, checkins);
   const insights = getRelapseInsights(checkins);
   const maxSmoked = Math.max(1, ...checkins.map((item) => item.smokedCount));
+  const recentCheckins = [...checkins]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 8);
+
+  async function handleDeleteCheckin(date: string) {
+    const confirmed = window.confirm(
+      `Hapus data absen tanggal ${date}? Data yang sudah dihapus tidak bisa dikembalikan.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setDeletingDate(date);
+
+    try {
+      await removeCheckin(date);
+      const nextCheckins = checkins.filter((item) => item.date !== date);
+      setCheckins(nextCheckins);
+      loadLeaderboard(profile, nextCheckins).then(setLeaderboard);
+      showToast({
+        message: "Data absen berhasil dihapus dari statistik.",
+        title: "Absen terhapus",
+        variant: "success",
+      });
+    } catch {
+      showToast({
+        message: "Coba lagi sebentar lagi.",
+        title: "Gagal menghapus absen",
+        variant: "info",
+      });
+    } finally {
+      setDeletingDate(null);
+    }
+  }
 
   return (
     <AppShell>
@@ -183,6 +227,81 @@ export default function StatsPage() {
               ))}
             </div>
           )}
+        </div>
+
+        <div className="mt-6 rounded-[2rem] bg-white p-5 shadow-xl shadow-slate-200/70">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
+                Riwayat activity
+              </p>
+              <h2 className="mt-2 text-2xl font-extrabold">
+                Check-in terbaru
+              </h2>
+              <p className="mt-2 leading-7 text-slate-600">
+                Data activity sekarang tersedia di statistik. Kamu tetap bisa
+                koreksi atau hapus absen yang sudah berlalu.
+              </p>
+            </div>
+            <span className="rounded-full bg-[#DFF3E8] px-4 py-2 text-sm font-extrabold text-[#2F7D57]">
+              {checkins.length} catatan
+            </span>
+          </div>
+
+          <div className="mt-5 space-y-3">
+            {recentCheckins.length === 0 ? (
+              <p className="rounded-2xl bg-[#F6F8F7] p-4 font-semibold text-slate-600">
+                Belum ada riwayat. Mulai dari check-in hari ini.
+              </p>
+            ) : (
+              recentCheckins.map((checkin) => (
+                <article
+                  className="rounded-2xl border border-slate-100 bg-[#F6F8F7] p-4"
+                  key={checkin.date}
+                >
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <p className="font-extrabold">{checkin.date}</p>
+                      <p className="mt-1 text-sm font-semibold text-slate-500">
+                        {checkin.smokedCount} batang
+                        {checkin.mood ? ` - Mood: ${checkin.mood}` : ""}
+                      </p>
+                    </div>
+                    <span
+                      className={`w-fit rounded-full px-3 py-1 text-xs font-extrabold ${
+                        statusStyles[checkin.status]
+                      }`}
+                    >
+                      {statusLabels[checkin.status]}
+                    </span>
+                  </div>
+
+                  {checkin.note && (
+                    <p className="mt-3 leading-7 text-slate-600">
+                      {checkin.note}
+                    </p>
+                  )}
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Link
+                      className="inline-flex rounded-2xl bg-[#DFF3E8] px-4 py-2 text-sm font-extrabold text-[#2F7D57]"
+                      href={`/check-in?date=${checkin.date}`}
+                    >
+                      Koreksi absen
+                    </Link>
+                    <button
+                      className="inline-flex rounded-2xl bg-[#FBE3E3] px-4 py-2 text-sm font-extrabold text-[#B75D5D] disabled:cursor-not-allowed disabled:opacity-60"
+                      disabled={deletingDate === checkin.date}
+                      onClick={() => handleDeleteCheckin(checkin.date)}
+                      type="button"
+                    >
+                      {deletingDate === checkin.date ? "Menghapus..." : "Hapus"}
+                    </button>
+                  </div>
+                </article>
+              ))
+            )}
+          </div>
         </div>
 
         <div className="mt-6 rounded-[2rem] bg-[#E3F3F7] p-5">

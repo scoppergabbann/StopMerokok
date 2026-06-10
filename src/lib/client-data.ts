@@ -1,5 +1,6 @@
 import {
   readCheckins,
+  readCommunityPosts,
   readCravingLogs,
   readDonationAllocations,
   readJournals,
@@ -9,6 +10,7 @@ import {
   readRewards,
   readUserBadges,
   saveCheckin,
+  saveCommunityPost,
   saveCravingLog,
   saveDonationAllocation,
   saveJournal,
@@ -17,7 +19,9 @@ import {
   saveReward,
   unlockUserBadges,
   deleteCheckin,
+  supportCommunityPost,
   type Badge,
+  type CommunityPost,
   type CravingLog,
   type DailyCheckin,
   type DonationAllocation,
@@ -30,6 +34,7 @@ import {
 } from "@/lib/mvp-store";
 import {
   readSupabaseCheckins,
+  readSupabaseCommunityPosts,
   readSupabaseCravingLogs,
   readSupabaseDonationAllocations,
   readSupabaseJournals,
@@ -40,6 +45,7 @@ import {
   readSupabaseRewards,
   readSupabaseUserBadges,
   saveSupabaseCheckin,
+  saveSupabaseCommunityPost,
   deleteSupabaseCheckin,
   saveSupabaseCravingLog,
   saveSupabaseDonationAllocation,
@@ -48,6 +54,7 @@ import {
   saveSupabaseProfile,
   saveSupabaseReward,
   unlockSupabaseUserBadges,
+  supportSupabaseCommunityPost,
 } from "@/lib/supabase-data";
 import { isSupabaseConfigured } from "@/lib/supabase";
 
@@ -191,4 +198,35 @@ export async function loadLeaderboard(
   }
 
   return buildLocalLeaderboard(profile ?? null, checkins ?? []);
+}
+
+export async function loadCommunityPosts() {
+  return isSupabaseConfigured
+    ? readSupabaseCommunityPosts()
+    : readCommunityPosts();
+}
+
+export async function persistCommunityPost(
+  post: Omit<CommunityPost, "id" | "supportCount">,
+) {
+  if (isSupabaseConfigured) {
+    return saveSupabaseCommunityPost(post);
+  }
+
+  const storedPost: CommunityPost = {
+    ...post,
+    id: crypto.randomUUID(),
+    supportCount: 0,
+  };
+  saveCommunityPost(storedPost);
+  return storedPost;
+}
+
+export async function sendCommunitySupport(postId: string) {
+  if (isSupabaseConfigured) {
+    return supportSupabaseCommunityPost(postId);
+  }
+
+  supportCommunityPost(postId);
+  return true;
 }
