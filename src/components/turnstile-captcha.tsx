@@ -100,9 +100,11 @@ export const TurnstileCaptcha = forwardRef<
   }, [onTokenChange]);
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-sm">
+    <div className="max-w-full overflow-hidden rounded-2xl border border-slate-200 bg-white px-2 py-2 shadow-sm sm:px-3 sm:py-3">
       {turnstileSiteKey ? (
-        <div ref={containerRef} />
+        <div className="h-[60px] sm:h-[65px]">
+          <div className="origin-top-left scale-[0.92] sm:scale-100" ref={containerRef} />
+        </div>
       ) : (
         <p className="text-sm font-bold leading-6 text-slate-500">
           CAPTCHA belum dikonfigurasi.

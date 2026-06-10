@@ -99,7 +99,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[linear-gradient(145deg,#F7FBF9_0%,#EEF8F5_46%,#F7FBFF_100%)] px-5 py-8 text-[#1F2933]">
+    <main className="relative min-h-screen overflow-x-hidden bg-[linear-gradient(145deg,#F7FBF9_0%,#EEF8F5_46%,#F7FBFF_100%)] px-4 py-4 text-[#1F2933] sm:px-5 sm:py-8">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-16 h-40 bg-[linear-gradient(100deg,transparent_0%,rgba(79,174,123,0.16)_28%,rgba(66,169,232,0.18)_50%,transparent_78%)] blur-3xl"
@@ -113,7 +113,7 @@ export default function LoginPage() {
         className="pointer-events-none absolute -right-28 bottom-16 h-72 w-[46rem] rotate-[10deg] rounded-full border border-[#DFF3E8]/80 opacity-80"
       />
 
-      <section className="relative z-10 mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-6xl items-center gap-10 lg:grid-cols-[0.92fr_1fr]">
+      <section className="relative z-10 mx-auto grid min-h-[calc(100vh-2rem)] w-full max-w-6xl items-center gap-10 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[0.92fr_1fr]">
         <div className="hidden lg:block">
           <Link className="inline-flex items-center gap-3" href="/">
             <Image
@@ -157,39 +157,39 @@ export default function LoginPage() {
         </div>
 
         <div className="mx-auto w-full max-w-md lg:mr-0">
-          <div className="rounded-[1.75rem] border border-white/80 bg-white/88 p-6 shadow-[0_28px_90px_rgba(31,41,51,0.12)] backdrop-blur sm:p-8">
+          <div className="rounded-[1.35rem] border border-white/80 bg-white/88 p-5 shadow-[0_20px_70px_rgba(31,41,51,0.11)] backdrop-blur sm:rounded-[1.75rem] sm:p-8">
             <Link
-              className="mb-8 flex items-center justify-center gap-3 lg:hidden"
+              className="mb-6 flex items-center justify-center gap-2.5 lg:hidden"
               href="/"
             >
               <Image
                 alt="StopMerokok"
-                className="size-11"
-                height={44}
+                className="size-9"
+                height={36}
                 priority
                 src="/images/logo-noto-mark-transparent.png"
-                width={44}
+                width={36}
               />
-              <span className="text-2xl font-extrabold tracking-normal">
+              <span className="text-xl font-extrabold tracking-normal">
                 <span className="text-[#5DCB4F]">Stop</span>
                 <span className="text-[#42A9E8]">Merokok</span>
               </span>
             </Link>
 
             <div>
-              <p className="text-sm font-extrabold uppercase tracking-[0.12em] text-[#4FAE7B]">
+              <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-[#4FAE7B] sm:text-sm">
                 Selamat datang
               </p>
-              <h1 className="mt-3 text-3xl font-extrabold leading-tight text-[#132238] sm:text-4xl">
+              <h1 className="mt-2 text-[2rem] font-extrabold leading-tight text-[#132238] sm:mt-3 sm:text-4xl">
                 Masuk untuk lanjutkan progresmu.
               </h1>
-              <p className="mt-3 leading-7 text-slate-600">
+              <p className="mt-2 leading-6 text-slate-600 sm:mt-3 sm:leading-7">
                 Progressmu tersimpan aman dan pribadi.
               </p>
             </div>
 
             <form
-              className="mt-8 space-y-5"
+              className="mt-6 space-y-4 sm:mt-8 sm:space-y-5"
               onSubmit={async (event) => {
                 event.preventDefault();
                 setIsSubmitting(true);
@@ -306,7 +306,7 @@ export default function LoginPage() {
                   Remember Me
                 </label>
                 <button
-                className="text-sm font-extrabold text-[#36798D] transition hover:text-[#2F7D57] disabled:opacity-60"
+                  className="text-sm font-extrabold text-[#36798D] transition hover:text-[#2F7D57] disabled:opacity-60"
                   disabled={isSendingReset}
                   onClick={sendResetEmail}
                   type="button"
@@ -321,7 +321,7 @@ export default function LoginPage() {
               />
 
               <button
-                className="w-full rounded-2xl bg-[#4FAE7B] px-5 py-4 font-extrabold text-white shadow-xl shadow-[#4FAE7B]/25 transition hover:-translate-y-0.5 hover:bg-[#449F6E] disabled:cursor-not-allowed disabled:opacity-70"
+                className="w-full rounded-2xl bg-[#4FAE7B] px-5 py-3.5 font-extrabold text-white shadow-xl shadow-[#4FAE7B]/25 transition hover:-translate-y-0.5 hover:bg-[#449F6E] disabled:cursor-not-allowed disabled:opacity-70 sm:py-4"
                 disabled={isSubmitting}
                 type="submit"
               >
