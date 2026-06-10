@@ -143,7 +143,7 @@ export default function LoginPage() {
 
             <div>
               <p className="text-sm font-extrabold uppercase tracking-[0.12em] text-[#4FAE7B]">
-                Selamat datang lagi
+                Selamat datang
               </p>
               <h1 className="mt-3 text-3xl font-extrabold leading-tight text-[#132238] sm:text-4xl">
                 Masuk untuk lanjutkan progresmu.
@@ -243,7 +243,7 @@ export default function LoginPage() {
                     onChange={(event) => setRememberMe(event.target.checked)}
                     type="checkbox"
                   />
-                  Ingat saya 7 hari
+                  Remember Me
                 </label>
                 <button
                   className="text-sm font-extrabold text-[#36798D] transition hover:text-[#2F7D57] disabled:opacity-60"
@@ -265,10 +265,6 @@ export default function LoginPage() {
                   : "Masuk dan lanjutkan progres"}
               </button>
             </form>
-
-            <div className="mt-6 rounded-2xl bg-[#E3F3F7]/70 px-4 py-3 text-center text-sm font-bold text-[#36798D]">
-              Sesi disimpan hingga 7 hari di perangkat ini.
-            </div>
 
             <p className="mt-6 text-center text-sm font-semibold text-slate-500">
               Belum punya akun?{" "}
