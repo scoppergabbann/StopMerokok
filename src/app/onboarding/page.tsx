@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ChevronDown, ChevronUp, Leaf, ShieldCheck, Sparkles } from "lucide-react";
 import { CigaretteBrandInput } from "@/components/cigarette-brand-input";
 import { SelectField } from "@/components/select-field";
 import { useToast } from "@/components/toast-provider";
@@ -33,26 +34,27 @@ const targetOptions = [
 const steps = [
   {
     eyebrow: "Langkah 1 dari 3",
-    title: "Kenalan dulu, pelan-pelan.",
+    title: "Kenalan singkat dulu.",
     description:
-      "StopMerokok akan memakai data dasar ini untuk membuat sapaan, statistik, dan pengingat yang terasa personal.",
+      "Cukup nama panggilan dan umur agar sapaan terasa lebih personal.",
   },
   {
     eyebrow: "Langkah 2 dari 3",
-    title: "Beri kami gambaran kebiasaanmu.",
+    title: "Titik awal kebiasaanmu.",
     description:
-      "Tidak ada jawaban buruk. Data ini membantu menghitung rokok yang dihindari dan uang yang berhasil kamu hemat.",
+      "Bukan untuk menghakimi. Ini hanya dasar untuk menghitung progress dan penghematan.",
   },
   {
     eyebrow: "Langkah 3 dari 3",
-    title: "Tentukan arah perjalananmu.",
+    title: "Pilih arah yang realistis.",
     description:
-      "Pilih target dan alasan berhenti supaya beranda bisa mengingatkan hal yang benar-benar penting buatmu.",
+      "Target dan alasanmu akan jadi pegangan saat hari terasa berat.",
   },
 ];
 
 export default function OnboardingPage() {
   const [step, setStep] = useState(0);
+  const [isOptionalOpen, setIsOptionalOpen] = useState(false);
   const [packPriceInput, setPackPriceInput] = useState("");
   const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
   const [formData, setFormData] = useState({
@@ -150,24 +152,28 @@ export default function OnboardingPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F6F8F7] px-5 py-8 text-[#1F2933]">
-      <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-5xl gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
-        <section className="rounded-[2rem] bg-[#1F2933] p-6 text-white shadow-2xl shadow-slate-300/60">
-          <p className="text-sm font-extrabold uppercase text-[#9DE5BD]">
-            StopMerokok PWA
-          </p>
-          <h1 className="mt-4 text-4xl font-extrabold leading-tight">
-            Pengaturan singkat sebelum kamu mulai absen.
+    <main className="min-h-screen bg-[#F6F8F7] px-5 py-6 text-[#1F2933] sm:py-8">
+      <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-5xl gap-5 lg:grid-cols-[0.72fr_1fr] lg:items-center">
+        <section className="rounded-[2rem] bg-[linear-gradient(135deg,#123B3F_0%,#1F555B_58%,#4FAE7B_145%)] p-5 text-white shadow-xl shadow-slate-300/60 sm:p-6">
+          <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-2 text-sm font-extrabold uppercase text-[#B8F1CE]">
+            <Leaf className="size-4" />
+            StopMerokok
+          </div>
+          <h1 className="mt-5 text-4xl font-extrabold leading-tight">
+            Siapkan perjalananmu dalam 3 langkah ringan.
           </h1>
-          <p className="mt-4 leading-7 text-slate-300">
-            Tiga layar ini membantu aplikasi mengenal pola awalmu: siapa kamu, rokok
-            apa yang biasa dipakai, dan kenapa kamu ingin berubah.
+          <p className="mt-4 leading-7 text-slate-200">
+            Isi secukupnya dulu. Detail bisa kamu ubah lagi nanti dari profil.
           </p>
-          <div className="mt-8 grid gap-3">
+          <div className="mt-6 grid gap-3">
             {steps.map((item, index) => (
               <div
-                className={`rounded-2xl p-4 ${
-                  index === step ? "bg-[#4FAE7B]" : "bg-white/10"
+                className={`rounded-2xl border p-4 ${
+                  index === step
+                    ? "border-white/40 bg-white/15"
+                    : index < step
+                      ? "border-[#9DE5BD]/50 bg-white/10"
+                      : "border-white/10 bg-white/5"
                 }`}
                 key={item.title}
               >
@@ -178,9 +184,19 @@ export default function OnboardingPage() {
               </div>
             ))}
           </div>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            <MiniNote
+              icon={ShieldCheck}
+              text="Data ini dipakai untuk menghitung progress, bukan menghakimi."
+            />
+            <MiniNote
+              icon={Sparkles}
+              text="Mulai dari yang kamu ingat. Tidak harus sempurna."
+            />
+          </div>
         </section>
 
-        <section className="rounded-[2rem] bg-white p-6 shadow-xl shadow-slate-200/70">
+        <section className="rounded-[2rem] bg-white p-5 shadow-xl shadow-slate-200/70 sm:p-6">
           <div className="mb-6 flex items-center justify-between gap-4">
             <div>
               <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
@@ -226,32 +242,38 @@ export default function OnboardingPage() {
                   value={formData.age}
                 />
               </Field>
-              <Field label="Mulai merokok umur berapa?">
-                <input
-                  className="input"
-                  inputMode="numeric"
-                  min={0}
-                  onChange={(event) =>
-                    updateField("smokingStartedAge", event.target.value)
-                  }
-                  placeholder="Contoh: 17"
-                  type="number"
-                  value={formData.smokingStartedAge}
-                />
-              </Field>
-              <Field label="Atau mulai tahun berapa?">
-                <input
-                  className="input"
-                  inputMode="numeric"
-                  min={1900}
-                  onChange={(event) =>
-                    updateField("smokingStartedYear", event.target.value)
-                  }
-                  placeholder="Contoh: 2018"
-                  type="number"
-                  value={formData.smokingStartedYear}
-                />
-              </Field>
+              <OptionalPanel
+                isOpen={isOptionalOpen}
+                onToggle={() => setIsOptionalOpen((current) => !current)}
+                title="Detail opsional"
+              >
+                <Field label="Mulai merokok umur berapa?">
+                  <input
+                    className="input"
+                    inputMode="numeric"
+                    min={0}
+                    onChange={(event) =>
+                      updateField("smokingStartedAge", event.target.value)
+                    }
+                    placeholder="Contoh: 17"
+                    type="number"
+                    value={formData.smokingStartedAge}
+                  />
+                </Field>
+                <Field label="Atau mulai tahun berapa?">
+                  <input
+                    className="input"
+                    inputMode="numeric"
+                    min={1900}
+                    onChange={(event) =>
+                      updateField("smokingStartedYear", event.target.value)
+                    }
+                    placeholder="Contoh: 2018"
+                    type="number"
+                    value={formData.smokingStartedYear}
+                  />
+                </Field>
+              </OptionalPanel>
             </div>
           )}
 
@@ -274,19 +296,6 @@ export default function OnboardingPage() {
                   placeholder="Contoh: 12"
                   type="number"
                   value={formData.baseline}
-                />
-              </Field>
-              <Field label="Hari ini sudah merokok berapa batang?">
-                <input
-                  className="input"
-                  inputMode="numeric"
-                  min={0}
-                  onChange={(event) =>
-                    updateField("todaySmokedCount", event.target.value)
-                  }
-                  placeholder="Contoh: 5"
-                  type="number"
-                  value={formData.todaySmokedCount}
                 />
               </Field>
               <Field label="Harga satu bungkus">
@@ -313,6 +322,25 @@ export default function OnboardingPage() {
                   value={formData.sticksPerPack}
                 />
               </Field>
+              <OptionalPanel
+                isOpen={isOptionalOpen}
+                onToggle={() => setIsOptionalOpen((current) => !current)}
+                title="Detail hari ini"
+              >
+                <Field label="Hari ini sudah merokok berapa batang?">
+                  <input
+                    className="input"
+                    inputMode="numeric"
+                    min={0}
+                    onChange={(event) =>
+                      updateField("todaySmokedCount", event.target.value)
+                    }
+                    placeholder="Contoh: 5"
+                    type="number"
+                    value={formData.todaySmokedCount}
+                  />
+                </Field>
+              </OptionalPanel>
             </div>
           )}
 
@@ -365,9 +393,12 @@ export default function OnboardingPage() {
 
           <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
             <button
-              className="rounded-2xl border border-slate-200 bg-white px-5 py-3 font-extrabold text-slate-700 disabled:opacity-40"
-              disabled={step === 0}
-              onClick={() => setStep((current) => Math.max(0, current - 1))}
+                className="rounded-2xl border border-slate-200 bg-white px-5 py-3 font-extrabold text-slate-700 disabled:opacity-40"
+                disabled={step === 0}
+              onClick={() => {
+                setIsOptionalOpen(false);
+                setStep((current) => Math.max(0, current - 1));
+              }}
               type="button"
             >
               Kembali
@@ -377,6 +408,7 @@ export default function OnboardingPage() {
                 className="rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20"
                 onClick={() => {
                   if (validateStep()) {
+                    setIsOptionalOpen(false);
                     setStep((current) => current + 1);
                   }
                 }}
@@ -414,5 +446,48 @@ function Field({
       <span className="text-sm font-bold text-slate-600">{label}</span>
       <div className="mt-2">{children}</div>
     </label>
+  );
+}
+
+function OptionalPanel({
+  children,
+  isOpen,
+  onToggle,
+  title,
+}: {
+  children: React.ReactNode;
+  isOpen: boolean;
+  onToggle: () => void;
+  title: string;
+}) {
+  return (
+    <div className="sm:col-span-2">
+      <button
+        className="flex w-full items-center justify-between rounded-2xl bg-[#F6F8F7] px-4 py-3 text-left font-extrabold text-slate-700"
+        onClick={onToggle}
+        type="button"
+      >
+        {title}
+        {isOpen ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
+      </button>
+      {isOpen && <div className="mt-4 grid gap-4 sm:grid-cols-2">{children}</div>}
+    </div>
+  );
+}
+
+function MiniNote({
+  icon: Icon,
+  text,
+}: {
+  icon: typeof ShieldCheck;
+  text: string;
+}) {
+  return (
+    <div className="flex items-start gap-3 rounded-2xl bg-white/8 p-4 text-slate-200">
+      <span className="grid size-9 shrink-0 place-items-center rounded-2xl bg-white/10 text-[#9DE5BD]">
+        <Icon className="size-4" />
+      </span>
+      <p className="text-sm font-semibold leading-6">{text}</p>
+    </div>
   );
 }

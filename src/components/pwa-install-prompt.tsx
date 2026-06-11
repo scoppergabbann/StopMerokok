@@ -134,7 +134,7 @@ export function PwaInstallPrompt() {
   }
 
   return (
-    <div className="shimmer-card fixed inset-x-4 bottom-4 z-50 mx-auto max-w-md rounded-[1.5rem] border border-[#DFF3E8] bg-white p-4 shadow-2xl shadow-slate-400/30">
+    <div className="shimmer-card fixed inset-x-4 bottom-28 z-50 mx-auto max-w-md rounded-[1.5rem] border border-[#DFF3E8] bg-white p-4 shadow-2xl shadow-slate-400/30 sm:bottom-24">
       <div className="flex items-start gap-3">
         <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-[#DFF3E8] text-[#2F7D57]">
           <Download className="size-5" />

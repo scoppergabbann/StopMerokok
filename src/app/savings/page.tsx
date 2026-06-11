@@ -19,7 +19,6 @@ const supportAmounts = [
   { amount: 10000, description: "Setara satu kopi untuk bantu server tetap menyala.", label: "10rb" },
   { amount: 25000, description: "Bantu menjaga aplikasi tetap gratis untuk lebih banyak pengguna.", isPopular: true, label: "25rb" },
   { amount: 50000, description: "Dukung pengembangan fitur baru dan komunitas.", label: "50rb" },
-  { amount: 100000, description: "Sponsor kecil untuk ruang berhenti merokok yang lebih sehat.", label: "100rb" },
 ];
 
 const supportBank = {
