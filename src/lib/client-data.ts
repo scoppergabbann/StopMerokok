@@ -10,11 +10,13 @@ import {
   readReward,
   readRewards,
   readUserBadges,
+  readMovementLogs,
   saveCheckin,
   saveCommunityPost,
   saveCravingLog,
   saveDonationAllocation,
   saveJournal,
+  saveMovementLog,
   saveNotificationSettings,
   saveProfile,
   saveReward,
@@ -28,6 +30,7 @@ import {
   type DonationAllocation,
   type JournalEntry,
   type LeaderboardEntry,
+  type MovementLog,
   type NotificationSettings,
   type Profile,
   type Reward,
@@ -259,4 +262,13 @@ export async function loadCurrentUserId() {
   }
 
   return "local-user";
+}
+
+export async function loadMovementLogs() {
+  return readMovementLogs();
+}
+
+export async function persistMovementLog(log: MovementLog) {
+  saveMovementLog(log);
+  return true;
 }

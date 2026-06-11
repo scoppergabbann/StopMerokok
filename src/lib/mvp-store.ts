@@ -131,6 +131,14 @@ export type CommunityPost = {
   userId?: string;
 };
 
+export type MovementLog = {
+  createdAt: string;
+  durationMinutes: number;
+  id: string;
+  note?: string;
+  type: "walk_5" | "walk_10" | "stretch" | "breathing" | "light_workout";
+};
+
 const PROFILE_KEY = "stopmerokok.profile";
 const CHECKINS_KEY = "stopmerokok.checkins";
 const REWARD_KEY = "stopmerokok.reward";
@@ -141,6 +149,7 @@ const NOTIFICATION_SETTINGS_KEY = "stopmerokok.notificationSettings";
 const JOURNALS_KEY = "stopmerokok.journals";
 const USER_BADGES_KEY = "stopmerokok.userBadges";
 const COMMUNITY_POSTS_KEY = "stopmerokok.communityPosts";
+const MOVEMENT_LOGS_KEY = "stopmerokok.movementLogs";
 
 export const targetLabels: Record<TargetType, string> = {
   quit_total: "Berhenti total",
@@ -464,6 +473,28 @@ export function deleteCommunityPost(postId: string) {
 
   const next = readCommunityPosts().filter((post) => post.id !== postId);
   window.localStorage.setItem(COMMUNITY_POSTS_KEY, JSON.stringify(next));
+}
+
+export function readMovementLogs(): MovementLog[] {
+  if (!canUseStorage()) {
+    return [];
+  }
+
+  const raw = window.localStorage.getItem(MOVEMENT_LOGS_KEY);
+  return raw ? (JSON.parse(raw) as MovementLog[]) : [];
+}
+
+export function saveMovementLog(log: MovementLog) {
+  if (!canUseStorage()) {
+    return;
+  }
+
+  const logs = readMovementLogs();
+  const next = [log, ...logs].sort((a, b) =>
+    b.createdAt.localeCompare(a.createdAt),
+  );
+
+  window.localStorage.setItem(MOVEMENT_LOGS_KEY, JSON.stringify(next));
 }
 
 export function hasCheckedInToday() {
