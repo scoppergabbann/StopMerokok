@@ -9,12 +9,13 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useToast } from "@/components/toast-provider";
 import { loadProfile } from "@/lib/client-data";
 import {
   clearRememberedAuthSession,
+  ensureRememberedAuthSession,
   hasRememberedAuthSessionExpired,
   isSupabaseConfigured,
   supabase,
@@ -37,9 +38,6 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { showToast } = useToast();
-  const [isCheckingSession, setIsCheckingSession] = useState(
-    isSupabaseConfigured,
-  );
 
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) {
@@ -55,7 +53,9 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
       }
 
       if (!data.session) {
-        router.replace("/login");
+        if (pathname !== "/login") {
+          router.replace("/login");
+        }
         return;
       }
 
@@ -71,20 +71,20 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
         return;
       }
 
+      ensureRememberedAuthSession(7);
+
       const profile = await loadProfile();
 
-      if (!profile) {
+      if (!profile && pathname !== "/onboarding") {
         router.replace("/onboarding");
         return;
       }
-
-      setIsCheckingSession(false);
     });
 
     return () => {
       isMounted = false;
     };
-  }, [router, showToast]);
+  }, [pathname, router, showToast]);
 
   return (
     <main className="min-h-screen bg-[#F6F8F7] pb-28 text-[#1F2933]">
@@ -133,23 +133,7 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
         </div>
       </header>
 
-      <div className="mx-auto w-full max-w-5xl px-5 py-6">
-        {isCheckingSession ? (
-          <section className="rounded-[2rem] bg-white p-6 shadow-xl shadow-slate-200/70">
-            <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-              StopMerokok
-            </p>
-            <h1 className="mt-2 text-2xl font-extrabold">
-              Mengecek sesi kamu...
-            </h1>
-            <p className="mt-2 leading-7 text-slate-600">
-              Sebentar ya, kita siapkan ruang perjalananmu.
-            </p>
-          </section>
-        ) : (
-          children
-        )}
-      </div>
+      <div className="mx-auto w-full max-w-5xl px-5 py-6">{children}</div>
 
       <nav className="fixed inset-x-0 bottom-4 z-30 mx-auto w-[min(92vw,430px)]">
         <div className="relative grid h-20 grid-cols-5 items-center rounded-[1.75rem] border border-slate-100 bg-white px-2 py-2 shadow-2xl shadow-slate-300/70">

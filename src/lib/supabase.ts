@@ -33,6 +33,18 @@ export function clearRememberedAuthSession() {
   window.localStorage.removeItem(AUTH_SESSION_EXPIRES_AT_KEY);
 }
 
+export function ensureRememberedAuthSession(days = 7) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  if (window.localStorage.getItem(AUTH_SESSION_EXPIRES_AT_KEY)) {
+    return;
+  }
+
+  rememberAuthSession(days);
+}
+
 export function hasRememberedAuthSessionExpired() {
   if (typeof window === "undefined") {
     return false;

@@ -333,7 +333,7 @@ export default function LoginPage() {
               >
                 {isSubmitting
                   ? "Menyiapkan ruangmu..."
-                  : "Masuk dan lanjutkan progres"}
+                  : "Masuk"}
               </button>
             </form>
 
