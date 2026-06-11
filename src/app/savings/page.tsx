@@ -113,7 +113,7 @@ export default function SavingsPage() {
           <p className="text-sm font-extrabold uppercase text-[#9DE5BD]">
             Berbagi untuk StopMerokok
           </p>
-          <div className="mt-4 grid gap-8 lg:grid-cols-[1fr_0.82fr] lg:items-start">
+          <div className="mt-4 grid gap-8 lg:grid-cols-[minmax(0,1.08fr)_minmax(360px,0.82fr)] lg:items-start">
             <div>
               <h1 className="text-4xl font-extrabold leading-tight sm:text-5xl">
                 Bantu StopMerokok tetap gratis dan nyaman.
@@ -131,7 +131,7 @@ export default function SavingsPage() {
                 </p>
               </div>
 
-              <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
                 <SupportPoint
                   icon={Server}
                   text="Membantu biaya server, database, dan domain."
