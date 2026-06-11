@@ -2,6 +2,7 @@
 
 import { BellRing, Clock3 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { SelectField } from "@/components/select-field";
 import { useToast } from "@/components/toast-provider";
 import {
   loadNotificationSettings,
@@ -24,6 +25,13 @@ function getPermissionLabel(permission: NotificationPermission | "unsupported") 
 
   return "Belum aktif";
 }
+
+const reminderHourOptions = Array.from({ length: 10 }, (_, index) => {
+  const hour = index + 12;
+  const label = `${String(hour).padStart(2, "0")}:00`;
+
+  return { label, value: String(hour) };
+});
 
 export function NotificationOptIn() {
   const [permission, setPermission] = useState<
@@ -173,21 +181,14 @@ export function NotificationOptIn() {
           <label className="w-full text-sm font-bold text-slate-600 sm:w-44">
             Jam pengingat
             <span className="mt-2 block">
-              <select
-                className="select-input"
-                onChange={(event) =>
-                  updateReminderHour(Number(event.target.value))
+              <SelectField
+                name="reminderHour"
+                onValueChange={(nextValue) =>
+                  updateReminderHour(Number(nextValue))
                 }
-                value={reminderHour}
-              >
-                {Array.from({ length: 10 }, (_, index) => index + 12).map(
-                  (hour) => (
-                    <option key={hour} value={hour}>
-                      {String(hour).padStart(2, "0")}:00
-                    </option>
-                  ),
-                )}
-              </select>
+                options={reminderHourOptions}
+                value={String(reminderHour)}
+              />
             </span>
           </label>
 

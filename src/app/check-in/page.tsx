@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
+import { SelectField } from "@/components/select-field";
 import { useToast } from "@/components/toast-provider";
 import { trackEvent } from "@/lib/analytics";
 import { loadCheckins, persistCheckin } from "@/lib/client-data";
@@ -17,6 +18,7 @@ import {
 } from "@/lib/mvp-store";
 
 const moods: Mood[] = ["Tenang", "Stres", "Senang", "Capek", "Sedih", "Semangat"];
+const moodOptions = moods.map((mood) => ({ label: mood, value: mood }));
 const triggers = [
   "Stres",
   "Nongkrong",
@@ -26,6 +28,10 @@ const triggers = [
   "Kebiasaan setelah makan",
   "Lainnya",
 ];
+const triggerOptions = triggers.map((trigger) => ({
+  label: trigger,
+  value: trigger,
+}));
 
 const options: Array<{
   description: string;
@@ -242,18 +248,12 @@ export default function CheckInPage() {
               <span className="text-sm font-bold text-slate-600">
                 Apa pemicunya?
               </span>
-              <select
-                className="select-input mt-2"
+              <SelectField
+                className="mt-2"
                 defaultValue={existingCheckin?.trigger}
                 name="trigger"
-                required
-              >
-                {triggers.map((trigger) => (
-                  <option key={trigger} value={trigger}>
-                    {trigger}
-                  </option>
-                ))}
-              </select>
+                options={triggerOptions}
+              />
             </label>
           )}
 
@@ -261,17 +261,12 @@ export default function CheckInPage() {
             <span className="text-sm font-bold text-slate-600">
               Perasaan hari ini
             </span>
-            <select
-              className="select-input mt-2"
+            <SelectField
+              className="mt-2"
               defaultValue={existingCheckin?.mood}
               name="mood"
-            >
-              {moods.map((mood) => (
-                <option key={mood} value={mood}>
-                  {mood}
-                </option>
-              ))}
-            </select>
+              options={moodOptions}
+            />
           </label>
 
           <label className="block">

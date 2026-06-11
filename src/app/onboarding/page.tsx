@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { SelectField } from "@/components/select-field";
 import { useToast } from "@/components/toast-provider";
 import { persistProfile } from "@/lib/client-data";
 import {
@@ -18,6 +19,13 @@ const reasons = [
   "Pasangan",
   "Anak",
   "Lainnya",
+];
+
+const targetOptions = [
+  { label: "Berhenti total", value: "quit_total" },
+  { label: "Mengurangi perlahan", value: "reduce_slowly" },
+  { label: "Coba 7 hari tanpa rokok", value: "seven_days" },
+  { label: "Coba 30 hari tanpa rokok", value: "thirty_days" },
 ];
 
 const steps = [
@@ -310,18 +318,14 @@ export default function OnboardingPage() {
           {step === 2 && (
             <div className="space-y-6">
               <Field label="Target berhenti">
-                <select
-                  className="select-input"
-                  onChange={(event) =>
-                    updateField("targetType", event.target.value)
+                <SelectField
+                  name="targetType"
+                  onValueChange={(nextValue) =>
+                    updateField("targetType", nextValue)
                   }
+                  options={targetOptions}
                   value={formData.targetType}
-                >
-                  <option value="quit_total">Berhenti total</option>
-                  <option value="reduce_slowly">Mengurangi perlahan</option>
-                  <option value="seven_days">Coba 7 hari tanpa rokok</option>
-                  <option value="thirty_days">Coba 30 hari tanpa rokok</option>
-                </select>
+                />
               </Field>
 
               <fieldset>

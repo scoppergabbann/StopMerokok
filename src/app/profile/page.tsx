@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { EmptyState } from "@/components/empty-state";
+import { SelectField } from "@/components/select-field";
 import { useToast } from "@/components/toast-provider";
 import { UserRound } from "lucide-react";
 import { loadProfile, persistProfile } from "@/lib/client-data";
@@ -218,17 +219,12 @@ export default function ProfilePage() {
                   <span className="text-sm font-bold text-slate-600">
                     Target berhenti
                   </span>
-                  <select
-                    className="select-input mt-2"
+                  <SelectField
+                    className="mt-2"
                     defaultValue={profile.targetType}
                     name="targetType"
-                  >
-                    {targets.map((target) => (
-                      <option key={target.value} value={target.value}>
-                        {target.label}
-                      </option>
-                    ))}
-                  </select>
+                    options={targets}
+                  />
                 </label>
               </div>
 

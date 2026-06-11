@@ -48,18 +48,13 @@ html {
 .select-input {
   width: 100%;
   min-height: 3rem;
-  appearance: none;
   border-radius: 1rem;
   border: 1px solid #bfe7d1;
   background-color: #ffffff;
-  background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.833 7.917 10 12.083l4.167-4.166' stroke='%23475569' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-position: right 0.9rem center;
-  background-repeat: no-repeat;
-  background-size: 1.1rem;
   color: #1f2933;
   font-weight: 800;
   outline: none;
-  padding: 0.75rem 2.75rem 0.75rem 1rem;
+  padding: 0.75rem 1rem;
   box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
   transition:
     border-color 160ms ease,

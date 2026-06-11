@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { EmptyState } from "@/components/empty-state";
+import { SelectField } from "@/components/select-field";
 import { useToast } from "@/components/toast-provider";
 import { NotebookPen } from "lucide-react";
 import { loadJournals, persistJournal } from "@/lib/client-data";
@@ -13,6 +14,7 @@ import {
 } from "@/lib/mvp-store";
 
 const moods: Mood[] = ["Tenang", "Stres", "Senang", "Capek", "Sedih", "Semangat"];
+const moodOptions = moods.map((mood) => ({ label: mood, value: mood }));
 
 export default function JournalPage() {
   const [journals, setJournals] = useState<JournalEntry[]>([]);
@@ -75,17 +77,12 @@ export default function JournalPage() {
               <span className="text-sm font-bold text-slate-600">
                 Perasaan hari ini
               </span>
-              <select
-                className="select-input mt-2"
+              <SelectField
+                className="mt-2"
                 defaultValue={todayJournal?.mood ?? "Tenang"}
                 name="mood"
-              >
-                {moods.map((mood) => (
-                  <option key={mood} value={mood}>
-                    {mood}
-                  </option>
-                ))}
-              </select>
+                options={moodOptions}
+              />
             </label>
             <TextArea
               defaultValue={todayJournal?.story}
