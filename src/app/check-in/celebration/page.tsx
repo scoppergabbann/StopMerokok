@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Leaf, Sprout } from "lucide-react";
+import { ArrowLeft, ArrowRight, Images, Leaf, Sprout } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 import type { CheckinStatus } from "@/lib/mvp-store";
 
@@ -155,6 +155,11 @@ export default function CheckInCelebrationPage() {
     router.back();
   }
 
+  function goToShareCard() {
+    window.sessionStorage.removeItem("stopmerokok.celebration");
+    router.push("/share");
+  }
+
   return (
     <main className="relative grid min-h-screen overflow-hidden bg-[linear-gradient(145deg,#F7FBF9_0%,#EEF8F5_48%,#F7FBFF_100%)] px-5 py-8 text-[#1F2933]">
       <motion.div
@@ -283,6 +288,14 @@ export default function CheckInCelebrationPage() {
           </div>
 
           <div className="mt-6 flex flex-col gap-2">
+            <button
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#BFE7D1] bg-white px-5 py-3 font-extrabold text-[#2F7D57] shadow-sm"
+              onClick={goToShareCard}
+              type="button"
+            >
+              <Images className="size-4" />
+              Buat Kartu Perjalanan
+            </button>
             <button
               className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20"
               onClick={goToDashboard}

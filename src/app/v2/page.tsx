@@ -108,7 +108,9 @@ const educationSlots = [
 
 export default function LandingV2Page() {
   const [activeSection, setActiveSection] = useState(navItems[0].href);
+  const isWheelLockedRef = useRef(false);
   const scrollRootRef = useRef<HTMLElement>(null);
+  const sectionHrefs = navItems.map((item) => item.href);
 
   useEffect(() => {
     const root = scrollRootRef.current;
@@ -144,6 +146,37 @@ export default function LandingV2Page() {
   }, []);
 
   function scrollToSection(event: MouseEvent<HTMLAnchorElement>, href: string) {
+    event.preventDefault();
+    scrollToHref(href);
+  }
+
+  function getSectionElements() {
+    return sectionHrefs
+      .map((href) => document.querySelector<HTMLElement>(href))
+      .filter((section): section is HTMLElement => Boolean(section));
+  }
+
+  function getCurrentSectionIndex() {
+    const root = scrollRootRef.current;
+
+    if (!root) {
+      return 0;
+    }
+
+    const sections = getSectionElements();
+    const currentTop = root.scrollTop + window.innerHeight * 0.36;
+
+    return sections.reduce((nearestIndex, section, index) => {
+      const nearestDistance = Math.abs(
+        sections[nearestIndex].offsetTop - currentTop,
+      );
+      const distance = Math.abs(section.offsetTop - currentTop);
+
+      return distance < nearestDistance ? index : nearestIndex;
+    }, 0);
+  }
+
+  function scrollToHref(href: string) {
     const root = scrollRootRef.current;
     const target = document.querySelector<HTMLElement>(href);
 
@@ -151,14 +184,70 @@ export default function LandingV2Page() {
       return;
     }
 
-    event.preventDefault();
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
     setActiveSection(href);
+    root.scrollTo({
+      behavior: "smooth",
+      top: target.offsetTop,
+    });
   }
+
+  function handleWheel(event: WheelEvent) {
+    const root = scrollRootRef.current;
+
+    if (
+      !root ||
+      window.innerWidth < 768 ||
+      event.ctrlKey ||
+      Math.abs(event.deltaY) < 12 ||
+      Math.abs(event.deltaX) > Math.abs(event.deltaY)
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+
+    if (isWheelLockedRef.current) {
+      return;
+    }
+
+    const currentIndex = getCurrentSectionIndex();
+    const direction = event.deltaY > 0 ? 1 : -1;
+    const nextIndex = Math.min(
+      sectionHrefs.length - 1,
+      Math.max(0, currentIndex + direction),
+    );
+
+    if (nextIndex === currentIndex) {
+      return;
+    }
+
+    const nextHref = sectionHrefs[nextIndex];
+
+    isWheelLockedRef.current = true;
+    scrollToHref(nextHref);
+
+    window.setTimeout(() => {
+      isWheelLockedRef.current = false;
+    }, 760);
+  }
+
+  useEffect(() => {
+    const root = scrollRootRef.current;
+
+    if (!root) {
+      return;
+    }
+
+    root.addEventListener("wheel", handleWheel, { passive: false });
+
+    return () => {
+      root.removeEventListener("wheel", handleWheel);
+    };
+  });
 
   return (
     <main
-      className="h-screen overflow-y-auto scroll-smooth bg-[#FBFCFB] text-[#063D43] [scroll-padding-top:5.5rem] md:snap-y md:snap-proximity"
+      className="h-screen overflow-y-auto overscroll-contain scroll-smooth bg-[#FBFCFB] text-[#063D43] [scroll-padding-top:5.5rem]"
       ref={scrollRootRef}
     >
       <nav
@@ -209,7 +298,7 @@ export default function LandingV2Page() {
       </nav>
 
       <section
-        className="relative -mt-[5.5rem] min-h-screen overflow-hidden bg-[linear-gradient(180deg,#EFFAF3_0%,#F8FCFA_82%,#FBFCFB_100%)] pt-[5.5rem] md:snap-start"
+        className="relative -mt-[5.5rem] min-h-screen overflow-hidden bg-[linear-gradient(180deg,#EFFAF3_0%,#F8FCFA_82%,#FBFCFB_100%)] pt-[5.5rem]"
         id="beranda"
       >
         <div
@@ -313,7 +402,7 @@ export default function LandingV2Page() {
       </section>
 
       <section
-        className="mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-5 py-28 sm:px-8 md:snap-start"
+        className="mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-5 py-28 sm:px-8"
         id="fitur"
       >
         <Reveal>
@@ -351,7 +440,7 @@ export default function LandingV2Page() {
       </section>
 
       <section
-        className="mx-auto grid min-h-screen max-w-7xl gap-16 px-5 py-24 sm:px-8 md:snap-start lg:grid-cols-[0.86fr_1.14fr] lg:items-center"
+        className="mx-auto grid min-h-screen max-w-7xl gap-16 px-5 py-24 sm:px-8 lg:grid-cols-[0.86fr_1.14fr] lg:items-center"
         id="perjalanan"
       >
         <Reveal>
@@ -394,7 +483,7 @@ export default function LandingV2Page() {
       </section>
 
       <section
-        className="mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-5 py-24 sm:px-8 md:snap-start"
+        className="mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-5 py-24 sm:px-8"
         id="alasan"
       >
         <Reveal className="rounded-[2.6rem] border border-[#C9E7EF] bg-[#E3F3F7] p-7 shadow-[0_28px_90px_rgba(6,61,67,0.07)] sm:p-12">
@@ -422,7 +511,7 @@ export default function LandingV2Page() {
       </section>
 
       <section
-        className="mx-auto grid min-h-screen max-w-7xl gap-10 px-5 py-24 sm:px-8 md:snap-start lg:grid-cols-[0.88fr_1.12fr] lg:items-center"
+        className="mx-auto grid min-h-screen max-w-7xl gap-10 px-5 py-24 sm:px-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-center"
         id="cerita"
       >
         <Reveal>
@@ -490,7 +579,7 @@ export default function LandingV2Page() {
       </section>
 
       <section
-        className="mx-auto grid min-h-screen max-w-7xl gap-12 px-5 py-24 sm:px-8 md:snap-start lg:grid-cols-[1fr_0.9fr] lg:items-center"
+        className="mx-auto grid min-h-screen max-w-7xl gap-12 px-5 py-24 sm:px-8 lg:grid-cols-[1fr_0.9fr] lg:items-center"
         id="komunitas"
       >
         <Reveal>
@@ -524,7 +613,7 @@ export default function LandingV2Page() {
         </Reveal>
       </section>
 
-      <footer className="mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-5 pb-8 pt-24 sm:px-8 md:snap-start">
+      <footer className="mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-5 pb-8 pt-24 sm:px-8">
         <Reveal className="rounded-[2.6rem] border border-[#E6F0EC] bg-white p-8 shadow-[0_24px_85px_rgba(6,61,67,0.06)] sm:p-12">
           <div className="grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-end">
             <div>

@@ -7,7 +7,10 @@ export type AnalyticsEventName =
   | "login"
   | "pwa_install_prompt"
   | "register"
-  | "reminder_enabled";
+  | "reminder_enabled"
+  | "share_card_caption_copied"
+  | "share_card_downloaded"
+  | "share_card_shared";
 
 type AnalyticsPayload = Record<
   string,

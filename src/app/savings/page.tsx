@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { EmptyState } from "@/components/empty-state";
@@ -8,6 +9,7 @@ import { useToast } from "@/components/toast-provider";
 import {
   Copy,
   HeartHandshake,
+  Images,
   PiggyBank,
   Server,
   ShieldCheck,
@@ -273,6 +275,13 @@ export default function SavingsPage() {
               <p className="mt-3 text-sm font-semibold leading-6 text-slate-600">
                 Dari {summary.avoidedSticks} batang yang berhasil kamu hindari.
               </p>
+              <Link
+                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20"
+                href="/share"
+              >
+                <Images className="size-4" />
+                Bagikan progress
+              </Link>
             </div>
           </div>
         </div>
