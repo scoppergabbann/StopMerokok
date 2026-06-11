@@ -1,57 +1,25 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { EmptyState } from "@/components/empty-state";
 import { useToast } from "@/components/toast-provider";
 import {
   Copy,
-  HandHeart,
+  HeartHandshake,
   PiggyBank,
-  PlusCircle,
   Server,
   ShieldCheck,
+  Sparkles,
 } from "lucide-react";
-import {
-  loadCheckins,
-  loadDonationAllocations,
-  loadProfile,
-  loadRewards,
-  persistDonationAllocation,
-  persistReward,
-} from "@/lib/client-data";
+import { loadCheckins, loadProfile } from "@/lib/client-data";
 import {
   calculateSummary,
   formatRupiah,
-  formatRupiahInput,
-  parseRupiahInput,
   type DailyCheckin,
-  type DonationAllocation,
   type Profile,
-  type Reward,
 } from "@/lib/mvp-store";
-
-const directionOptions = [
-  "Simpan untuk diri sendiri",
-  "Reward kecil",
-  "Bantu keluarga",
-  "Donasi / sedekah",
-  "Tabungan masa depan",
-];
-
-const donationTargets = [
-  "Anak yatim",
-  "Fakir miskin",
-  "Lansia",
-  "Keluarga",
-  "Masjid",
-  "Panti asuhan",
-  "Pendidikan",
-  "Sedekah Jumat",
-];
-
-const asmaulHusnaAmounts = [10099, 25099, 50099, 99099];
 
 const supportAmounts = [
   {
@@ -86,13 +54,6 @@ const supportBank = {
 export default function SavingsPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [checkins, setCheckins] = useState<DailyCheckin[]>([]);
-  const [rewards, setRewards] = useState<Reward[]>([]);
-  const [allocations, setAllocations] = useState<DonationAllocation[]>([]);
-  const [targetAmountInput, setTargetAmountInput] = useState("");
-  const [allocationAmountInput, setAllocationAmountInput] = useState("");
-  const [selectedDirection, setSelectedDirection] = useState(directionOptions[0]);
-  const [selectedQrTarget, setSelectedQrTarget] = useState(donationTargets[0]);
-  const [selectedQrAmount, setSelectedQrAmount] = useState(asmaulHusnaAmounts[0]);
   const [selectedSupportAmount, setSelectedSupportAmount] = useState(
     supportAmounts[1].amount,
   );
@@ -102,56 +63,23 @@ export default function SavingsPage() {
 
   useEffect(() => {
     const id = window.setTimeout(() => {
-      Promise.all([
-        loadProfile(),
-        loadCheckins(),
-        loadRewards(),
-        loadDonationAllocations(),
-      ]).then(([nextProfile, nextCheckins, nextRewards, nextAllocations]) => {
-        setProfile(nextProfile);
-        setCheckins(nextCheckins);
-        setRewards(nextRewards);
-        setAllocations(nextAllocations);
-        setIsLoading(false);
-      });
+      Promise.all([loadProfile(), loadCheckins()]).then(
+        ([nextProfile, nextCheckins]) => {
+          setProfile(nextProfile);
+          setCheckins(nextCheckins);
+          setIsLoading(false);
+        },
+      );
     }, 0);
 
     return () => window.clearTimeout(id);
   }, []);
 
   const summary = calculateSummary(profile, checkins);
-  const allocatedAmount = allocations.reduce(
-    (total, allocation) => total + allocation.amount,
-    0,
-  );
-  const availableSavings = Math.max(0, summary.savedMoney - allocatedAmount);
   const packEstimate =
     profile && profile.sticksPerPack > 0
       ? summary.avoidedSticks / profile.sticksPerPack
       : 0;
-  const dailyAverageSaving =
-    checkins.length > 0 ? summary.savedMoney / checkins.length : 0;
-  const lastSevenCheckins = [...checkins]
-    .sort((a, b) => b.date.localeCompare(a.date))
-    .slice(0, 7);
-  const lastSevenSummary = calculateSummary(profile, lastSevenCheckins);
-  const thirtyDayProjection = dailyAverageSaving * 30;
-  const rewardById = useMemo(
-    () => new Map(rewards.map((reward) => [reward.id, reward])),
-    [rewards],
-  );
-  const allocationByReward = useMemo(() => {
-    const map = new Map<string, number>();
-
-    for (const allocation of allocations) {
-      map.set(
-        allocation.rewardId,
-        (map.get(allocation.rewardId) ?? 0) + allocation.amount,
-      );
-    }
-
-    return map;
-  }, [allocations]);
   const hasSavings = summary.savedMoney > 0 || checkins.length > 0;
 
   async function copySupportAccount() {
@@ -203,7 +131,7 @@ export default function SavingsPage() {
                 </p>
               </div>
 
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 <SupportPoint
                   icon={Server}
                   text="Membantu biaya server, database, dan domain."
@@ -211,6 +139,14 @@ export default function SavingsPage() {
                 <SupportPoint
                   icon={ShieldCheck}
                   text="Menjaga aplikasi tetap aman dan tanpa jual data pribadi."
+                />
+                <SupportPoint
+                  icon={Sparkles}
+                  text="Membantu pengembangan fitur baru yang lebih suportif."
+                />
+                <SupportPoint
+                  icon={HeartHandshake}
+                  text="Membuka akses gratis untuk lebih banyak orang yang ingin mulai."
                 />
               </div>
             </div>
@@ -228,9 +164,7 @@ export default function SavingsPage() {
                         : "border-slate-100 bg-[#F6F8F7] hover:border-[#BFE7D1]"
                     }`}
                     key={support.amount}
-                    onClick={() => {
-                      setSelectedSupportAmount(support.amount);
-                    }}
+                    onClick={() => setSelectedSupportAmount(support.amount)}
                     type="button"
                   >
                     {support.isPopular && (
@@ -324,9 +258,9 @@ export default function SavingsPage() {
                 Uang yang dulu jadi asap, kini bisa punya arah.
               </h2>
               <p className="mt-4 max-w-2xl text-lg font-medium leading-8 text-slate-700">
-                Lihat uang yang berhasil kamu selamatkan, buat target kecil,
-                lalu catat saat uang itu benar-benar kamu arahkan untuk diri
-                sendiri, keluarga, tabungan, atau sedekah.
+                Ringkasan ini menunjukkan dampak kecil dari check-in yang kamu
+                isi. Angkanya bisa jadi pengingat bahwa progress punya bentuk
+                nyata.
               </p>
             </div>
             <div className="rounded-[1.75rem] bg-white/85 p-5 shadow-sm">
@@ -364,10 +298,7 @@ export default function SavingsPage() {
             label="Bungkus tidak dibeli"
             value={`${packEstimate.toFixed(1)} bungkus`}
           />
-          <Metric
-            label="Masih tersedia"
-            value={formatRupiah(availableSavings)}
-          />
+          <Metric label="Uang dihemat" value={formatRupiah(summary.savedMoney)} />
         </div>
 
         <div className="rounded-[2rem] bg-white p-5 shadow-sm">
@@ -398,416 +329,7 @@ export default function SavingsPage() {
               label="Tabungan"
               value={formatRupiah(summary.savedMoney)}
             />
-            <ConversionCard label="Reward pribadi" value="mulai terbentuk" />
-          </div>
-        </div>
-
-        <div className="rounded-[2rem] bg-white p-5 shadow-sm">
-          <div>
-            <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-              Target reward
-            </p>
-            <h2 className="mt-2 text-2xl font-extrabold">
-              Kamu sedang membangun sesuatu dari kebiasaan baru.
-            </h2>
-            <p className="mt-2 leading-7 text-slate-600">
-              Buat target seperti sepatu baru, tabungan kecil, traktir
-              keluarga, atau sedekah.
-            </p>
-          </div>
-
-          <form
-            className="mt-5 grid gap-3 lg:grid-cols-[1fr_220px_auto]"
-            onSubmit={async (event) => {
-              event.preventDefault();
-              const form = new FormData(event.currentTarget);
-              const targetAmount = parseRupiahInput(targetAmountInput);
-
-              if (targetAmount <= 0) {
-                showToast({
-                  message: "Isi nominal target, misalnya Rp500.000.",
-                  title: "Nominal belum valid",
-                  variant: "info",
-                });
-                return;
-              }
-
-              const nextReward: Reward = {
-                category: selectedDirection,
-                createdAt: new Date().toISOString(),
-                id: crypto.randomUUID(),
-                targetAmount,
-                title: String(form.get("title") || "Target baru"),
-              };
-
-              await persistReward(nextReward);
-              setRewards((current) => [nextReward, ...current]);
-              setTargetAmountInput("");
-              event.currentTarget.reset();
-              showToast({
-                message: "Target kamu sudah ditambahkan.",
-                title: "Target tersimpan",
-                variant: "success",
-              });
-            }}
-          >
-            <input
-              className="rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
-              name="title"
-              placeholder="Contoh: Sedekah Jumat"
-              required
-            />
-            <input
-              className="rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
-              inputMode="numeric"
-              onChange={(event) =>
-                setTargetAmountInput(formatRupiahInput(event.target.value))
-              }
-              placeholder="Rp100.000"
-              required
-              type="text"
-              value={targetAmountInput}
-            />
-            <button className="rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white">
-              Buat target
-            </button>
-          </form>
-
-          <div className="mt-5 grid gap-4 lg:grid-cols-2">
-            {rewards.length === 0 ? (
-              <EmptyState
-                body="Buat target kecil seperti sepatu, tabungan, traktir keluarga, atau sedekah Jumat agar savings punya arah yang terasa nyata."
-                icon={PlusCircle}
-                title="Target berbagi belum dibuat"
-              />
-            ) : (
-              rewards.slice(0, 2).map((reward) => {
-                const allocated = allocationByReward.get(reward.id) ?? 0;
-                const progress = Math.min(
-                  summary.savedMoney,
-                  reward.targetAmount,
-                );
-                const percentage =
-                  reward.targetAmount > 0
-                    ? Math.min(100, (progress / reward.targetAmount) * 100)
-                    : 0;
-                const remaining = Math.max(0, reward.targetAmount - progress);
-                const daysLeft =
-                  dailyAverageSaving > 0
-                    ? Math.ceil(remaining / dailyAverageSaving)
-                    : null;
-
-                return (
-                  <article
-                    className="rounded-[1.5rem] border border-slate-100 bg-[#F6F8F7] p-5"
-                    key={reward.id}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="text-sm font-bold text-[#4FAE7B]">
-                          {reward.category ?? "Target"}
-                        </p>
-                        <h3 className="mt-1 text-xl font-extrabold">
-                          {reward.title}
-                        </h3>
-                      </div>
-                      <span className="rounded-full bg-white px-3 py-1 text-xs font-extrabold text-[#2F7D57]">
-                        {Math.round(percentage)}%
-                      </span>
-                    </div>
-                    <p className="mt-4 text-sm font-semibold text-slate-600">
-                      {formatRupiah(progress)} /{" "}
-                      {formatRupiah(reward.targetAmount)}
-                    </p>
-                    <div className="mt-3 h-3 overflow-hidden rounded-full bg-white">
-                      <div
-                        className="h-full rounded-full bg-[#4FAE7B]"
-                        style={{ width: `${percentage}%` }}
-                      />
-                    </div>
-                    <p className="mt-3 text-sm font-semibold text-slate-500">
-                      {daysLeft
-                        ? `Dengan ritme sekarang, sekitar ${daysLeft} hari lagi.`
-                        : "Isi beberapa check-in dulu untuk estimasi hari."}
-                      {allocated > 0
-                        ? ` Sudah dialokasikan ${formatRupiah(allocated)}.`
-                        : ""}
-                    </p>
-                  </article>
-                );
-              })
-            )}
-          </div>
-        </div>
-
-        <div className="rounded-[2rem] bg-white p-5 shadow-sm">
-          <p className="text-sm font-extrabold uppercase text-[#36798D]">
-            Mau diarahkan ke mana uang ini?
-          </p>
-          <p className="mt-3 max-w-3xl leading-7 text-slate-600">
-            Tidak ada pilihan yang paling benar. Uang yang kamu selamatkan boleh
-            kembali ke dirimu, keluarga, masa depan, atau menjadi kebaikan kecil
-            untuk orang lain.
-          </p>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            {directionOptions.map((option) => (
-              <button
-                className={`rounded-2xl border p-4 text-left font-extrabold transition ${
-                  selectedDirection === option
-                    ? "border-[#4FAE7B] bg-[#DFF3E8] text-[#2F7D57]"
-                    : "border-slate-100 bg-[#F6F8F7] text-slate-700"
-                }`}
-                key={option}
-                onClick={() => setSelectedDirection(option)}
-                type="button"
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid gap-5 lg:grid-cols-[0.9fr_1fr]">
-          <div className="rounded-[2rem] bg-[#E3F3F7] p-5">
-            <p className="text-sm font-extrabold uppercase text-[#36798D]">
-              Donasi / sedekah
-            </p>
-            <h2 className="mt-2 text-2xl font-extrabold">
-              Kebaikan kecil juga cukup.
-            </h2>
-            <p className="mt-3 leading-7 text-slate-700">
-              Kadang, uang yang dulu habis menjadi asap bisa berubah menjadi
-              kebaikan kecil untuk orang lain. Tidak harus besar. Yang penting
-              kamu tahu progressmu bisa membawa manfaat.
-            </p>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <label>
-                <span className="text-sm font-bold text-slate-600">
-                  Tujuan
-                </span>
-                <select
-                  className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-[#4FAE7B]"
-                  onChange={(event) => setSelectedQrTarget(event.target.value)}
-                  value={selectedQrTarget}
-                >
-                  {donationTargets.map((target) => (
-                    <option key={target} value={target}>
-                      {target}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span className="text-sm font-bold text-slate-600">
-                  Nominal
-                </span>
-                <select
-                  className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-[#4FAE7B]"
-                  onChange={(event) =>
-                    setSelectedQrAmount(Number(event.target.value))
-                  }
-                  value={selectedQrAmount}
-                >
-                  {asmaulHusnaAmounts.map((amount) => (
-                    <option key={amount} value={amount}>
-                      {formatRupiah(amount)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-            <button
-              className="mt-4 rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white"
-              onClick={() => {
-                setAllocationAmountInput(
-                  formatRupiahInput(String(selectedQrAmount)),
-                );
-                showToast({
-                  message: `${formatRupiah(selectedQrAmount)} untuk ${selectedQrTarget} siap dicatat setelah kamu sisihkan.`,
-                  title: "Nominal dipilih",
-                  variant: "success",
-                });
-              }}
-              type="button"
-            >
-              Sisihkan sebagian
-            </button>
-          </div>
-
-          <div className="rounded-[2rem] bg-[#1F2933] p-5 text-white shadow-xl shadow-slate-300/60">
-            <div className="mx-auto grid aspect-square max-w-[18rem] place-items-center rounded-[2rem] bg-white p-5 text-center text-[#1F2933]">
-              {isQrVisible ? (
-                <Image
-                  alt="QR GoPay StopMerokok"
-                  className="h-full w-full rounded-3xl object-contain"
-                  height={512}
-                  onError={() => setIsQrVisible(false)}
-                  priority
-                  src="/images/gopay-qr.png"
-                  width={512}
-                />
-              ) : (
-                <div>
-                  <div className="mx-auto grid size-36 place-items-center rounded-3xl border-2 border-dashed border-slate-300 bg-[#F6F8F7]">
-                    <span className="text-sm font-extrabold">QR GoPay</span>
-                  </div>
-                  <p className="mt-4 text-sm font-bold text-slate-600">
-                    File QR belum terbaca di /images/gopay-qr.png
-                  </p>
-                </div>
-              )}
-            </div>
-            <div className="mt-5 rounded-3xl bg-white/10 p-4">
-              <p className="text-sm font-bold text-[#9DE5BD]">
-                Tujuan dipilih
-              </p>
-              <p className="mt-1 text-xl font-extrabold">{selectedQrTarget}</p>
-              <p className="mt-2 font-semibold text-slate-300">
-                Nominal: {formatRupiah(selectedQrAmount)}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-[2rem] bg-white p-5 shadow-sm">
-          <h2 className="text-xl font-extrabold">Catat alokasi</h2>
-          <p className="mt-2 leading-7 text-slate-600">
-            Setelah uangnya benar-benar kamu arahkan ke target tertentu, catat
-            di sini agar perjalananmu terasa terlihat.
-          </p>
-          <form
-            className="mt-5 grid gap-3 lg:grid-cols-[1fr_180px_1fr_auto]"
-            onSubmit={async (event) => {
-              event.preventDefault();
-              const form = new FormData(event.currentTarget);
-              const rewardId = String(form.get("rewardId") || "");
-              const reward = rewards.find((item) => item.id === rewardId);
-              const amount = parseRupiahInput(allocationAmountInput);
-
-              if (!reward || amount <= 0) {
-                showToast({
-                  message: "Pilih target dan isi nominal alokasi.",
-                  title: "Alokasi belum lengkap",
-                  variant: "info",
-                });
-                return;
-              }
-
-              if (amount > availableSavings) {
-                showToast({
-                  message: "Nominal lebih besar dari savings yang tersedia.",
-                  title: "Savings belum cukup",
-                  variant: "info",
-                });
-                return;
-              }
-
-              const allocation: DonationAllocation = {
-                amount,
-                createdAt: new Date().toISOString(),
-                id: crypto.randomUUID(),
-                note: String(form.get("note") || ""),
-                rewardId,
-                title: reward.title,
-              };
-
-              await persistDonationAllocation(allocation);
-              setAllocations((current) => [allocation, ...current]);
-              setAllocationAmountInput("");
-              event.currentTarget.reset();
-              showToast({
-                message: `${formatRupiah(amount)} dialokasikan ke ${reward.title}.`,
-                title: "Alokasi tersimpan",
-                variant: "success",
-              });
-            }}
-          >
-            <select
-              className="rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-[#4FAE7B]"
-              name="rewardId"
-              required
-            >
-              <option value="">Pilih target</option>
-              {rewards.map((reward) => (
-                <option key={reward.id} value={reward.id}>
-                  {reward.title}
-                </option>
-              ))}
-            </select>
-            <input
-              className="rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
-              inputMode="numeric"
-              onChange={(event) =>
-                setAllocationAmountInput(formatRupiahInput(event.target.value))
-              }
-              placeholder="Rp10.000"
-              required
-              type="text"
-              value={allocationAmountInput}
-            />
-            <input
-              className="rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
-              name="note"
-              placeholder="Catatan opsional"
-            />
-            <button className="rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white">
-              Simpan
-            </button>
-          </form>
-        </div>
-
-        <div className="rounded-[2rem] bg-[#F6F8F7] p-5">
-          <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-            Insight kecil
-          </p>
-          <p className="mt-3 text-lg font-bold leading-8">
-            Dalam 7 check-in terakhir, kamu berhasil menghemat{" "}
-            {formatRupiah(lastSevenSummary.savedMoney)}.
-          </p>
-          <p className="mt-2 leading-7 text-slate-600">
-            Kalau ritme ini konsisten selama 30 hari, kamu bisa menghemat
-            sekitar {formatRupiah(thirtyDayProjection)}. Tidak perlu sempurna,
-            cukup terus kembali ke kebiasaan yang sedang kamu bangun.
-          </p>
-        </div>
-
-        <div className="rounded-[2rem] bg-white p-5 shadow-sm">
-          <h2 className="text-xl font-extrabold">
-            Riwayat uang yang diarahkan
-          </h2>
-          <div className="mt-4 space-y-3">
-            {allocations.length === 0 ? (
-              <EmptyState
-                body="Setelah uang benar-benar kamu sisihkan ke target tertentu, catat di sini agar perjalananmu terasa terlihat."
-                icon={HandHeart}
-                title="Belum ada alokasi savings"
-              />
-            ) : (
-              allocations.map((allocation) => (
-                <div
-                  className="rounded-2xl bg-[#F6F8F7] p-4"
-                  key={allocation.id}
-                >
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <p className="font-extrabold">{allocation.title}</p>
-                      <p className="text-sm font-semibold text-slate-500">
-                        {rewardById.get(allocation.rewardId)?.category ??
-                          "Alokasi"}
-                        {" - "}
-                        {new Date(allocation.createdAt).toLocaleDateString(
-                          "id-ID",
-                        )}
-                        {allocation.note ? ` - ${allocation.note}` : ""}
-                      </p>
-                    </div>
-                    <p className="font-extrabold text-[#2F7D57]">
-                      {formatRupiah(allocation.amount)}
-                    </p>
-                  </div>
-                </div>
-              ))
-            )}
+            <ConversionCard label="Dukungan kecil" value="mulai terbentuk" />
           </div>
         </div>
       </section>
