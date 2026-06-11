@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { useToast } from "@/components/toast-provider";
 import { loadCheckins, persistCheckin } from "@/lib/client-data";
 import {
   feedbackForStatus,
+  getCurrentSmokeFreeStreak,
+  getStreakBadge,
   todayKey,
   type DailyCheckin,
   type CheckinStatus,
@@ -46,6 +49,7 @@ const options: Array<{
 ];
 
 export default function CheckInPage() {
+  const router = useRouter();
   const [status, setStatus] = useState<CheckinStatus>("smoke_free");
   const [date, setDate] = useState(todayKey());
   const [existingCheckin, setExistingCheckin] = useState<DailyCheckin | null>(
@@ -101,8 +105,11 @@ export default function CheckInPage() {
             const form = new FormData(event.currentTarget);
             const smokedCount =
               status === "smoke_free" ? 0 : Number(form.get("smokedCount") || 0);
-
-            await persistCheckin({
+            const existingItems = await loadCheckins();
+            const previousCheckin = [...existingItems]
+              .filter((item) => item.date < date)
+              .sort((a, b) => b.date.localeCompare(a.date))[0];
+            const nextCheckin: DailyCheckin = {
               createdAt: new Date().toISOString(),
               date,
               mood: String(form.get("mood") || "") as Mood,
@@ -111,7 +118,31 @@ export default function CheckInPage() {
               status,
               trigger:
                 status === "relapsed" ? String(form.get("trigger") || "") : "",
-            });
+            };
+
+            await persistCheckin(nextCheckin);
+
+            const nextItems = [
+              ...existingItems.filter((item) => item.date !== date),
+              nextCheckin,
+            ].sort((a, b) => a.date.localeCompare(b.date));
+            const smokeFreeStreak = getCurrentSmokeFreeStreak(nextItems);
+            const activeBadge = getStreakBadge(smokeFreeStreak);
+            const milestone = [7, 30, 90, 180, 365].includes(smokeFreeStreak)
+              ? {
+                  badge:
+                    smokeFreeStreak === 7
+                      ? "7 Hari Tarik Nafas Baru"
+                      : activeBadge,
+                  description:
+                    smokeFreeStreak === 7
+                      ? "Kamu sudah membangun 7 hari keberanian."
+                      : `${smokeFreeStreak} hari bertahan. Pelan-pelan, ini makin nyata.`,
+                  streak: smokeFreeStreak,
+                }
+              : null;
+            const isComeback =
+              previousCheckin?.status === "relapsed" && status !== "relapsed";
 
             const message = feedbackForStatus(status);
             setFeedback(message);
@@ -120,6 +151,17 @@ export default function CheckInPage() {
               title: existingCheckin ? "Absen diperbarui" : "Absen tersimpan",
               variant: "success",
             });
+            window.sessionStorage.setItem(
+              "stopmerokok.celebration",
+              JSON.stringify({
+                dayNumber: nextItems.length,
+                isComeback,
+                milestone,
+                status,
+                streak: smokeFreeStreak,
+              }),
+            );
+            router.push("/check-in/celebration");
           }}
         >
           <label className="block">
