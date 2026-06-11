@@ -26,12 +26,18 @@ function getPermissionLabel(permission: NotificationPermission | "unsupported") 
   return "Belum aktif";
 }
 
-const reminderHourOptions = Array.from({ length: 10 }, (_, index) => {
-  const hour = index + 12;
+const reminderHourOptions = Array.from({ length: 19 }, (_, index) => {
+  const hour = index + 5;
   const label = `${String(hour).padStart(2, "0")}:00`;
 
   return { label, value: String(hour) };
 });
+
+const quickReminderHours = [
+  { label: "Pagi", value: 7 },
+  { label: "Siang", value: 13 },
+  { label: "Malam", value: 20 },
+];
 
 export function NotificationOptIn() {
   const [permission, setPermission] = useState<
@@ -118,8 +124,8 @@ export function NotificationOptIn() {
   const statusLabel = isEnabled ? "Aktif" : getPermissionLabel(permission);
 
   return (
-    <div className="overflow-hidden rounded-[2rem] border border-[#DFF3E8] bg-white shadow-xl shadow-slate-200/60">
-      <div className="bg-gradient-to-r from-[#DFF3E8] via-white to-[#E3F3F7] px-5 py-4">
+    <div className="rounded-[2rem] border border-[#DFF3E8] bg-white shadow-xl shadow-slate-200/60">
+      <div className="rounded-t-[2rem] bg-gradient-to-r from-[#DFF3E8] via-white to-[#E3F3F7] px-5 py-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="grid size-9 place-items-center rounded-2xl bg-white text-[#2F7D57] shadow-sm">
@@ -153,18 +159,18 @@ export function NotificationOptIn() {
               mengajak kamu hadir lagi, bukan menekan.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
-              {[19, 20, 21].map((hour) => (
+              {quickReminderHours.map((hour) => (
                 <button
                   className={`rounded-full px-4 py-2 text-sm font-extrabold transition ${
-                    reminderHour === hour
+                    reminderHour === hour.value
                       ? "bg-[#36798D] text-white"
                       : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                   }`}
-                  key={hour}
-                  onClick={() => updateReminderHour(hour)}
+                  key={hour.value}
+                  onClick={() => updateReminderHour(hour.value)}
                   type="button"
                 >
-                  {String(hour).padStart(2, "0")}:00
+                  {hour.label}
                 </button>
               ))}
             </div>

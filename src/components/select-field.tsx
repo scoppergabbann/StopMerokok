@@ -76,7 +76,7 @@ export function SelectField({
 
       {isOpen && (
         <div
-          className="absolute left-0 right-0 top-[calc(100%+0.45rem)] z-40 overflow-hidden rounded-2xl border border-[#BFE7D1] bg-white p-1 shadow-2xl shadow-slate-300/50"
+          className="absolute left-0 right-0 top-[calc(100%+0.45rem)] z-40 max-h-64 overflow-y-auto rounded-2xl border border-[#BFE7D1] bg-white p-1 shadow-2xl shadow-slate-300/50"
           id={id}
           role="listbox"
         >
