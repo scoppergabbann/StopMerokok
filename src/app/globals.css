@@ -83,6 +83,40 @@ html {
   }
 }
 
+@keyframes shimmer-sweep {
+  0%,
+  82% {
+    transform: translateX(-140%) skewX(-18deg);
+  }
+
+  92%,
+  100% {
+    transform: translateX(140%) skewX(-18deg);
+  }
+}
+
+.shimmer-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-card::after {
+  animation: shimmer-sweep 10s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.12),
+    rgb(79 174 123 / 0.18),
+    rgb(255 255 255 / 0.12),
+    transparent
+  );
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  width: 55%;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -91,6 +125,11 @@ html {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .shimmer-card::after {
+    animation: none !important;
+    display: none;
   }
 
 }
