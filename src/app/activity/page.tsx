@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   BadgeCheck,
   Footprints,
+  Images,
   Link2Off,
   MoveRight,
 } from "lucide-react";
@@ -141,7 +142,7 @@ export default function ActivityPage() {
     setLogs((current) => [log, ...current]);
     setNote("");
     showToast({
-      message: "Gerak kecilmu sudah tercatat.",
+      message: "Gerak kecilmu sudah tercatat. Kamu bisa membuat Kartu Perjalanan kalau ingin menyimpannya.",
       title: "Aktivitas tersimpan",
       variant: "success",
     });
@@ -247,12 +248,27 @@ export default function ActivityPage() {
         </div>
 
         <div className="rounded-[2rem] bg-[#E3F3F7] p-5">
-          <p className="text-sm font-extrabold uppercase text-[#36798D]">
-            Wawasan gerak
-          </p>
-          <p className="mt-3 text-lg font-bold leading-8">
-            {getMovementMessage(totalMinutes, recentLogs.length)}
-          </p>
+          <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <p className="text-sm font-extrabold uppercase text-[#36798D]">
+                Wawasan gerak
+              </p>
+              <p className="mt-3 text-lg font-bold leading-8">
+                {getMovementMessage(totalMinutes, recentLogs.length)}
+              </p>
+              <p className="mt-3 text-sm font-semibold leading-6 text-slate-600">
+                Progress ini bisa kamu simpan sebagai Kartu Perjalanan. Tidak
+                perlu dibagikan kalau belum nyaman.
+              </p>
+            </div>
+            <Link
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20"
+              href="/share"
+            >
+              <Images className="size-4" />
+              Bagikan aktivitas
+            </Link>
+          </div>
         </div>
 
         <div className="rounded-[2rem] bg-white p-5 shadow-sm">

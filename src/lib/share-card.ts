@@ -232,6 +232,12 @@ function cardFrame({
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <style>
+    text {
+      font-family: 'Plus Jakarta Sans', 'Inter', 'Segoe UI', Arial, sans-serif;
+      letter-spacing: 0;
+    }
+  </style>
   <rect width="1080" height="1920" fill="${background}"/>
   <circle cx="910" cy="220" r="260" fill="${accent}" opacity="${variant === "dark" ? "0.22" : "0.18"}"/>
   <circle cx="120" cy="1700" r="330" fill="#42A9E8" opacity="${variant === "dark" ? "0.16" : "0.11"}"/>

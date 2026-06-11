@@ -144,24 +144,24 @@ export function ShareCardPreview({
   }
 
   return (
-    <section className="grid gap-6 lg:grid-cols-[minmax(0,0.92fr)_minmax(320px,0.62fr)] lg:items-start">
-      <div className="rounded-[2rem] border border-[#DFF3E8] bg-white p-4 shadow-xl shadow-slate-200/70">
-        <div className="mx-auto max-w-[360px] overflow-hidden rounded-[1.6rem] bg-[#F7FBF9] shadow-inner">
+    <section className="grid gap-6 xl:grid-cols-[minmax(0,0.88fr)_minmax(340px,0.56fr)] xl:items-start">
+      <div className="rounded-[2rem] border border-[#DFF3E8] bg-white p-4 shadow-xl shadow-slate-200/70 sm:p-5">
+        <div className="mx-auto aspect-[9/16] w-full max-w-[min(360px,78vw)] overflow-hidden rounded-[1.6rem] bg-[#F7FBF9] shadow-inner sm:max-w-[390px] xl:max-w-[420px]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt="Preview Kartu Perjalanan"
-            className="h-auto w-full"
+            className="h-full w-full object-contain"
             src={previewUrl}
           />
         </div>
       </div>
 
-      <aside className="space-y-4">
+      <aside className="space-y-4 pb-28 xl:pb-0">
         <div className="rounded-[2rem] bg-white p-5 shadow-sm">
           <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
             Template
           </p>
-          <div className="mt-4 grid gap-3">
+          <div className="mt-4 grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
             {shareCardTemplates.map((item) => (
               <button
                 className={`rounded-2xl border p-4 text-left transition ${
@@ -189,7 +189,7 @@ export function ShareCardPreview({
               Privasi
             </p>
           </div>
-          <div className="mt-4 space-y-3">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
             <label className="flex items-center justify-between gap-4 rounded-2xl bg-[#F6F8F7] p-4 font-bold">
               Tampilkan nama
               <input
@@ -231,7 +231,7 @@ export function ShareCardPreview({
           <p className="mt-3 rounded-2xl bg-[#F6F8F7] p-4 text-sm font-semibold leading-6 text-slate-600">
             {caption}
           </p>
-          <div className="mt-4 grid gap-3">
+          <div className="mt-4 grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
             <button
               className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20 disabled:opacity-60"
               disabled={isWorking}
