@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Leaf, Sprout } from "lucide-react";
+import { ArrowLeft, ArrowRight, Leaf, Sprout } from "lucide-react";
 import type { CheckinStatus } from "@/lib/mvp-store";
 
 type CelebrationPayload = {
@@ -94,20 +93,15 @@ export default function CheckInCelebrationPage() {
   });
 
   const copy = useMemo(() => getCopy(payload), [payload]);
-  const duration = payload.milestone ? 3000 : 2200;
 
-  useEffect(() => {
-    const id = window.setTimeout(() => {
-      window.sessionStorage.removeItem("stopmerokok.celebration");
-      router.replace("/dashboard");
-    }, duration);
-
-    return () => window.clearTimeout(id);
-  }, [duration, payload, router]);
-
-  function skip() {
+  function goToDashboard() {
     window.sessionStorage.removeItem("stopmerokok.celebration");
-    router.replace("/dashboard");
+    router.push("/dashboard");
+  }
+
+  function goBack() {
+    window.sessionStorage.removeItem("stopmerokok.celebration");
+    router.back();
   }
 
   return (
@@ -218,21 +212,20 @@ export default function CheckInCelebrationPage() {
           <div className="mt-6 flex flex-col gap-2">
             <button
               className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20"
-              onClick={skip}
+              onClick={goToDashboard}
               type="button"
             >
               Lanjut ke dashboard
               <ArrowRight className="size-4" />
             </button>
-            <Link
-              className="rounded-2xl px-5 py-3 text-sm font-extrabold text-slate-500"
-              href="/dashboard"
-              onClick={() =>
-                window.sessionStorage.removeItem("stopmerokok.celebration")
-              }
+            <button
+              className="inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-extrabold text-slate-500"
+              onClick={goBack}
+              type="button"
             >
-              Lewati
-            </Link>
+              <ArrowLeft className="size-4" />
+              Kembali
+            </button>
           </div>
         </motion.div>
       </section>
