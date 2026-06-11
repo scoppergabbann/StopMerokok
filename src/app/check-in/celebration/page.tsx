@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Leaf, Sprout } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
 import type { CheckinStatus } from "@/lib/mvp-store";
 
 type CelebrationPayload = {
@@ -134,6 +135,15 @@ export default function CheckInCelebrationPage() {
 
   const copy = useMemo(() => getCopy(payload), [payload]);
   const nextTarget = useMemo(() => getNextTarget(payload), [payload]);
+
+  useEffect(() => {
+    trackEvent("celebration_viewed", {
+      hasMilestone: Boolean(payload.milestone),
+      isComeback: payload.isComeback,
+      status: payload.status,
+      streak: payload.streak,
+    });
+  }, [payload]);
 
   function goToDashboard() {
     window.sessionStorage.removeItem("stopmerokok.celebration");

@@ -1,10 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/app-shell";
+import { EmptyState } from "@/components/empty-state";
 import { useToast } from "@/components/toast-provider";
+import { HandHeart, PiggyBank, PlusCircle } from "lucide-react";
 import {
   loadCheckins,
   loadDonationAllocations,
@@ -161,21 +162,15 @@ export default function SavingsPage() {
         </div>
 
         {!hasSavings && (
-          <div className="rounded-[2rem] border border-dashed border-[#BFE7D1] bg-white p-6 text-center">
-            <p className="text-2xl font-extrabold">
-              Belum ada uang yang tercatat, dan itu tidak apa-apa.
-            </p>
-            <p className="mx-auto mt-3 max-w-xl leading-7 text-slate-600">
-              Mulai dari absen hari ini dulu. Progress kecil tetap progress,
-              bahkan kalau hari ini kamu baru mulai jujur mencatat.
-            </p>
-            <Link
-              className="mt-5 inline-flex rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white"
-              href="/check-in"
-            >
-              Absen hari ini
-            </Link>
-          </div>
+          <EmptyState
+            actionHref="/check-in"
+            actionLabel="Absen hari ini"
+            body="Savings akan dihitung otomatis setelah kamu mulai check-in. Satu hari jujur mencatat sudah cukup untuk memulai."
+            icon={PiggyBank}
+            secondaryHref="/onboarding"
+            secondaryLabel="Cek data rokok"
+            title="Belum ada uang yang tercatat"
+          />
         )}
 
         <div className="grid gap-4 md:grid-cols-3">
@@ -298,10 +293,11 @@ export default function SavingsPage() {
 
           <div className="mt-5 grid gap-4 lg:grid-cols-2">
             {rewards.length === 0 ? (
-              <div className="rounded-2xl bg-[#F6F8F7] p-4 font-semibold text-slate-600">
-                Belum ada target. Kamu bisa mulai dari hal kecil yang terasa
-                dekat: sepatu, baju, tabungan, atau traktir keluarga.
-              </div>
+              <EmptyState
+                body="Buat target kecil seperti sepatu, tabungan, traktir keluarga, atau sedekah Jumat agar savings punya arah yang terasa nyata."
+                icon={PlusCircle}
+                title="Target reward belum dibuat"
+              />
             ) : (
               rewards.slice(0, 2).map((reward) => {
                 const allocated = allocationByReward.get(reward.id) ?? 0;
@@ -599,10 +595,11 @@ export default function SavingsPage() {
           </h2>
           <div className="mt-4 space-y-3">
             {allocations.length === 0 ? (
-              <p className="font-semibold text-slate-600">
-                Belum ada alokasi. Nanti setiap pilihan kecil akan tercatat di
-                sini.
-              </p>
+              <EmptyState
+                body="Setelah uang benar-benar kamu sisihkan ke target tertentu, catat di sini agar perjalananmu terasa terlihat."
+                icon={HandHeart}
+                title="Belum ada alokasi savings"
+              />
             ) : (
               allocations.map((allocation) => (
                 <div

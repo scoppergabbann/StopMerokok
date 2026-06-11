@@ -11,6 +11,7 @@ import {
   type TurnstileCaptchaHandle,
 } from "@/components/turnstile-captcha";
 import { useToast } from "@/components/toast-provider";
+import { trackEvent } from "@/lib/analytics";
 import { loadProfile } from "@/lib/client-data";
 import {
   clearRememberedAuthSession,
@@ -248,6 +249,11 @@ export default function LoginPage() {
                   const profile = await loadProfile();
                   nextPath = profile ? "/dashboard" : "/onboarding";
                 }
+
+                trackEvent("login", {
+                  authProvider: isSupabaseConfigured ? "supabase" : "demo",
+                  rememberMe,
+                });
 
                 showToast({
                   message: isSupabaseConfigured

@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
+import { EmptyState } from "@/components/empty-state";
 import { useToast } from "@/components/toast-provider";
+import { NotebookPen } from "lucide-react";
 import { loadJournals, persistJournal } from "@/lib/client-data";
 import {
   todayKey,
@@ -119,9 +121,11 @@ export default function JournalPage() {
           <h2 className="text-xl font-extrabold">Riwayat journal</h2>
           <div className="mt-5 space-y-4">
             {journals.length === 0 ? (
-              <p className="leading-7 text-slate-600">
-                Belum ada journal. Tulis satu catatan kecil hari ini.
-              </p>
+              <EmptyState
+                body="Mulai dari satu kalimat saja. Catatan pertama akan membantu kamu melihat pola emosi dan trigger besok."
+                icon={NotebookPen}
+                title="Journal pertamamu belum ditulis"
+              />
             ) : (
               journals.slice(0, 6).map((journal) => (
                 <article

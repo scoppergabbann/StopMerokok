@@ -16,6 +16,7 @@ import {
   rememberAuthSession,
   supabase,
 } from "@/lib/supabase";
+import { trackEvent } from "@/lib/analytics";
 
 const benefits = [
   "Absen harian yang ringan",
@@ -193,6 +194,10 @@ export default function RegisterPage() {
 
                   rememberAuthSession(7);
                 }
+
+                trackEvent("register", {
+                  authProvider: isSupabaseConfigured ? "supabase" : "demo",
+                });
 
                 showToast({
                   message: isSupabaseConfigured

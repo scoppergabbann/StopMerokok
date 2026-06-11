@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
+import { EmptyState } from "@/components/empty-state";
 import { useToast } from "@/components/toast-provider";
+import { BarChart3, Flame, NotebookPen, Trophy } from "lucide-react";
 import {
   loadCheckins,
   loadLeaderboard,
@@ -135,10 +137,15 @@ export default function StatsPage() {
 
           <div className="mt-5 space-y-3">
             {leaderboard.length === 0 ? (
-              <p className="rounded-2xl bg-[#F6F8F7] p-4 font-semibold text-slate-600">
-                Belum ada peserta aktif. Masuk ranking dimulai dari check-in
-                bebas rokok hari ini.
-              </p>
+              <EmptyState
+                actionHref="/check-in"
+                actionLabel="Check-in bebas rokok"
+                body="Ranking aktif baru muncul saat ada user yang check-in bebas rokok hari ini dan menjaga streak beruntun."
+                icon={Trophy}
+                secondaryHref="/community"
+                secondaryLabel="Lihat komunitas"
+                title="Leaderboard siap dimulai"
+              />
             ) : (
               leaderboard.map((entry) => (
                 <div
@@ -193,9 +200,15 @@ export default function StatsPage() {
         <div className="mt-6 rounded-[2rem] bg-white p-5 shadow-xl shadow-slate-200/70">
           <h2 className="text-xl font-extrabold">Rokok per hari</h2>
           {checkins.length === 0 ? (
-            <p className="mt-4 leading-7 text-slate-600">
-              Belum ada data. Mulai dari satu absen kecil hari ini.
-            </p>
+            <div className="mt-4">
+              <EmptyState
+                actionHref="/check-in"
+                actionLabel="Isi absen pertama"
+                body="Grafik ini akan terbentuk otomatis setelah kamu mulai mencatat jumlah rokok harian."
+                icon={BarChart3}
+                title="Grafik menunggu check-in pertamamu"
+              />
+            </div>
           ) : (
             <div className="mt-5 space-y-4">
               {checkins.slice(-10).map((checkin) => (
@@ -250,9 +263,13 @@ export default function StatsPage() {
 
           <div className="mt-5 space-y-3">
             {recentCheckins.length === 0 ? (
-              <p className="rounded-2xl bg-[#F6F8F7] p-4 font-semibold text-slate-600">
-                Belum ada riwayat. Mulai dari check-in hari ini.
-              </p>
+              <EmptyState
+                actionHref="/check-in"
+                actionLabel="Mulai check-in"
+                body="Setelah kamu absen, riwayatnya akan muncul di sini dan bisa dikoreksi atau dihapus kapan saja."
+                icon={NotebookPen}
+                title="Riwayat activity masih kosong"
+              />
             ) : (
               recentCheckins.map((checkin) => (
                 <article
@@ -309,10 +326,17 @@ export default function StatsPage() {
             Insight kambuh
           </p>
           {insights.relapseCount === 0 ? (
-            <p className="mt-3 text-lg font-bold leading-8">
-              Belum ada data kambuh. Kalau suatu hari terjadi, catatanmu akan
-              membantu membaca polanya.
-            </p>
+            <div className="mt-4">
+              <EmptyState
+                actionHref="/craving"
+                actionLabel="Buka bantuan craving"
+                body="Bagus kalau belum ada catatan kambuh. Kalau suatu hari berat, kamu tetap bisa mencatat dengan aman agar polanya terbaca."
+                icon={Flame}
+                secondaryHref="/journal"
+                secondaryLabel="Tulis refleksi"
+                title="Belum ada pola kambuh"
+              />
+            </div>
           ) : (
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <div className="rounded-2xl bg-white/75 p-4">

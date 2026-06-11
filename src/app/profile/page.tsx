@@ -1,10 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
+import { EmptyState } from "@/components/empty-state";
 import { useToast } from "@/components/toast-provider";
+import { UserRound } from "lucide-react";
 import { loadProfile, persistProfile } from "@/lib/client-data";
 import {
   formatRupiahInput,
@@ -61,17 +62,13 @@ export default function ProfilePage() {
 
         <div className="mt-6 rounded-[2rem] bg-white p-5 shadow-xl shadow-slate-200/70">
           {!profile ? (
-            <>
-              <p className="font-bold text-slate-600">
-                Data profil belum tersedia.
-              </p>
-              <Link
-                className="mt-4 inline-flex rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white"
-                href="/onboarding"
-              >
-                Isi onboarding
-              </Link>
-            </>
+            <EmptyState
+              actionHref="/onboarding"
+              actionLabel="Isi onboarding"
+              body="Lengkapi data dasar dulu agar savings, target, dan insight harian bisa dihitung sesuai kebiasaanmu."
+              icon={UserRound}
+              title="Profil perjalanan belum lengkap"
+            />
           ) : (
             <form
               className="space-y-5"

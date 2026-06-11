@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { useToast } from "@/components/toast-provider";
+import { trackEvent } from "@/lib/analytics";
 import { loadCheckins, persistCheckin } from "@/lib/client-data";
 import {
   feedbackForStatus,
@@ -143,6 +144,15 @@ export default function CheckInPage() {
               : null;
             const isComeback =
               previousCheckin?.status === "relapsed" && status !== "relapsed";
+
+            trackEvent("check_in_submit", {
+              date,
+              hasNote: Boolean(nextCheckin.note),
+              isComeback,
+              isCorrection: Boolean(existingCheckin),
+              status,
+              streak: smokeFreeStreak,
+            });
 
             const message = feedbackForStatus(status);
             setFeedback(message);

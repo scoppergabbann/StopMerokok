@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/plus-jakarta-sans";
 import { NotificationReminder } from "@/components/notification-reminder";
 import { PwaBootstrap } from "@/components/pwa-bootstrap";
+import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { ToastProvider } from "@/components/toast-provider";
 import "./globals.css";
 
@@ -95,6 +96,7 @@ export default function RootLayout({
         <ToastProvider>
           <PwaBootstrap />
           <NotificationReminder />
+          <PwaInstallPrompt />
           {children}
         </ToastProvider>
       </body>

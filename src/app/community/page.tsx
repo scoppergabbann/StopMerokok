@@ -12,7 +12,9 @@ import {
   UsersRound,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { EmptyState } from "@/components/empty-state";
 import { useToast } from "@/components/toast-provider";
+import { trackEvent } from "@/lib/analytics";
 import {
   loadCheckins,
   loadCommunityPosts,
@@ -183,6 +185,12 @@ export default function CommunityPage() {
       if (post) {
         setPosts((current) => [post, ...current].slice(0, 30));
       }
+
+      trackEvent("community_post", {
+        hasBadge: Boolean(activeBadge),
+        messageLength: trimmedMessage.length,
+        streak: activeStreak,
+      });
 
       setMessage("");
       showToast({
@@ -413,9 +421,13 @@ export default function CommunityPage() {
 
             <div className="mt-5 space-y-3">
               {topThree.length === 0 ? (
-                <p className="rounded-2xl bg-[#F6F8F7] p-4 font-semibold text-slate-600">
-                  Belum ada peserta aktif hari ini.
-                </p>
+                <EmptyState
+                  actionHref="/check-in"
+                  actionLabel="Check-in bebas rokok"
+                  body="Top streak akan muncul setelah ada peserta yang menjaga check-in bebas rokok sampai hari ini."
+                  icon={Trophy}
+                  title="Ranking komunitas masih kosong"
+                />
               ) : (
                 topThree.map((entry) => (
                   <div
@@ -527,9 +539,11 @@ export default function CommunityPage() {
 
           <div className="mt-6 space-y-3">
             {posts.length === 0 ? (
-              <p className="rounded-2xl bg-[#F6F8F7] p-4 font-semibold text-slate-600">
-                Belum ada pesan dukungan. Kamu bisa jadi yang pertama hari ini.
-              </p>
+              <EmptyState
+                body="Tulis satu pesan singkat di form atas. Bisa progress kecil, minta semangat, atau kalimat yang ingin kamu ingat besok."
+                icon={MessageCircleHeart}
+                title="Belum ada pesan dukungan"
+              />
             ) : (
               posts.map((post) => (
                 <article

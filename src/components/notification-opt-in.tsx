@@ -7,6 +7,7 @@ import {
   loadNotificationSettings,
   persistNotificationSettings,
 } from "@/lib/client-data";
+import { trackEvent } from "@/lib/analytics";
 
 function getPermissionLabel(permission: NotificationPermission | "unsupported") {
   if (permission === "granted") {
@@ -70,6 +71,7 @@ export function NotificationOptIn() {
       enabled: true,
       reminderHour,
     });
+    trackEvent("reminder_enabled", { reminderHour });
     setIsEnabled(true);
     showToast({
       message: `Kami akan mengingatkan sekitar pukul ${String(reminderHour).padStart(2, "0")}:00 kalau kamu belum check-in.`,

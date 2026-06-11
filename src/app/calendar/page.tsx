@@ -2,8 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarPlus, ChevronLeft, ChevronRight } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { EmptyState } from "@/components/empty-state";
 import { loadCheckins } from "@/lib/client-data";
 import {
   getCalendarMonthDays,
@@ -154,9 +155,15 @@ export default function CalendarPage() {
           <div className="rounded-[2rem] bg-white p-5 shadow-sm">
             <h2 className="text-xl font-extrabold">Detail tanggal</h2>
             {!selectedDate ? (
-              <p className="mt-4 leading-7 text-slate-600">
-                Pilih tanggal untuk melihat detail check-in.
-              </p>
+              <div className="mt-4">
+                <EmptyState
+                  actionHref="/check-in"
+                  actionLabel="Absen hari ini"
+                  body="Klik salah satu tanggal di kalender untuk melihat detail, koreksi, atau mulai mencatat hari itu."
+                  icon={CalendarPlus}
+                  title="Pilih tanggal di kalender"
+                />
+              </div>
             ) : selected ? (
               <div className="mt-4 space-y-4">
                 <div className="flex items-center gap-3">
@@ -180,9 +187,15 @@ export default function CalendarPage() {
                 </Link>
               </div>
             ) : (
-              <p className="mt-4 leading-7 text-slate-600">
-                Belum ada check-in untuk {selectedDate}.
-              </p>
+              <div className="mt-4">
+                <EmptyState
+                  actionHref={`/check-in?date=${selectedDate}`}
+                  actionLabel="Isi check-in tanggal ini"
+                  body={`Tanggal ${selectedDate} belum punya catatan. Kamu bisa mengisi atau mengoreksinya sekarang.`}
+                  icon={CalendarPlus}
+                  title="Belum ada check-in"
+                />
+              </div>
             )}
           </div>
         </div>
