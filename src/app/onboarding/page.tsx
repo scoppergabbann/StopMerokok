@@ -7,6 +7,7 @@ import { useToast } from "@/components/toast-provider";
 import { persistProfile } from "@/lib/client-data";
 import {
   formatRupiahInput,
+  parseCigaretteBrands,
   parseRupiahInput,
   type TargetType,
 } from "@/lib/mvp-store";
@@ -117,9 +118,12 @@ export default function OnboardingPage() {
       return;
     }
 
+    const cigaretteBrands = parseCigaretteBrands(formData.cigaretteBrand);
+
     await persistProfile({
       age: Number(formData.age),
-      cigaretteBrand: formData.cigaretteBrand,
+      cigaretteBrand: cigaretteBrands.join(", "),
+      cigaretteBrands,
       createdAt: new Date().toISOString(),
       name: formData.name || "Teman",
       packPrice: parseRupiahInput(packPriceInput),
@@ -258,9 +262,13 @@ export default function OnboardingPage() {
                   onChange={(event) =>
                     updateField("cigaretteBrand", event.target.value)
                   }
-                  placeholder="Contoh: Sampoerna, Gudang Garam, Marlboro"
+                  placeholder="Contoh: Sampoerna Mild, Marlboro, Dji Sam Soe"
                   value={formData.cigaretteBrand}
                 />
+                <p className="mt-2 text-sm font-semibold leading-6 text-slate-500">
+                  Pisahkan beberapa merek dengan koma agar datanya lebih rapi
+                  untuk analisis.
+                </p>
               </Field>
               <Field label="Rata-rata rokok per hari">
                 <input

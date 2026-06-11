@@ -3,6 +3,7 @@ create table if not exists profiles (
   name text not null,
   age integer check (age is null or age >= 18),
   cigarette_brand text,
+  cigarette_brands text[] not null default '{}',
   smoking_baseline_per_day integer not null check (smoking_baseline_per_day >= 0),
   smoking_started_age integer check (smoking_started_age is null or smoking_started_age >= 0),
   smoking_started_year integer check (smoking_started_year is null or smoking_started_year >= 1900),
@@ -17,6 +18,7 @@ create table if not exists profiles (
 
 alter table profiles add column if not exists age integer check (age is null or age >= 18);
 alter table profiles add column if not exists cigarette_brand text;
+alter table profiles add column if not exists cigarette_brands text[] not null default '{}';
 alter table profiles add column if not exists smoking_started_age integer check (smoking_started_age is null or smoking_started_age >= 0);
 alter table profiles add column if not exists smoking_started_year integer check (smoking_started_year is null or smoking_started_year >= 1900);
 alter table profiles add column if not exists today_smoked_count integer check (today_smoked_count is null or today_smoked_count >= 0);

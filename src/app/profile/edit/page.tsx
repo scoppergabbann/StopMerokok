@@ -11,6 +11,8 @@ import { useToast } from "@/components/toast-provider";
 import { loadProfile, persistProfile } from "@/lib/client-data";
 import {
   formatRupiahInput,
+  getCigaretteBrandText,
+  parseCigaretteBrands,
   parseRupiahInput,
   type Profile,
   type TargetType,
@@ -58,8 +60,8 @@ export default function ProfileEditPage() {
     return (
       <AppShell>
         <section className="space-y-5">
-          <div className="h-32 animate-pulse rounded-[2rem] bg-white" />
-          <div className="h-80 animate-pulse rounded-[2rem] bg-white" />
+          <div className="h-32 rounded-[2rem] bg-white skeleton-shimmer" />
+          <div className="h-80 rounded-[2rem] bg-white skeleton-shimmer" />
         </section>
       </AppShell>
     );
@@ -107,9 +109,13 @@ export default function ProfileEditPage() {
           onSubmit={async (event) => {
             event.preventDefault();
             const form = new FormData(event.currentTarget);
+            const cigaretteBrands = parseCigaretteBrands(
+              String(form.get("cigaretteBrand") || ""),
+            );
             const nextProfile: Profile = {
               age: Number(form.get("age") || 0) || undefined,
-              cigaretteBrand: String(form.get("cigaretteBrand") || ""),
+              cigaretteBrand: cigaretteBrands.join(", "),
+              cigaretteBrands,
               createdAt: profile.createdAt,
               name: String(form.get("name") || "Teman"),
               packPrice: parseRupiahInput(packPriceInput),
@@ -191,10 +197,14 @@ export default function ProfileEditPage() {
             <Field label="Produk rokok yang sering dipakai" className="sm:col-span-2">
               <input
                 className="input"
-                defaultValue={profile.cigaretteBrand}
+                defaultValue={getCigaretteBrandText(profile)}
                 name="cigaretteBrand"
-                placeholder="Contoh: Sampoerna"
+                placeholder="Contoh: Sampoerna Mild, Marlboro, Dji Sam Soe"
               />
+              <p className="mt-2 text-sm font-semibold leading-6 text-slate-500">
+                Pisahkan dengan koma. Contoh: Sampoerna Mild, Marlboro, Dji Sam
+                Soe.
+              </p>
             </Field>
             <Field label="Baseline rokok per hari">
               <input

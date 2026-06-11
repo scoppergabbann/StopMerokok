@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import { getStreakBadge } from "@/lib/mvp-store";
+import { getStreakBadge, parseCigaretteBrands } from "@/lib/mvp-store";
 import type {
   CheckinStatus,
   CommunityPost,
@@ -56,6 +56,8 @@ export async function readSupabaseProfile(): Promise<Profile | null> {
   return {
     age: data.age ?? undefined,
     cigaretteBrand: data.cigarette_brand ?? undefined,
+    cigaretteBrands:
+      data.cigarette_brands ?? parseCigaretteBrands(data.cigarette_brand ?? ""),
     createdAt: data.created_at,
     name: data.name,
     packPrice: Number(data.pack_price),
@@ -79,6 +81,8 @@ export async function saveSupabaseProfile(profile: Profile) {
   const { error } = await supabase.from("profiles").upsert({
     age: profile.age ?? null,
     cigarette_brand: profile.cigaretteBrand ?? null,
+    cigarette_brands:
+      profile.cigaretteBrands ?? parseCigaretteBrands(profile.cigaretteBrand ?? ""),
     id: userId,
     name: profile.name,
     pack_price: profile.packPrice,

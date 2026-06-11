@@ -181,6 +181,23 @@ a[href]:focus-visible {
   will-change: transform, opacity;
 }
 
+.skeleton-shimmer {
+  background: linear-gradient(
+    110deg,
+    #ffffff 8%,
+    #eef7f2 18%,
+    #ffffff 33%
+  );
+  background-size: 220% 100%;
+  animation: skeleton-shimmer 1.35s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  to {
+    background-position-x: -220%;
+  }
+}
+
 @media (hover: hover) and (pointer: fine) {
   button:not(:disabled):not([role="option"]):hover,
   [role="button"]:not([aria-disabled="true"]):not([role="option"]):hover,
@@ -215,6 +232,10 @@ a[href]:focus-visible {
   .shimmer-card::after {
     animation: none !important;
     display: none;
+  }
+
+  .skeleton-shimmer {
+    animation: none !important;
   }
 
   button,

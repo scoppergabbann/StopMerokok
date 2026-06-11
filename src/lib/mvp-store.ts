@@ -17,6 +17,7 @@ export type Mood =
 export type Profile = {
   age?: number;
   cigaretteBrand?: string;
+  cigaretteBrands?: string[];
   name: string;
   smokingBaselinePerDay: number;
   smokingStartedAge?: number;
@@ -170,6 +171,34 @@ export const statusStyles: Record<CheckinStatus, string> = {
   relapsed: "bg-[#FBE3E3] text-[#B75D5D]",
 };
 
+export function parseCigaretteBrands(value: string) {
+  const seen = new Set<string>();
+
+  return value
+    .split(",")
+    .map((brand) => brand.trim())
+    .filter(Boolean)
+    .filter((brand) => {
+      const key = brand.toLowerCase();
+
+      if (seen.has(key)) {
+        return false;
+      }
+
+      seen.add(key);
+      return true;
+    });
+}
+
+export function getCigaretteBrandText(profile: Pick<Profile, "cigaretteBrand" | "cigaretteBrands">) {
+  const brands =
+    profile.cigaretteBrands && profile.cigaretteBrands.length > 0
+      ? profile.cigaretteBrands
+      : parseCigaretteBrands(profile.cigaretteBrand ?? "");
+
+  return brands.join(", ");
+}
+
 function canUseStorage() {
   return typeof window !== "undefined" && Boolean(window.localStorage);
 }
@@ -192,7 +221,19 @@ export function readProfile(): Profile | null {
   }
 
   const raw = window.localStorage.getItem(PROFILE_KEY);
-  return raw ? (JSON.parse(raw) as Profile) : null;
+  if (!raw) {
+    return null;
+  }
+
+  const profile = JSON.parse(raw) as Profile;
+
+  return {
+    ...profile,
+    cigaretteBrands:
+      profile.cigaretteBrands && profile.cigaretteBrands.length > 0
+        ? profile.cigaretteBrands
+        : parseCigaretteBrands(profile.cigaretteBrand ?? ""),
+  };
 }
 
 export function saveProfile(profile: Profile) {
@@ -200,7 +241,17 @@ export function saveProfile(profile: Profile) {
     return;
   }
 
-  window.localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+  const cigaretteBrands =
+    profile.cigaretteBrands ?? parseCigaretteBrands(profile.cigaretteBrand ?? "");
+
+  window.localStorage.setItem(
+    PROFILE_KEY,
+    JSON.stringify({
+      ...profile,
+      cigaretteBrand: profile.cigaretteBrand ?? cigaretteBrands.join(", "),
+      cigaretteBrands,
+    }),
+  );
 }
 
 export function readCheckins(): DailyCheckin[] {

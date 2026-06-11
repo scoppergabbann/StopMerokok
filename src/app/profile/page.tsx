@@ -10,6 +10,7 @@ import {
   Cigarette,
   Coins,
   HeartHandshake,
+  Leaf,
   Pencil,
   ShieldCheck,
   Sparkles,
@@ -22,6 +23,8 @@ import { useToast } from "@/components/toast-provider";
 import { loadNotificationSettings, loadProfile } from "@/lib/client-data";
 import {
   formatRupiah,
+  getCigaretteBrandText,
+  parseCigaretteBrands,
   targetLabels,
   type NotificationSettings,
   type Profile,
@@ -140,16 +143,22 @@ export default function ProfilePage() {
   }
 
   const reasons = profile.reasons.length > 0 ? profile.reasons : ["Kesehatan"];
+  const cigaretteBrands =
+    profile.cigaretteBrands && profile.cigaretteBrands.length > 0
+      ? profile.cigaretteBrands
+      : parseCigaretteBrands(profile.cigaretteBrand ?? "");
+  const cigaretteBrandText = getCigaretteBrandText(profile) || "Belum dicatat";
 
   return (
     <AppShell>
       <section className="space-y-6">
-        <div className="overflow-hidden rounded-[2rem] bg-[#1F2933] p-5 text-white shadow-xl shadow-slate-300/70 sm:p-6">
+        <div className="overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#123B3F_0%,#1F555B_52%,#4FAE7B_140%)] p-5 text-white shadow-xl shadow-slate-300/70 sm:p-6">
           <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-sm font-extrabold uppercase text-[#9DE5BD]">
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-2 text-sm font-extrabold uppercase text-[#B8F1CE]">
+                <Leaf className="size-4" />
                 Profil perjalanan
-              </p>
+              </div>
               <h1 className="mt-3 text-4xl font-extrabold leading-tight">
                 Halo, {profile.name}
               </h1>
@@ -170,10 +179,7 @@ export default function ProfilePage() {
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             <HeroStat label="Target aktif" value={targetLabels[profile.targetType]} />
             <HeroStat label="Hari perjalanan" value={`${journeyDays} hari`} />
-            <HeroStat
-              label="Produk rokok"
-              value={profile.cigaretteBrand || "Belum dicatat"}
-            />
+            <HeroStat label="Produk rokok" value={cigaretteBrandText} />
           </div>
         </div>
 
@@ -267,7 +273,29 @@ export default function ProfilePage() {
           <div className="rounded-[2rem] bg-white p-5 shadow-sm">
             <h2 className="text-2xl font-extrabold">Kebiasaan awal</h2>
             <div className="mt-5 space-y-3">
-              <InfoRow label="Produk rokok" value={profile.cigaretteBrand || "-"} />
+              <div className="rounded-2xl bg-[#F6F8F7] p-4">
+                <p className="text-sm font-bold text-slate-500">
+                  Produk rokok
+                </p>
+                {cigaretteBrands.length > 0 ? (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {cigaretteBrands.map((brand) => (
+                      <span
+                        className="rounded-full bg-[#DFF3E8] px-3 py-1 text-sm font-extrabold text-[#2F7D57]"
+                        key={brand}
+                      >
+                        {brand}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-1 font-extrabold">-</p>
+                )}
+                <p className="mt-3 text-sm font-semibold leading-6 text-slate-500">
+                  Merek dipisahkan agar pola kebiasaan bisa dianalisis lebih
+                  rapi tanpa mengubah cerita perjalananmu.
+                </p>
+              </div>
               <InfoRow
                 label="Baseline per hari"
                 value={`${profile.smokingBaselinePerDay} batang`}
@@ -355,7 +383,7 @@ function HeroStat({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-3xl bg-white/10 p-4">
       <p className="text-xs font-bold uppercase text-slate-300">{label}</p>
-      <p className="mt-2 font-extrabold text-white">{value}</p>
+      <p className="mt-2 break-words font-extrabold text-white">{value}</p>
     </div>
   );
 }
@@ -412,13 +440,13 @@ function PreferenceRow({
 function ProfileSkeleton() {
   return (
     <section className="space-y-6">
-      <div className="h-64 animate-pulse rounded-[2rem] bg-white" />
+      <div className="h-64 rounded-[2rem] bg-white skeleton-shimmer" />
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className="h-32 animate-pulse rounded-[2rem] bg-white" />
-        <div className="h-32 animate-pulse rounded-[2rem] bg-white" />
-        <div className="h-32 animate-pulse rounded-[2rem] bg-white" />
+        <div className="h-32 rounded-[2rem] bg-white skeleton-shimmer" />
+        <div className="h-32 rounded-[2rem] bg-white skeleton-shimmer" />
+        <div className="h-32 rounded-[2rem] bg-white skeleton-shimmer" />
       </div>
-      <div className="h-48 animate-pulse rounded-[2rem] bg-white" />
+      <div className="h-48 rounded-[2rem] bg-white skeleton-shimmer" />
     </section>
   );
 }
