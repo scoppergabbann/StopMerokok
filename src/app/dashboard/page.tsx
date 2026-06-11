@@ -8,6 +8,7 @@ import {
   ChevronRight,
   Flame,
   NotebookPen,
+  Target,
   Trophy,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
@@ -38,6 +39,62 @@ import {
 } from "@/lib/mvp-store";
 
 const weekdayLabels = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+
+function getDailyFocus(
+  today: DailyCheckin | null,
+  summary: ReturnType<typeof calculateSummary>,
+  relapseInsights: ReturnType<typeof getRelapseInsights>,
+) {
+  if (!today) {
+    return {
+      actionHref: "/check-in",
+      actionLabel: "Absen sekarang",
+      detail:
+        "Isi check-in sebelum malam agar streak dan kalender kamu tetap utuh.",
+      label: "Belum check-in",
+      title: "Selesaikan satu langkah kecil hari ini",
+    };
+  }
+
+  if (today.status === "smoke_free") {
+    const nextTarget =
+      summary.currentStreak < 7
+        ? 7
+        : summary.currentStreak < 30
+          ? 30
+          : summary.currentStreak < 90
+            ? 90
+            : 180;
+    return {
+      actionHref: "/community",
+      actionLabel: "Lihat komunitas",
+      detail: `${Math.max(nextTarget - summary.currentStreak, 0)} hari lagi menuju target ${nextTarget} hari. Jaga ritme yang sudah kamu bangun hari ini.`,
+      label: "Bebas rokok",
+      title: "Pertahankan napas lega ini sampai besok",
+    };
+  }
+
+  if (today.status === "reduced") {
+    return {
+      actionHref: "/craving",
+      actionLabel: "Buka bantuan craving",
+      detail:
+        "Mengurangi tetap progress. Coba tunda rokok berikutnya 10 menit dan ganti dengan air putih atau napas pelan.",
+      label: "Mengurangi",
+      title: "Fokus pada satu rokok yang bisa ditunda",
+    };
+  }
+
+  return {
+    actionHref: "/journal",
+    actionLabel: "Tulis refleksi",
+    detail: relapseInsights.topTrigger
+      ? `Trigger yang sering muncul: ${relapseInsights.topTrigger.name}. Catat apa yang terjadi supaya besok kamu punya rencana yang lebih lembut.`
+      : "Hari ini mungkin berat. Catat sebentar apa yang terjadi, lalu mulai lagi dari langkah yang paling kecil.",
+    label: "Mulai lagi",
+    title: "Kambuh bukan akhir perjalanan",
+  };
+}
 
 export default function DashboardPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -73,6 +130,7 @@ export default function DashboardPage() {
   const unlockedBadges = badges.filter((badge) => badge.isUnlocked);
   const relapseInsights = getRelapseInsights(checkins);
   const personalizedInsight = getPersonalizedInsight(checkins);
+  const dailyFocus = getDailyFocus(today, summary, relapseInsights);
   const progress = Math.min(summary.smokeFreeDays, summary.targetDays);
   const currentMonth = useMemo(() => {
     const now = new Date();
@@ -206,6 +264,36 @@ export default function DashboardPage() {
               <p className="mt-2 text-2xl font-extrabold">{value}</p>
             </div>
           ))}
+        </div>
+
+        <div className="rounded-[2rem] border border-[#DFF3E8] bg-white p-5 shadow-sm">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-4">
+              <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[#DFF3E8] text-[#2F7D57]">
+                <Target className="size-6" />
+              </span>
+              <div>
+                <span className="inline-flex rounded-full bg-[#E3F3F7] px-3 py-1 text-xs font-extrabold text-[#36798D]">
+                  {dailyFocus.label}
+                </span>
+                <h2 className="mt-3 text-2xl font-extrabold">
+                  Fokus hari ini
+                </h2>
+                <p className="mt-1 text-lg font-bold leading-8">
+                  {dailyFocus.title}
+                </p>
+                <p className="mt-2 leading-7 text-slate-600">
+                  {dailyFocus.detail}
+                </p>
+              </div>
+            </div>
+            <Link
+              className="rounded-2xl bg-[#1F2933] px-5 py-3 text-center font-extrabold text-white shadow-lg shadow-slate-300/60 transition hover:bg-[#111827]"
+              href={dailyFocus.actionHref}
+            >
+              {dailyFocus.actionLabel}
+            </Link>
+          </div>
         </div>
 
         <div className="grid gap-4 lg:grid-cols-[1fr_0.8fr]">

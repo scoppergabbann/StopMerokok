@@ -1,6 +1,6 @@
 "use client";
 
-import { BellRing } from "lucide-react";
+import { BellRing, Clock3 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/toast-provider";
 import {
@@ -104,22 +104,66 @@ export function NotificationOptIn() {
     });
   }
 
+  const canEnable = permission !== "denied" && permission !== "unsupported";
+  const statusLabel = isEnabled ? "Aktif" : getPermissionLabel(permission);
+
   return (
-    <div className="rounded-[2rem] bg-white p-5 shadow-sm">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="overflow-hidden rounded-[2rem] border border-[#DFF3E8] bg-white shadow-xl shadow-slate-200/60">
+      <div className="bg-gradient-to-r from-[#DFF3E8] via-white to-[#E3F3F7] px-5 py-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="grid size-9 place-items-center rounded-2xl bg-white text-[#2F7D57] shadow-sm">
+              <BellRing className="size-5" />
+            </span>
+            <p className="font-extrabold text-[#1F2933]">
+              Jangan sampai lupa check-in hari ini
+            </p>
+          </div>
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-extrabold ${
+              isEnabled
+                ? "bg-[#4FAE7B] text-white"
+                : "bg-white text-slate-600"
+            }`}
+          >
+            {statusLabel}
+          </span>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-start gap-4">
           <span className="grid size-12 place-items-center rounded-2xl bg-[#E3F3F7] text-[#36798D]">
-            <BellRing className="size-6" />
+            <Clock3 className="size-6" />
           </span>
           <div>
             <p className="text-xl font-extrabold">Reminder check-in</p>
             <p className="mt-1 leading-7 text-slate-600">
-              Dapatkan notifikasi malam hari kalau kamu belum mengisi absen.
+              Pilih jam yang paling realistis. Reminder ini hanya untuk
+              mengajak kamu hadir lagi, bukan menekan.
             </p>
-            <p className="mt-2 text-sm font-bold text-slate-500">
-              Status: {isEnabled ? "Aktif" : getPermissionLabel(permission)} ·{" "}
-              {String(reminderHour).padStart(2, "0")}:00
-            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {[19, 20, 21].map((hour) => (
+                <button
+                  className={`rounded-full px-4 py-2 text-sm font-extrabold transition ${
+                    reminderHour === hour
+                      ? "bg-[#36798D] text-white"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  }`}
+                  key={hour}
+                  onClick={() => updateReminderHour(hour)}
+                  type="button"
+                >
+                  {String(hour).padStart(2, "0")}:00
+                </button>
+              ))}
+            </div>
+            {permission === "denied" && (
+              <p className="mt-3 text-sm font-bold text-[#B75D5D]">
+                Notifikasi sedang diblokir dari browser. Izinkan lagi dari
+                pengaturan browser kalau ingin mengaktifkannya.
+              </p>
+            )}
           </div>
         </div>
 
@@ -143,7 +187,7 @@ export function NotificationOptIn() {
 
           {isEnabled ? (
             <button
-              className="rounded-2xl border border-slate-200 bg-white px-5 py-3 font-extrabold text-slate-700"
+              className="rounded-2xl border border-slate-200 bg-white px-5 py-3 font-extrabold text-slate-700 transition hover:border-slate-300"
               onClick={disableNotifications}
               type="button"
             >
@@ -152,11 +196,11 @@ export function NotificationOptIn() {
           ) : (
             <button
               className="rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20 disabled:cursor-not-allowed disabled:bg-slate-300"
-              disabled={permission === "denied" || permission === "unsupported"}
+              disabled={!canEnable}
               onClick={enableNotifications}
               type="button"
             >
-              Aktifkan
+              Aktifkan reminder
             </button>
           )}
         </div>

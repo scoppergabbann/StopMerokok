@@ -3,7 +3,6 @@ import {
   BellRing,
   CalendarClock,
   CircleCheckBig,
-  Download,
   HandHeart,
   HomeIcon,
   PencilLine,
@@ -16,32 +15,32 @@ const features = [
   {
     title: "Absen harian",
     description:
-      "Pilih bebas rokok, mengurangi, atau kambuh. Semua dicatat tanpa rasa dihakimi.",
+      "Pilih bebas rokok, mengurangi, atau kambuh. Setelah tersimpan, ada celebration lembut yang menghargai langkahmu.",
   },
   {
-    title: "Koreksi riwayat",
+    title: "Komunitas suportif",
     description:
-      "Lupa isi kemarin? Pilih tanggal lama, koreksi status, mood, trigger, dan catatan tanpa drama.",
+      "Bagikan progress singkat, beri semangat, dan ikuti tantangan 7, 30, hingga 90 hari tanpa merasa sendirian.",
   },
   {
-    title: "Progress yang terasa",
+    title: "Leaderboard aktif",
     description:
-      "Lihat streak, kalender, grafik, uang dihemat, dan batang rokok yang berhasil dihindari.",
+      "Ranking fokus pada streak bebas rokok yang masih aktif, jadi kompetisinya terasa adil dan sehat.",
+  },
+  {
+    title: "Kalender dan track record",
+    description:
+      "Lihat bulan ini atau bulan sebelumnya, lengkap dengan warna status dan nama hari yang jelas.",
   },
   {
     title: "Savings jadi kebaikan",
     description:
-      "Buat beberapa target reward atau donasi, lalu catat riwayat savings yang sudah dialokasikan.",
-  },
-  {
-    title: "Backup data pribadi",
-    description:
-      "Download CSV progress untuk refleksi bulanan atau sekadar menyimpan perjalananmu sendiri.",
+      "Uang yang biasanya habis untuk rokok bisa diarahkan ke reward pribadi, keluarga, atau donasi.",
   },
   {
     title: "Reminder dan craving help",
     description:
-      "Timer 5 menit, napas pelan, checklist kecil, dan kalimat yang bantu kamu melewati momen berat.",
+      "Reminder harian, timer 5 menit, napas pelan, dan bantuan kecil saat dorongan merokok muncul.",
   },
 ];
 
@@ -53,37 +52,37 @@ const stats = [
 
 const supportSteps = [
   {
-    title: "Catat tanpa takut dihakimi",
+    title: "Catat hari ini dengan jujur",
     description:
-      "Pilih kondisi hari ini dengan jujur. Bebas rokok, mengurangi, atau kambuh tetap jadi data untuk memahami diri.",
+      "Pilih kondisi hari ini. Bebas rokok, mengurangi, atau kambuh tetap jadi data untuk memahami diri.",
   },
   {
-    title: "Lihat pola yang berulang",
+    title: "Rayakan langkah kecil",
     description:
-      "StopMerokok bantu menampilkan streak, mood, trigger, dan momen yang paling sering membuat kamu ingin merokok.",
+      "Setelah check-in, splash screen memberi reward yang tenang, badge milestone, dan target berikutnya.",
   },
   {
-    title: "Ubah hemat jadi makna",
+    title: "Kembali besok dengan arah",
     description:
-      "Uang yang biasanya habis untuk rokok bisa diarahkan ke reward pribadi atau target berbagi.",
+      "Dashboard menampilkan fokus hari ini, kalender, insight trigger, komunitas, dan reminder agar kebiasaan tetap hidup.",
   },
 ];
 
 const previewFeatures = [
   {
     icon: CalendarClock,
-    label: "Edit history",
-    value: "Koreksi 12 Mei",
+    label: "Kalender",
+    value: "Riwayat bulan lalu",
   },
   {
-    icon: HandHeart,
-    label: "Target berbagi",
-    value: "3 target aktif",
+    icon: UsersRound,
+    label: "Komunitas",
+    value: "Tantangan 30 hari",
   },
   {
-    icon: Download,
-    label: "Backup",
-    value: "CSV siap",
+    icon: BarChart3,
+    label: "Leaderboard",
+    value: "Streak aktif",
   },
   {
     icon: BellRing,
@@ -174,8 +173,9 @@ export default function Home() {
               Berhenti merokok tidak harus sendirian.
             </h1>
             <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-slate-600 sm:text-xl">
-              Check-in harian, koreksi riwayat, insight trigger, reminder, dan
-              savings tracker yang bisa diarahkan ke reward atau donasi.
+              Check-in harian, celebration yang tenang, komunitas suportif,
+              leaderboard streak aktif, reminder, dan savings tracker yang
+              bisa diarahkan ke reward atau donasi.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
@@ -275,8 +275,7 @@ export default function Home() {
                     Motivasi hari ini
                   </p>
                   <p className="mt-2 text-base font-semibold leading-7">
-                    Mengurangi tetap progress. Terima kasih sudah jujur sama
-                    dirimu sendiri.
+                    Hari ke-7 tercatat. Satu hari lagi, satu napas lebih lega.
                   </p>
                 </div>
 
@@ -284,19 +283,19 @@ export default function Home() {
                   <div className="rounded-3xl bg-white p-4">
                     <PencilLine className="size-5 text-[#4FAE7B]" />
                     <p className="mt-3 text-xs font-bold text-slate-500">
-                      Koreksi
+                      Fokus
                     </p>
                     <p className="mt-1 text-sm font-extrabold">
-                      Riwayat kemarin
+                      Target hari ini
                     </p>
                   </div>
                   <div className="rounded-3xl bg-white p-4">
-                    <HandHeart className="size-5 text-[#36798D]" />
+                    <UsersRound className="size-5 text-[#36798D]" />
                     <p className="mt-3 text-xs font-bold text-slate-500">
-                      Donasi
+                      Komunitas
                     </p>
                     <p className="mt-1 text-sm font-extrabold">
-                      Rp40.000 tersalur
+                      4 peserta aktif
                     </p>
                   </div>
                 </div>
@@ -392,10 +391,10 @@ export default function Home() {
           <div className="grid gap-5 sm:grid-cols-2">
             {[
               "Streak bebas rokok yang tetap terasa suportif.",
-              "Check-in bisa dikoreksi kalau user lupa isi kemarin.",
+              "Celebration splash setelah absen tanpa terasa berlebihan.",
+              "Komunitas dengan dukungan singkat dan tantangan bersama.",
+              "Leaderboard khusus streak aktif agar kompetisinya sehat.",
               "Savings tracker multi target untuk reward pribadi dan donasi.",
-              "Export CSV agar perjalanan pribadi bisa dibackup.",
-              "Insight trigger agar user belajar dari pola kambuh.",
               "Reminder harian agar kebiasaan check-in makin konsisten.",
             ].map((item) => (
               <Reveal className="rounded-3xl bg-white p-5 shadow-sm" key={item}>
