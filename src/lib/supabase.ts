@@ -15,6 +15,7 @@ export const supabase = isSupabaseConfigured
   : null;
 
 const AUTH_SESSION_EXPIRES_AT_KEY = "stopmerokok.authSessionExpiresAt";
+const AUTH_BROWSER_SESSION_KEY = "stopmerokok.authBrowserSession";
 
 export function rememberAuthSession(days = 7) {
   if (typeof window === "undefined") {
@@ -23,6 +24,7 @@ export function rememberAuthSession(days = 7) {
 
   const expiresAt = Date.now() + days * 24 * 60 * 60 * 1000;
   window.localStorage.setItem(AUTH_SESSION_EXPIRES_AT_KEY, String(expiresAt));
+  window.sessionStorage.removeItem(AUTH_BROWSER_SESSION_KEY);
 }
 
 export function clearRememberedAuthSession() {
@@ -31,18 +33,32 @@ export function clearRememberedAuthSession() {
   }
 
   window.localStorage.removeItem(AUTH_SESSION_EXPIRES_AT_KEY);
+  window.sessionStorage.removeItem(AUTH_BROWSER_SESSION_KEY);
 }
 
-export function ensureRememberedAuthSession(days = 7) {
+export function rememberAuthForBrowserSession() {
   if (typeof window === "undefined") {
     return;
   }
 
-  if (window.localStorage.getItem(AUTH_SESSION_EXPIRES_AT_KEY)) {
-    return;
+  window.localStorage.removeItem(AUTH_SESSION_EXPIRES_AT_KEY);
+  window.sessionStorage.setItem(AUTH_BROWSER_SESSION_KEY, "true");
+}
+
+export function hasRememberedAuthSession() {
+  if (typeof window === "undefined") {
+    return false;
   }
 
-  rememberAuthSession(days);
+  return Boolean(window.localStorage.getItem(AUTH_SESSION_EXPIRES_AT_KEY));
+}
+
+export function hasBrowserSessionAuth() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  return window.sessionStorage.getItem(AUTH_BROWSER_SESSION_KEY) === "true";
 }
 
 export function hasRememberedAuthSessionExpired() {

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { Check, LockKeyhole, Mail } from "lucide-react";
+import { Check, Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
 import {
   hasTurnstileSiteKey,
   TurnstileCaptcha,
@@ -14,8 +14,8 @@ import { useToast } from "@/components/toast-provider";
 import { trackEvent } from "@/lib/analytics";
 import { loadProfile } from "@/lib/client-data";
 import {
-  clearRememberedAuthSession,
   isSupabaseConfigured,
+  rememberAuthForBrowserSession,
   rememberAuthSession,
   supabase,
 } from "@/lib/supabase";
@@ -25,6 +25,7 @@ export default function LoginPage() {
   const { showToast } = useToast();
   const [email, setEmail] = useState("");
   const [rememberMe, setRememberMe] = useState(true);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSendingReset, setIsSendingReset] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
@@ -243,7 +244,7 @@ export default function LoginPage() {
                   if (rememberMe) {
                     rememberAuthSession(7);
                   } else {
-                    clearRememberedAuthSession();
+                    rememberAuthForBrowserSession();
                   }
 
                   const profile = await loadProfile();
@@ -274,6 +275,7 @@ export default function LoginPage() {
                 <span className="mt-2 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm transition focus-within:border-[#4FAE7B] focus-within:ring-4 focus-within:ring-[#DFF3E8]">
                   <Mail className="size-5 shrink-0 text-slate-400" />
                   <input
+                    autoComplete="email"
                     className="min-w-0 flex-1 bg-transparent text-slate-800 outline-none placeholder:text-slate-400"
                     name="email"
                     onChange={(event) => setEmail(event.target.value)}
@@ -292,12 +294,29 @@ export default function LoginPage() {
                 <span className="mt-2 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm transition focus-within:border-[#4FAE7B] focus-within:ring-4 focus-within:ring-[#DFF3E8]">
                   <LockKeyhole className="size-5 shrink-0 text-slate-400" />
                   <input
+                    autoComplete="current-password"
                     className="min-w-0 flex-1 bg-transparent text-slate-800 outline-none placeholder:text-slate-400"
                     name="password"
                     placeholder="Password"
                     required
-                    type="password"
+                    type={isPasswordVisible ? "text" : "password"}
                   />
+                  <button
+                    aria-label={
+                      isPasswordVisible
+                        ? "Sembunyikan password"
+                        : "Lihat password"
+                    }
+                    className="grid size-9 shrink-0 place-items-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-[#36798D]"
+                    onClick={() => setIsPasswordVisible((current) => !current)}
+                    type="button"
+                  >
+                    {isPasswordVisible ? (
+                      <EyeOff className="size-5" />
+                    ) : (
+                      <Eye className="size-5" />
+                    )}
+                  </button>
                 </span>
               </label>
 
@@ -309,7 +328,7 @@ export default function LoginPage() {
                     onChange={(event) => setRememberMe(event.target.checked)}
                     type="checkbox"
                   />
-                  Remember Me
+                  Ingatkan saya?
                 </label>
                 <button
                   className="text-sm font-extrabold text-[#36798D] transition hover:text-[#2F7D57] disabled:opacity-60"

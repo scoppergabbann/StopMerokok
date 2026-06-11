@@ -15,7 +15,8 @@ import { useToast } from "@/components/toast-provider";
 import { loadProfile } from "@/lib/client-data";
 import {
   clearRememberedAuthSession,
-  ensureRememberedAuthSession,
+  hasBrowserSessionAuth,
+  hasRememberedAuthSession,
   hasRememberedAuthSessionExpired,
   isSupabaseConfigured,
   supabase,
@@ -59,6 +60,13 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
         return;
       }
 
+      if (!hasRememberedAuthSession() && !hasBrowserSessionAuth()) {
+        await authClient.auth.signOut();
+        clearRememberedAuthSession();
+        router.replace("/login");
+        return;
+      }
+
       if (hasRememberedAuthSessionExpired()) {
         await authClient.auth.signOut();
         clearRememberedAuthSession();
@@ -70,8 +78,6 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
         router.replace("/login");
         return;
       }
-
-      ensureRememberedAuthSession(7);
 
       const profile = await loadProfile();
 
