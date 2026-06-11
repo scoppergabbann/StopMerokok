@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { EmptyState } from "@/components/empty-state";
 import { useToast } from "@/components/toast-provider";
-import { BarChart3, Flame, NotebookPen, Trophy } from "lucide-react";
+import { Flame, NotebookPen, Trophy } from "lucide-react";
 import {
   loadCheckins,
   loadLeaderboard,
@@ -46,7 +46,6 @@ export default function StatsPage() {
 
   const summary = calculateSummary(profile, checkins);
   const insights = getRelapseInsights(checkins);
-  const maxSmoked = Math.max(1, ...checkins.map((item) => item.smokedCount));
   const recentCheckins = [...checkins]
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, 8);
@@ -195,51 +194,6 @@ export default function StatsPage() {
               ))
             )}
           </div>
-        </div>
-
-        <div className="mt-6 rounded-[2rem] bg-white p-5 shadow-xl shadow-slate-200/70">
-          <h2 className="text-xl font-extrabold">Rokok per hari</h2>
-          {checkins.length === 0 ? (
-            <div className="mt-4">
-              <EmptyState
-                actionHref="/check-in"
-                actionLabel="Isi absen pertama"
-                body="Grafik ini akan terbentuk otomatis setelah kamu mulai mencatat jumlah rokok harian."
-                icon={BarChart3}
-                title="Grafik menunggu check-in pertamamu"
-              />
-            </div>
-          ) : (
-            <div className="mt-5 space-y-4">
-              {checkins.slice(-10).map((checkin) => (
-                <div key={checkin.date}>
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-sm font-bold text-slate-500">
-                      {checkin.date}
-                    </span>
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs font-extrabold ${
-                        statusStyles[checkin.status]
-                      }`}
-                    >
-                      {statusLabels[checkin.status]}
-                    </span>
-                  </div>
-                  <div className="h-3 overflow-hidden rounded-full bg-slate-100">
-                    <div
-                      className="h-full rounded-full bg-[#4FAE7B]"
-                      style={{
-                        width: `${(checkin.smokedCount / maxSmoked) * 100}%`,
-                      }}
-                    />
-                  </div>
-                  <p className="mt-1 text-sm font-semibold text-slate-500">
-                    {checkin.smokedCount} batang
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
 
         <div className="mt-6 rounded-[2rem] bg-white p-5 shadow-xl shadow-slate-200/70">
