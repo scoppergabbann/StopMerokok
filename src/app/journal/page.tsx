@@ -37,7 +37,7 @@ export default function JournalPage() {
       <section className="grid gap-6 lg:grid-cols-[1fr_0.8fr]">
         <div>
           <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-            Journal
+            Jurnal
           </p>
           <h1 className="mt-2 text-4xl font-extrabold">Catatan harian</h1>
           <p className="mt-3 leading-7 text-slate-600">
@@ -66,14 +66,14 @@ export default function JournalPage() {
               setJournals([...nextJournals].reverse());
               showToast({
                 message: "Catatan hari ini sudah tersimpan.",
-                title: "Journal tersimpan",
+                title: "Jurnal tersimpan",
                 variant: "success",
               });
             }}
           >
             <label className="block">
               <span className="text-sm font-bold text-slate-600">
-                Mood hari ini
+                Perasaan hari ini
               </span>
               <select
                 className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-[#4FAE7B]"
@@ -109,22 +109,22 @@ export default function JournalPage() {
               defaultValue={todayJournal?.tomorrowFocus}
               label="Besok ingin lebih baik dalam hal apa?"
               name="tomorrowFocus"
-              placeholder="Contoh: menghindari kopi malam, jalan 5 menit saat craving."
+              placeholder="Contoh: menghindari kopi malam, jalan 5 menit saat dorongan merokok muncul."
             />
             <button className="w-full rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20">
-              Simpan journal hari ini
+              Simpan jurnal hari ini
             </button>
           </form>
         </div>
 
         <aside className="rounded-[2rem] bg-white p-5 shadow-sm">
-          <h2 className="text-xl font-extrabold">Riwayat journal</h2>
+          <h2 className="text-xl font-extrabold">Riwayat jurnal</h2>
           <div className="mt-5 space-y-4">
             {journals.length === 0 ? (
               <EmptyState
                 body="Mulai dari satu kalimat saja. Catatan pertama akan membantu kamu melihat pola emosi dan trigger besok."
                 icon={NotebookPen}
-                title="Journal pertamamu belum ditulis"
+                title="Jurnal pertamamu belum ditulis"
               />
             ) : (
               journals.slice(0, 6).map((journal) => (

@@ -21,7 +21,7 @@ const movementOptions: Array<{
 }> = [
   {
     durationMinutes: 5,
-    helper: "Saat craving muncul, mulai dari keluar kamar atau jalan di depan rumah.",
+    helper: "Saat dorongan merokok muncul, mulai dari keluar kamar atau jalan di depan rumah.",
     label: "Jalan 5 menit",
     type: "walk_5",
   },
@@ -61,7 +61,7 @@ const movementLabels: Record<MovementLog["type"], string> = {
 
 function getMovementMessage(totalMinutes: number, count: number) {
   if (count === 0) {
-    return "Saat craving datang, coba mulai dari jalan 5 menit. Tidak perlu jauh, yang penting tubuh bergerak dulu.";
+    return "Saat dorongan merokok datang, coba mulai dari jalan 5 menit. Tidak perlu jauh, yang penting tubuh bergerak dulu.";
   }
 
   if (totalMinutes >= 90) {
@@ -72,7 +72,7 @@ function getMovementMessage(totalMinutes: number, count: number) {
     return "Gerak kecilmu minggu ini sudah terasa. Saat ingin merokok, tubuhmu punya jalan pulang yang lain.";
   }
 
-  return "Awal yang bagus. Satu aktivitas ringan tetap bisa jadi pengganti craving yang lebih sehat.";
+  return "Awal yang bagus. Satu aktivitas ringan tetap bisa jadi pengganti dorongan merokok yang lebih sehat.";
 }
 
 export default function ActivityPage() {
@@ -133,7 +133,7 @@ export default function ActivityPage() {
     setNote("");
     showToast({
       message: "Gerak kecilmu sudah tercatat.",
-      title: "Activity tersimpan",
+      title: "Aktivitas tersimpan",
       variant: "success",
     });
   }
@@ -143,12 +143,12 @@ export default function ActivityPage() {
       <section className="space-y-6">
         <div className="rounded-[2rem] bg-[#1F2933] p-5 text-white shadow-xl shadow-slate-300/60 sm:p-6">
           <p className="text-sm font-extrabold uppercase text-[#9DE5BD]">
-            Activity
+            Aktivitas
           </p>
           <div className="mt-3 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
               <h1 className="text-4xl font-extrabold">
-                Gerak kecil sebagai pengganti craving.
+                Gerak kecil sebagai pengganti dorongan merokok.
               </h1>
               <p className="mt-3 max-w-2xl leading-7 text-slate-300">
                 Catat jalan singkat, napas pelan, stretching, atau gerak ringan
@@ -220,26 +220,26 @@ export default function ActivityPage() {
             <textarea
               className="mt-2 min-h-24 w-full resize-none rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-[#4FAE7B]"
               onChange={(event) => setNote(event.target.value)}
-              placeholder="Contoh: Craving muncul setelah kopi, lalu aku jalan sebentar."
+              placeholder="Contoh: Dorongan merokok muncul setelah kopi, lalu aku jalan sebentar."
               value={note}
             />
           </label>
 
           <button className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20 sm:w-auto">
-            Simpan activity
+            Simpan aktivitas
             <MoveRight className="size-4" />
           </button>
         </form>
 
         <div className="grid gap-4 md:grid-cols-3">
-          <Metric label="Activity 7 hari" value={`${recentLogs.length}x`} />
+          <Metric label="Aktivitas 7 hari" value={`${recentLogs.length}x`} />
           <Metric label="Total gerak" value={`${totalMinutes} menit`} />
           <Metric label="Hari aktif" value={`${activeDays} hari`} />
         </div>
 
         <div className="rounded-[2rem] bg-[#E3F3F7] p-5">
           <p className="text-sm font-extrabold uppercase text-[#36798D]">
-            Insight gerak
+            Wawasan gerak
           </p>
           <p className="mt-3 text-lg font-bold leading-8">
             {getMovementMessage(totalMinutes, recentLogs.length)}
@@ -250,7 +250,7 @@ export default function ActivityPage() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-                Riwayat activity
+                Riwayat aktivitas
               </p>
               <h2 className="mt-2 text-2xl font-extrabold">
                 Gerak yang kamu pilih
@@ -260,7 +260,7 @@ export default function ActivityPage() {
               className="rounded-full bg-[#DFF3E8] px-4 py-2 text-sm font-extrabold text-[#2F7D57]"
               href="/craving"
             >
-              Lagi craving?
+              Lagi ingin merokok?
             </Link>
           </div>
 
@@ -271,10 +271,10 @@ export default function ActivityPage() {
               <div className="rounded-[1.5rem] border border-dashed border-[#BFE7D1] bg-[#F7FBF9] p-5 text-center">
                 <Footprints className="mx-auto size-9 text-[#4FAE7B]" />
                 <h3 className="mt-3 text-xl font-extrabold">
-                  Belum ada activity
+                  Belum ada aktivitas
                 </h3>
                 <p className="mx-auto mt-2 max-w-md leading-7 text-slate-600">
-                  Kalau craving muncul, mulai dari jalan 5 menit atau napas 3
+                  Kalau dorongan merokok muncul, mulai dari jalan 5 menit atau napas 3
                   menit. Setelah itu catat di sini.
                 </p>
               </div>
@@ -310,10 +310,10 @@ export default function ActivityPage() {
                 <BadgeCheck className="size-6" />
               </span>
               <div>
-                <h2 className="text-xl font-extrabold">Badge aktivitas</h2>
+                <h2 className="text-xl font-extrabold">Lencana aktivitas</h2>
                 <p className="mt-2 leading-7 text-slate-600">
-                  Badge seperti Craving Walker, Napas Baru, dan 7 Hari Aktif
-                  bisa dibuka dari kombinasi check-in dan gerak ringan.
+                  Lencana seperti Pejalan Dorongan, Napas Baru, dan 7 Hari Aktif
+                  bisa dibuka dari kombinasi absen dan gerak ringan.
                 </p>
               </div>
             </div>
@@ -327,8 +327,8 @@ export default function ActivityPage() {
               <div>
                 <h2 className="text-xl font-extrabold">Strava nanti dulu</h2>
                 <p className="mt-2 leading-7 text-slate-600">
-                  Integrasi otomatis dengan Strava diparkir dulu karena API
-                  developer berbayar. Activity manual ini tetap bisa dipakai
+                  Integrasi otomatis dengan Strava diparkir dulu karena akses
+                  pengembang berbayar. Aktivitas manual ini tetap bisa dipakai
                   gratis mulai sekarang.
                 </p>
               </div>

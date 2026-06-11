@@ -74,8 +74,8 @@ export function NotificationOptIn() {
     trackEvent("reminder_enabled", { reminderHour });
     setIsEnabled(true);
     showToast({
-      message: `Kami akan mengingatkan sekitar pukul ${String(reminderHour).padStart(2, "0")}:00 kalau kamu belum check-in.`,
-      title: "Reminder aktif",
+      message: `Kami akan mengingatkan sekitar pukul ${String(reminderHour).padStart(2, "0")}:00 kalau kamu belum absen.`,
+      title: "Pengingat aktif",
       variant: "success",
     });
   }
@@ -87,8 +87,8 @@ export function NotificationOptIn() {
     });
     setIsEnabled(false);
     showToast({
-      message: "Reminder check-in harian dimatikan.",
-      title: "Reminder nonaktif",
+      message: "Pengingat absen harian dimatikan.",
+      title: "Pengingat nonaktif",
       variant: "info",
     });
   }
@@ -100,8 +100,8 @@ export function NotificationOptIn() {
       reminderHour: nextHour,
     });
     showToast({
-      message: `Reminder diatur ke pukul ${String(nextHour).padStart(2, "0")}:00.`,
-      title: "Jam reminder tersimpan",
+      message: `Pengingat diatur ke pukul ${String(nextHour).padStart(2, "0")}:00.`,
+      title: "Jam pengingat tersimpan",
       variant: "success",
     });
   }
@@ -118,7 +118,7 @@ export function NotificationOptIn() {
               <BellRing className="size-5" />
             </span>
             <p className="font-extrabold text-[#1F2933]">
-              Jangan sampai lupa check-in hari ini
+              Jangan sampai lupa absen hari ini
             </p>
           </div>
           <span
@@ -139,9 +139,9 @@ export function NotificationOptIn() {
             <Clock3 className="size-6" />
           </span>
           <div>
-            <p className="text-xl font-extrabold">Reminder check-in</p>
+            <p className="text-xl font-extrabold">Pengingat absen</p>
             <p className="mt-1 leading-7 text-slate-600">
-              Pilih jam yang paling realistis. Reminder ini hanya untuk
+              Pilih jam yang paling realistis. Pengingat ini hanya untuk
               mengajak kamu hadir lagi, bukan menekan.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -171,7 +171,7 @@ export function NotificationOptIn() {
 
         <div className="flex flex-col gap-3 sm:items-end">
           <label className="text-sm font-bold text-slate-600">
-            Jam reminder
+            Jam pengingat
             <select
               className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-[#4FAE7B]"
               onChange={(event) => updateReminderHour(Number(event.target.value))}
@@ -202,7 +202,7 @@ export function NotificationOptIn() {
               onClick={enableNotifications}
               type="button"
             >
-              Aktifkan reminder
+              Aktifkan pengingat
             </button>
           )}
         </div>

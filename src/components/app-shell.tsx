@@ -23,9 +23,9 @@ import {
 } from "@/lib/supabase";
 
 const navItems = [
-  { href: "/dashboard", icon: HomeIcon, label: "Home" },
-  { href: "/stats", icon: BarChart3, label: "Statistic" },
-  { href: "/check-in", icon: CircleCheckBig, label: "Check-in", primary: true },
+  { href: "/dashboard", icon: HomeIcon, label: "Beranda" },
+  { href: "/stats", icon: BarChart3, label: "Statistik" },
+  { href: "/check-in", icon: CircleCheckBig, label: "Absen", primary: true },
   { href: "/community", icon: UsersRound, label: "Komunitas" },
   { href: "/berbagi", icon: HandHeart, label: "Berbagi" },
 ];
@@ -71,7 +71,7 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
         await authClient.auth.signOut();
         clearRememberedAuthSession();
         showToast({
-          message: "Masuk lagi untuk melanjutkan progress kamu.",
+          message: "Masuk lagi untuk melanjutkan progres kamu.",
           title: "Sesi 7 hari selesai",
           variant: "info",
         });
@@ -126,14 +126,14 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
 
                 showToast({
                   message: "Kamu keluar dari sesi saat ini.",
-                  title: "Logout berhasil",
+                  title: "Keluar berhasil",
                   variant: "success",
                 });
                 window.setTimeout(() => router.push("/"), 350);
               }}
               type="button"
             >
-              Logout
+              Keluar
             </button>
           </div>
         </div>

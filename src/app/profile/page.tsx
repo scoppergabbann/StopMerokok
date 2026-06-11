@@ -56,7 +56,7 @@ export default function ProfilePage() {
     <AppShell>
       <section>
         <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-          Profile
+          Profil
         </p>
         <h1 className="mt-2 text-4xl font-extrabold">Profil perjalanan</h1>
 
@@ -64,8 +64,8 @@ export default function ProfilePage() {
           {!profile ? (
             <EmptyState
               actionHref="/onboarding"
-              actionLabel="Isi onboarding"
-              body="Lengkapi data dasar dulu agar savings, target, dan insight harian bisa dihitung sesuai kebiasaanmu."
+              actionLabel="Isi data awal"
+              body="Lengkapi data dasar dulu agar penghematan, target, dan wawasan harian bisa dihitung sesuai kebiasaanmu."
               icon={UserRound}
               title="Profil perjalanan belum lengkap"
             />
@@ -97,7 +97,7 @@ export default function ProfilePage() {
                 setProfile(nextProfile);
                 showToast({
                   message: "Profil perjalanan kamu sudah diperbarui.",
-                  title: "Profile tersimpan",
+                  title: "Profil tersimpan",
                   variant: "success",
                 });
               }}
@@ -276,14 +276,14 @@ export default function ProfilePage() {
 
                   showToast({
                     message: "Kamu keluar dari sesi saat ini.",
-                    title: "Logout berhasil",
+                    title: "Keluar berhasil",
                     variant: "success",
                   });
                   window.setTimeout(() => router.push("/"), 400);
                 }}
                 type="button"
               >
-                Logout
+                Keluar
               </button>
             </form>
           )}

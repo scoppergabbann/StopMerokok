@@ -25,7 +25,7 @@ const steps = [
     eyebrow: "Langkah 1 dari 3",
     title: "Kenalan dulu, pelan-pelan.",
     description:
-      "StopMerokok akan memakai data dasar ini untuk membuat sapaan, statistik, dan reminder yang terasa personal.",
+      "StopMerokok akan memakai data dasar ini untuk membuat sapaan, statistik, dan pengingat yang terasa personal.",
   },
   {
     eyebrow: "Langkah 2 dari 3",
@@ -37,7 +37,7 @@ const steps = [
     eyebrow: "Langkah 3 dari 3",
     title: "Tentukan arah perjalananmu.",
     description:
-      "Pilih target dan alasan berhenti supaya dashboard bisa mengingatkan hal yang benar-benar penting buatmu.",
+      "Pilih target dan alasan berhenti supaya beranda bisa mengingatkan hal yang benar-benar penting buatmu.",
   },
 ];
 
@@ -129,8 +129,8 @@ export default function OnboardingPage() {
     });
 
     showToast({
-      message: "Data awal kamu sudah tersimpan. Kita mulai dari dashboard.",
-      title: "Onboarding selesai",
+      message: "Data awal kamu sudah tersimpan. Kita mulai dari beranda.",
+      title: "Data awal selesai",
       variant: "success",
     });
     window.setTimeout(() => router.push("/dashboard"), 450);
@@ -144,10 +144,10 @@ export default function OnboardingPage() {
             StopMerokok PWA
           </p>
           <h1 className="mt-4 text-4xl font-extrabold leading-tight">
-            Setup singkat sebelum kamu mulai check-in.
+            Pengaturan singkat sebelum kamu mulai absen.
           </h1>
           <p className="mt-4 leading-7 text-slate-300">
-            Tiga layar ini membantu app mengenal pola awalmu: siapa kamu, rokok
+            Tiga layar ini membantu aplikasi mengenal pola awalmu: siapa kamu, rokok
             apa yang biasa dipakai, dan kenapa kamu ingin berubah.
           </p>
           <div className="mt-8 grid gap-3">
@@ -385,7 +385,7 @@ export default function OnboardingPage() {
                 onClick={finishOnboarding}
                 type="button"
               >
-                Simpan dan masuk dashboard
+                Simpan dan masuk beranda
               </button>
             )}
           </div>

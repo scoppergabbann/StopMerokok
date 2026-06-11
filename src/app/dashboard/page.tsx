@@ -50,8 +50,8 @@ function getDailyFocus(
       actionHref: "/check-in",
       actionLabel: "Absen sekarang",
       detail:
-        "Isi check-in sebelum malam agar streak dan kalender kamu tetap utuh.",
-      label: "Belum check-in",
+        "Isi absen sebelum malam agar rentetan dan kalender kamu tetap utuh.",
+      label: "Belum absen",
       title: "Selesaikan satu langkah kecil hari ini",
     };
   }
@@ -77,9 +77,9 @@ function getDailyFocus(
   if (today.status === "reduced") {
     return {
       actionHref: "/craving",
-      actionLabel: "Buka bantuan craving",
+      actionLabel: "Buka bantuan dorongan",
       detail:
-        "Mengurangi tetap progress. Coba tunda rokok berikutnya 10 menit dan ganti dengan air putih atau napas pelan.",
+        "Mengurangi tetap progres. Coba tunda rokok berikutnya 10 menit dan ganti dengan air putih atau napas pelan.",
       label: "Mengurangi",
       title: "Fokus pada satu rokok yang bisa ditunda",
     };
@@ -187,8 +187,8 @@ export default function DashboardPage() {
         message:
           newBadges.length === 1
             ? `${newBadges[0].name} baru saja terbuka.`
-            : `${newBadges.length} badge baru terbuka.`,
-        title: "Badge baru",
+            : `${newBadges.length} lencana baru terbuka.`,
+        title: "Lencana baru",
         variant: "success",
       });
     });
@@ -199,7 +199,7 @@ export default function DashboardPage() {
       <section className="space-y-6">
         <div>
           <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-            Dashboard
+            Beranda
           </p>
           <h1 className="mt-2 text-4xl font-extrabold">
             Halo, {profile?.name ?? "Teman"}. Gimana kabarmu hari ini?
@@ -213,7 +213,7 @@ export default function DashboardPage() {
           <div className="rounded-[2rem] bg-[#FFF4CC] p-5">
             <p className="font-extrabold">Data awal belum lengkap.</p>
             <p className="mt-2 leading-7 text-slate-700">
-              Isi onboarding dulu agar progress, savings, dan target bisa
+              Isi data awal dulu agar progres, penghematan, dan target bisa
               dihitung.
             </p>
             <Link
@@ -254,7 +254,7 @@ export default function DashboardPage() {
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            ["Current streak", `${summary.currentStreak} hari`],
+            ["Rentetan aktif", `${summary.currentStreak} hari`],
             ["Hari bebas rokok", `${summary.smokeFreeDays} hari`],
             ["Uang dihemat", formatRupiah(summary.savedMoney)],
             ["Batang dihindari", `${summary.avoidedSticks} batang`],
@@ -301,7 +301,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm font-bold text-slate-500">
-                  Progress target
+                Kemajuan target
                 </p>
                 <p className="mt-1 text-xl font-extrabold">
                   {progress} dari {summary.targetDays} hari
@@ -336,7 +336,7 @@ export default function DashboardPage() {
           <div className="mb-5 flex items-center justify-between gap-4">
             <div>
               <p className="text-sm font-bold text-slate-500">
-                Kalender progress
+                Kalender progres
               </p>
               <h2 className="mt-1 text-xl font-extrabold capitalize">
                 {isCurrentMonth ? "Bulan ini" : monthLabel}
@@ -458,7 +458,7 @@ export default function DashboardPage() {
             <BookOpenText className="size-7 text-[#36798D]" />
             <h2 className="mt-4 text-xl font-extrabold">Motivasi pendek</h2>
             <p className="mt-2 leading-7 text-slate-600">
-              Tips craving, quote harian, dan reminder alasan berhenti.
+              Tips dorongan merokok, kutipan harian, dan pengingat alasan berhenti.
             </p>
           </Link>
           <Link
@@ -466,7 +466,7 @@ export default function DashboardPage() {
             href="/journal"
           >
             <NotebookPen className="size-7 text-[#4FAE7B]" />
-            <h2 className="mt-4 text-xl font-extrabold">Journal harian</h2>
+            <h2 className="mt-4 text-xl font-extrabold">Jurnal harian</h2>
             <p className="mt-2 leading-7 text-slate-600">
               Tulis cerita, tantangan, syukur, dan fokus untuk besok.
             </p>
@@ -475,7 +475,7 @@ export default function DashboardPage() {
 
         <div className="rounded-[2rem] bg-[#E3F3F7] p-5">
           <p className="text-sm font-extrabold uppercase text-[#36798D]">
-            Insight personal
+            Wawasan personal
           </p>
           <p className="mt-3 text-lg font-bold leading-8">
             {personalizedInsight.title}
@@ -485,7 +485,7 @@ export default function DashboardPage() {
           </p>
           {relapseInsights.topMood && (
             <p className="mt-3 text-sm font-bold text-[#36798D]">
-              Mood yang sering muncul saat kambuh:{" "}
+              Perasaan yang sering muncul saat kambuh:{" "}
               {relapseInsights.topMood.name}
             </p>
           )}
@@ -495,9 +495,9 @@ export default function DashboardPage() {
           <div className="flex items-center gap-3">
             <Trophy className="size-7 text-[#4FAE7B]" />
             <div>
-              <h2 className="text-xl font-extrabold">Badge perjalanan</h2>
+              <h2 className="text-xl font-extrabold">Lencana perjalanan</h2>
               <p className="text-sm font-semibold text-slate-500">
-                {unlockedBadges.length} dari {badges.length} badge terbuka
+                {unlockedBadges.length} dari {badges.length} lencana terbuka
               </p>
             </div>
           </div>

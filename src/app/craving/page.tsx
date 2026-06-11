@@ -57,9 +57,9 @@ export default function CravingPage() {
     showToast({
       message:
         status === "passed"
-          ? "Kamu berhasil melewati satu craving. Ini layak dihargai."
+          ? "Kamu berhasil melewati satu dorongan merokok. Ini layak dihargai."
           : "Tidak apa-apa. Catatan ini tetap membantu kamu memahami pola.",
-      title: status === "passed" ? "Craving terlewati" : "Tetap mulai lagi",
+      title: status === "passed" ? "Dorongan terlewati" : "Tetap mulai lagi",
       variant: status === "passed" ? "success" : "info",
     });
   }
@@ -68,13 +68,13 @@ export default function CravingPage() {
     <AppShell>
       <section className="mx-auto max-w-3xl">
         <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-          Emergency
+          Bantuan cepat
         </p>
         <h1 className="mt-2 text-4xl font-extrabold">
           Saya lagi ingin merokok
         </h1>
         <p className="mt-3 leading-7 text-slate-600">
-          Craving biasanya datang seperti ombak. Naik, tinggi, lalu turun.
+          Dorongan merokok biasanya datang seperti ombak. Naik, tinggi, lalu turun.
           Tahan 5 menit dulu.
         </p>
 
@@ -139,7 +139,7 @@ export default function CravingPage() {
           <textarea
             className="mt-2 min-h-24 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
             onChange={(event) => setNote(event.target.value)}
-            placeholder="Apa yang memicu craving ini?"
+            placeholder="Apa yang memicu dorongan ini?"
             value={note}
           />
         </label>
@@ -150,7 +150,7 @@ export default function CravingPage() {
             onClick={() => save("passed")}
             type="button"
           >
-            Saya berhasil melewati craving
+            Saya berhasil melewati dorongan
           </button>
           <button
             className="rounded-2xl border border-slate-200 bg-white px-5 py-3 font-extrabold text-slate-700"
@@ -166,7 +166,7 @@ export default function CravingPage() {
             className="mt-5 inline-flex rounded-2xl bg-[#E3F3F7] px-5 py-3 font-extrabold text-[#36798D]"
             href="/dashboard"
           >
-            Kembali ke dashboard
+            Kembali ke beranda
           </Link>
         )}
       </section>

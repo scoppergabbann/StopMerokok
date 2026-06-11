@@ -74,9 +74,9 @@ export default function CalendarPage() {
     <AppShell>
       <section>
         <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-          Calendar
+          Kalender
         </p>
-        <h1 className="mt-2 text-4xl font-extrabold">Kalender progress</h1>
+        <h1 className="mt-2 text-4xl font-extrabold">Kalender progres</h1>
         <p className="mt-3 leading-7 text-slate-600">
           Hijau untuk bebas rokok, kuning untuk mengurangi, merah lembut untuk
           kambuh, abu-abu untuk belum absen.
@@ -176,8 +176,8 @@ export default function CalendarPage() {
                 </div>
                 <Info label="Tanggal" value={selected.date} />
                 <Info label="Jumlah rokok" value={`${selected.smokedCount} batang`} />
-                <Info label="Mood" value={selected.mood || "-"} />
-                <Info label="Trigger" value={selected.trigger || "-"} />
+                <Info label="Perasaan" value={selected.mood || "-"} />
+                <Info label="Pemicu" value={selected.trigger || "-"} />
                 <Info label="Catatan" value={selected.note || "-"} />
                 <Link
                   className="inline-flex rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white"
@@ -190,10 +190,10 @@ export default function CalendarPage() {
               <div className="mt-4">
                 <EmptyState
                   actionHref={`/check-in?date=${selectedDate}`}
-                  actionLabel="Isi check-in tanggal ini"
+                  actionLabel="Isi absen tanggal ini"
                   body={`Tanggal ${selectedDate} belum punya catatan. Kamu bisa mengisi atau mengoreksinya sekarang.`}
                   icon={CalendarPlus}
-                  title="Belum ada check-in"
+                  title="Belum ada absen"
                 />
               </div>
             )}

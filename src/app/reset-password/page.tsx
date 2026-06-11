@@ -47,19 +47,19 @@ export default function ResetPasswordPage() {
         </Link>
 
         <p className="text-sm font-extrabold uppercase tracking-[0.12em] text-[#4FAE7B]">
-          Reset password
+          Atur ulang kata sandi
         </p>
         <h1 className="mt-3 text-3xl font-extrabold leading-tight text-[#132238]">
-          Buat password baru
+          Buat kata sandi baru
         </h1>
         <p className="mt-3 leading-7 text-slate-600">
-          Pilih password baru yang mudah kamu ingat, tapi tetap aman.
+          Pilih kata sandi baru yang mudah kamu ingat, tapi tetap aman.
         </p>
 
         {!isReady ? (
           <div className="mt-6 rounded-2xl bg-[#FFF4CC] p-4 text-sm font-bold leading-6 text-[#9B6B00]">
-            Link reset tidak valid atau sudah kedaluwarsa. Minta link baru dari
-            halaman login.
+            Tautan atur ulang tidak valid atau sudah kedaluwarsa. Minta tautan
+            baru dari halaman masuk.
           </div>
         ) : (
           <form
@@ -77,8 +77,8 @@ export default function ResetPasswordPage() {
 
               if (password !== confirmPassword) {
                 showToast({
-                  message: "Pastikan kedua password sama.",
-                  title: "Password belum cocok",
+                  message: "Pastikan kedua kata sandi sama.",
+                  title: "Kata sandi belum cocok",
                   variant: "info",
                 });
                 return;
@@ -91,15 +91,15 @@ export default function ResetPasswordPage() {
               if (error) {
                 showToast({
                   message: error.message,
-                  title: "Gagal update password",
+                  title: "Gagal memperbarui kata sandi",
                   variant: "info",
                 });
                 return;
               }
 
               showToast({
-                message: "Password baru sudah tersimpan.",
-                title: "Password diperbarui",
+                message: "Kata sandi baru sudah tersimpan.",
+                title: "Kata sandi diperbarui",
                 variant: "success",
               });
               window.setTimeout(() => router.push("/dashboard"), 500);
@@ -107,7 +107,7 @@ export default function ResetPasswordPage() {
           >
             <label className="block">
               <span className="text-sm font-extrabold text-slate-700">
-                Password baru
+                Kata sandi baru
               </span>
               <span className="mt-2 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm transition focus-within:border-[#4FAE7B] focus-within:ring-4 focus-within:ring-[#DFF3E8]">
                 <LockKeyhole className="size-5 shrink-0 text-slate-400" />
@@ -124,7 +124,7 @@ export default function ResetPasswordPage() {
 
             <label className="block">
               <span className="text-sm font-extrabold text-slate-700">
-                Ulangi password
+                Ulangi kata sandi
               </span>
               <span className="mt-2 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm transition focus-within:border-[#4FAE7B] focus-within:ring-4 focus-within:ring-[#DFF3E8]">
                 <LockKeyhole className="size-5 shrink-0 text-slate-400" />
@@ -132,7 +132,7 @@ export default function ResetPasswordPage() {
                   className="min-w-0 flex-1 bg-transparent text-slate-800 outline-none placeholder:text-slate-400"
                   minLength={6}
                   name="confirmPassword"
-                  placeholder="Ulangi password baru"
+                  placeholder="Ulangi kata sandi baru"
                   required
                   type="password"
                 />
@@ -144,13 +144,13 @@ export default function ResetPasswordPage() {
               disabled={isSubmitting}
               type="submit"
             >
-              {isSubmitting ? "Menyimpan..." : "Simpan password baru"}
+              {isSubmitting ? "Menyimpan..." : "Simpan kata sandi baru"}
             </button>
           </form>
         )}
 
         <p className="mt-6 text-center text-sm font-semibold text-slate-500">
-          Ingat password lama?{" "}
+          Ingat kata sandi lama?{" "}
           <Link className="font-extrabold text-[#2F7D57]" href="/login">
             Masuk
           </Link>

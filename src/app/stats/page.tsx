@@ -86,16 +86,16 @@ export default function StatsPage() {
     <AppShell>
       <section>
         <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-          Statistic
+          Statistik
         </p>
-        <h1 className="mt-2 text-4xl font-extrabold">Statistik progress</h1>
+        <h1 className="mt-2 text-4xl font-extrabold">Statistik perkembangan</h1>
         <p className="mt-3 leading-7 text-slate-600">
-          Lihat pola sederhana dari check-in yang sudah kamu isi.
+          Lihat pola sederhana dari absen yang sudah kamu isi.
         </p>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
           <div className="rounded-[1.5rem] bg-white p-5 shadow-sm">
-            <p className="text-sm font-bold text-slate-500">Longest streak</p>
+            <p className="text-sm font-bold text-slate-500">Rentetan terpanjang</p>
             <p className="mt-2 text-2xl font-extrabold">
               {summary.longestStreak} hari
             </p>
@@ -118,15 +118,15 @@ export default function StatsPage() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-                Leaderboard
+                Papan peringkat
               </p>
               <h2 className="mt-2 text-2xl font-extrabold">
-                Ranking streak bebas rokok
+                Peringkat rentetan bebas rokok
               </h2>
               <p className="mt-2 leading-7 text-slate-600">
-                Peserta hanya masuk ranking kalau masih check-in bebas rokok
+                Peserta hanya masuk peringkat kalau masih absen bebas rokok
                 beruntun sampai hari ini. Satu hari terlewat atau kambuh,
-                otomatis gugur dari leaderboard aktif.
+                otomatis gugur dari papan peringkat aktif.
               </p>
             </div>
             <span className="rounded-full bg-[#DFF3E8] px-4 py-2 text-sm font-extrabold text-[#2F7D57]">
@@ -138,12 +138,12 @@ export default function StatsPage() {
             {leaderboard.length === 0 ? (
               <EmptyState
                 actionHref="/check-in"
-                actionLabel="Check-in bebas rokok"
-                body="Ranking aktif baru muncul saat ada user yang check-in bebas rokok hari ini dan menjaga streak beruntun."
+                actionLabel="Absen bebas rokok"
+                body="Peringkat aktif baru muncul saat ada pengguna yang absen bebas rokok hari ini dan menjaga rentetan beruntun."
                 icon={Trophy}
                 secondaryHref="/community"
                 secondaryLabel="Lihat komunitas"
-                title="Leaderboard siap dimulai"
+                title="Papan peringkat siap dimulai"
               />
             ) : (
               leaderboard.map((entry) => (
@@ -157,7 +157,7 @@ export default function StatsPage() {
                   <div>
                     <p className="text-lg font-extrabold">{entry.name}</p>
                     <p className="mt-1 text-sm font-semibold text-slate-500">
-                      Streak bebas rokok aktif {entry.currentStreak} hari
+                      Rentetan bebas rokok aktif {entry.currentStreak} hari
                       {entry.checkinCount > 0
                         ? ` - ${entry.checkinCount}x total absen`
                         : ""}
@@ -180,13 +180,13 @@ export default function StatsPage() {
                     </div>
                   </div>
                   <div className="self-center rounded-2xl bg-white px-4 py-3 text-left sm:text-right">
-                    <p className="text-xs font-bold text-slate-500">Streak</p>
+                    <p className="text-xs font-bold text-slate-500">Rentetan</p>
                     <p className="text-xl font-extrabold">
                       {entry.currentStreak} hari
                     </p>
                     {entry.lastCheckin && (
                       <p className="mt-1 text-xs font-semibold text-slate-400">
-                        Last: {entry.lastCheckin}
+                        Terakhir: {entry.lastCheckin}
                       </p>
                     )}
                   </div>
@@ -200,13 +200,13 @@ export default function StatsPage() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-                Riwayat activity
+                Riwayat aktivitas
               </p>
               <h2 className="mt-2 text-2xl font-extrabold">
-                Check-in terbaru
+                Absen terbaru
               </h2>
               <p className="mt-2 leading-7 text-slate-600">
-                Data activity sekarang tersedia di statistik. Kamu tetap bisa
+                Data aktivitas sekarang tersedia di statistik. Kamu tetap bisa
                 koreksi atau hapus absen yang sudah berlalu.
               </p>
             </div>
@@ -219,10 +219,10 @@ export default function StatsPage() {
             {recentCheckins.length === 0 ? (
               <EmptyState
                 actionHref="/check-in"
-                actionLabel="Mulai check-in"
+                actionLabel="Mulai absen"
                 body="Setelah kamu absen, riwayatnya akan muncul di sini dan bisa dikoreksi atau dihapus kapan saja."
                 icon={NotebookPen}
-                title="Riwayat activity masih kosong"
+                title="Riwayat aktivitas masih kosong"
               />
             ) : (
               recentCheckins.map((checkin) => (
@@ -235,7 +235,7 @@ export default function StatsPage() {
                       <p className="font-extrabold">{checkin.date}</p>
                       <p className="mt-1 text-sm font-semibold text-slate-500">
                         {checkin.smokedCount} batang
-                        {checkin.mood ? ` - Mood: ${checkin.mood}` : ""}
+                        {checkin.mood ? ` - Perasaan: ${checkin.mood}` : ""}
                       </p>
                     </div>
                     <span
@@ -277,13 +277,13 @@ export default function StatsPage() {
 
         <div className="mt-6 rounded-[2rem] bg-[#E3F3F7] p-5">
           <p className="text-sm font-extrabold uppercase text-[#36798D]">
-            Insight kambuh
+            Wawasan kambuh
           </p>
           {insights.relapseCount === 0 ? (
             <div className="mt-4">
               <EmptyState
                 actionHref="/craving"
-                actionLabel="Buka bantuan craving"
+                actionLabel="Buka bantuan dorongan merokok"
                 body="Bagus kalau belum ada catatan kambuh. Kalau suatu hari berat, kamu tetap bisa mencatat dengan aman agar polanya terbaca."
                 icon={Flame}
                 secondaryHref="/journal"
@@ -295,7 +295,7 @@ export default function StatsPage() {
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <div className="rounded-2xl bg-white/75 p-4">
                 <p className="text-sm font-bold text-slate-500">
-                  Trigger paling sering
+                  Pemicu paling sering
                 </p>
                 <p className="mt-1 text-xl font-extrabold">
                   {insights.topTrigger?.name ?? "Belum tercatat"}
@@ -303,18 +303,18 @@ export default function StatsPage() {
                 <p className="mt-2 text-sm font-semibold text-slate-600">
                   {insights.topTrigger
                     ? `${insights.topTrigger.count} kali muncul saat kambuh.`
-                    : "Isi trigger saat check-in kambuh."}
+                    : "Isi pemicu saat absen kambuh."}
                 </p>
               </div>
               <div className="rounded-2xl bg-white/75 p-4">
                 <p className="text-sm font-bold text-slate-500">
-                  Mood saat kambuh
+                  Perasaan saat kambuh
                 </p>
                 <p className="mt-1 text-xl font-extrabold">
                   {insights.topMood?.name ?? "Belum tercatat"}
                 </p>
                 <p className="mt-2 text-sm font-semibold text-slate-600">
-                  Coba siapkan alternatif kecil sebelum mood ini memuncak.
+                  Coba siapkan alternatif kecil sebelum perasaan ini memuncak.
                 </p>
               </div>
             </div>

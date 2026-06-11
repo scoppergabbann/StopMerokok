@@ -106,10 +106,10 @@ export function PwaInstallPrompt() {
         </span>
         <div className="min-w-0 flex-1">
           <p className="font-extrabold text-[#1F2933]">
-            Install StopMerokok
+            Pasang StopMerokok
           </p>
           <p className="mt-1 text-sm font-medium leading-6 text-slate-600">
-            Buka lebih cepat seperti aplikasi dan lanjut check-in harian dari
+            Buka lebih cepat seperti aplikasi dan lanjut absen harian dari
             layar utama.
           </p>
           <div className="mt-3 flex gap-2">
@@ -118,7 +118,7 @@ export function PwaInstallPrompt() {
               onClick={installApp}
               type="button"
             >
-              Install
+              Pasang
             </button>
             <button
               className="rounded-2xl bg-slate-100 px-4 py-2 text-sm font-extrabold text-slate-600"
@@ -130,7 +130,7 @@ export function PwaInstallPrompt() {
           </div>
         </div>
         <button
-          aria-label="Tutup prompt install"
+          aria-label="Tutup ajakan pemasangan"
           className="grid size-9 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-500"
           onClick={dismissPrompt}
           type="button"

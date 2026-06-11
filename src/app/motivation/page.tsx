@@ -9,7 +9,7 @@ import { type Profile } from "@/lib/mvp-store";
 const contents = [
   {
     icon: Wind,
-    title: "Craving itu seperti ombak",
+    title: "Dorongan merokok itu seperti ombak",
     body: "Biasanya naik, terasa kuat, lalu turun. Tahan 5 menit dulu, pelan-pelan.",
   },
   {
@@ -24,7 +24,7 @@ const contents = [
   },
   {
     icon: HeartHandshake,
-    title: "Mulai lagi tetap progress",
+    title: "Mulai lagi tetap progres",
     body: "Kambuh bukan akhir. Yang penting kamu sadar, mencatat, dan mau kembali mencoba.",
   },
 ];
@@ -44,7 +44,7 @@ export default function MotivationPage() {
     <AppShell>
       <section>
         <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-          Motivation
+          Motivasi
         </p>
         <h1 className="mt-2 text-4xl font-extrabold">Motivasi pendek</h1>
         <p className="mt-3 leading-7 text-slate-600">

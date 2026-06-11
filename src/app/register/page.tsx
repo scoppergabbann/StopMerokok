@@ -20,7 +20,7 @@ import { trackEvent } from "@/lib/analytics";
 
 const benefits = [
   "Absen harian yang ringan",
-  "Progress dan streak tersimpan",
+  "Progres dan rentetan tersimpan",
   "Penghematan rokok terlihat jelas",
 ];
 
@@ -121,10 +121,10 @@ export default function RegisterPage() {
                 Daftar akun
               </p>
               <h1 className="mt-3 text-3xl font-extrabold leading-tight text-[#132238] sm:text-4xl">
-                Mulai simpan progressmu.
+                Mulai simpan progresmu.
               </h1>
               <p className="mt-3 leading-7 text-slate-600">
-                Cukup email dan password. Setelah itu kamu bisa langsung isi
+                Cukup email dan kata sandi. Setelah itu kamu bisa langsung isi
                 data awal perjalananmu.
               </p>
             </div>
@@ -166,7 +166,7 @@ export default function RegisterPage() {
                     options: {
                       captchaToken,
                     },
-                    password,
+                  password,
                   });
 
                   if (error) {
@@ -185,7 +185,7 @@ export default function RegisterPage() {
                     resetCaptcha();
                     showToast({
                       message:
-                        "Akun dibuat, tapi Supabase masih meminta verifikasi email. Matikan Confirm email agar user langsung masuk.",
+                        "Akun dibuat, tapi Supabase masih meminta verifikasi email. Matikan konfirmasi email agar pengguna langsung masuk.",
                       title: "Konfirmasi email masih aktif",
                       variant: "info",
                     });
@@ -227,7 +227,7 @@ export default function RegisterPage() {
 
               <label className="block">
                 <span className="text-sm font-extrabold text-slate-700">
-                  Password
+                  Kata sandi
                 </span>
                 <span className="mt-2 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm transition focus-within:border-[#4FAE7B] focus-within:ring-4 focus-within:ring-[#DFF3E8]">
                   <LockKeyhole className="size-5 shrink-0 text-slate-400" />
@@ -244,7 +244,7 @@ export default function RegisterPage() {
 
               <div className="flex items-start gap-3 rounded-2xl bg-[#E3F3F7]/70 px-4 py-3 text-sm font-bold leading-6 text-[#36798D]">
                 <ShieldCheck className="mt-0.5 size-5 shrink-0" />
-                <span>Progressmu tersimpan aman dan pribadi.</span>
+                <span>Progresmu tersimpan aman dan pribadi.</span>
               </div>
 
               <TurnstileCaptcha

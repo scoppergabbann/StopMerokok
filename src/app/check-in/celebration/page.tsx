@@ -38,9 +38,9 @@ const milestoneLabels: Record<number, string> = {
 function getCopy(payload: CelebrationPayload) {
   if (payload.milestone) {
     return {
-      accent: "Badge baru terbuka",
+      accent: "Lencana baru terbuka",
       body: payload.milestone.description,
-      title: payload.milestone.badge ?? "Milestone baru",
+      title: payload.milestone.badge ?? "Pencapaian baru",
       tone: "milestone" as const,
     };
   }
@@ -56,7 +56,7 @@ function getCopy(payload: CelebrationPayload) {
 
   if (payload.status === "smoke_free") {
     return {
-      accent: `Hari ke-${payload.dayNumber} tercatat 🌱`,
+      accent: `Hari ke-${payload.dayNumber} tercatat`,
       body: "Kamu berhasil melewati hari ini tanpa rokok. Satu hari lagi, satu napas lebih lega.",
       title: "Bebas rokok hari ini",
       tone: "smoke_free" as const,
@@ -65,15 +65,15 @@ function getCopy(payload: CelebrationPayload) {
 
   if (payload.status === "reduced") {
     return {
-      accent: `Hari ke-${payload.dayNumber} tercatat 🌿`,
-      body: "Kamu belum harus sempurna. Mengurangi tetap progress.",
-      title: "Progress tetap berjalan",
+      accent: `Hari ke-${payload.dayNumber} tercatat`,
+      body: "Kamu belum harus sempurna. Mengurangi tetap progres.",
+      title: "Progres tetap berjalan",
       tone: "reduced" as const,
     };
   }
 
   return {
-    accent: `Hari ke-${payload.dayNumber} tercatat 🤍`,
+    accent: `Hari ke-${payload.dayNumber} tercatat`,
     body: "Hari ini mungkin berat. Tapi kamu tetap hadir, dan itu tetap langkah maju.",
     title: "Kamu tetap hadir",
     tone: "relapsed" as const,
@@ -253,7 +253,7 @@ export default function CheckInCelebrationPage() {
 
           {payload.streak ? (
             <div className="mt-5 rounded-3xl bg-[#F6F8F7] p-4">
-              <p className="text-sm font-bold text-slate-500">Streak aktif</p>
+              <p className="text-sm font-bold text-slate-500">Rentetan aktif</p>
               <p className="mt-1 text-2xl font-extrabold">
                 {payload.streak} hari
               </p>
@@ -288,7 +288,7 @@ export default function CheckInCelebrationPage() {
               onClick={goToDashboard}
               type="button"
             >
-              Lanjut ke dashboard
+              Lanjut ke beranda
               <ArrowRight className="size-4" />
             </button>
             <button

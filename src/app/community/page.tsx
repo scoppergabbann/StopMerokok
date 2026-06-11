@@ -56,7 +56,7 @@ const challengeTargets = [
 
 const supportPrompts = [
   "Hari ini berat, tapi aku tetap hadir.",
-  "Aku berhasil melewati craving hari ini.",
+  "Aku berhasil melewati dorongan merokok hari ini.",
   "Butuh semangat untuk lanjut besok.",
 ];
 
@@ -164,7 +164,7 @@ export default function CommunityPage() {
 
     if (todayPostCount >= 3) {
       showToast({
-        message: "Batas posting hari ini 3 pesan agar wall tetap nyaman.",
+        message: "Batas unggahan hari ini 3 pesan agar ruang dukungan tetap nyaman.",
         title: "Batas harian tercapai",
         variant: "info",
       });
@@ -294,7 +294,7 @@ export default function CommunityPage() {
                 Bertahan bareng, satu hari dulu.
               </h1>
               <p className="mt-3 max-w-2xl leading-7 text-slate-300">
-                Lihat challenge, ranking streak aktif, dan ambil dukungan kecil
+                Lihat tantangan, peringkat rentetan aktif, dan ambil dukungan kecil
                 saat perjalanan terasa berat.
               </p>
             </div>
@@ -302,7 +302,7 @@ export default function CommunityPage() {
               <p className="text-sm font-bold text-slate-300">Level kamu</p>
               <p className="mt-1 text-2xl font-extrabold">{communityLevel}</p>
               <p className="mt-1 text-sm font-semibold text-[#9DE5BD]">
-                {activeStreak} hari streak aktif
+                {activeStreak} hari rentetan aktif
               </p>
             </div>
           </div>
@@ -312,7 +312,7 @@ export default function CommunityPage() {
           <div className="rounded-[1.5rem] bg-white p-5 shadow-sm">
             <Flame className="size-7 text-[#4FAE7B]" />
             <p className="mt-4 text-sm font-bold text-slate-500">
-              Current streak
+              Rentetan aktif
             </p>
             <p className="mt-1 text-2xl font-extrabold">
               {activeStreak} hari
@@ -321,7 +321,7 @@ export default function CommunityPage() {
           <div className="rounded-[1.5rem] bg-white p-5 shadow-sm">
             <Trophy className="size-7 text-[#36798D]" />
             <p className="mt-4 text-sm font-bold text-slate-500">
-              Badge aktif
+              Lencana aktif
             </p>
             <p className="mt-1 text-2xl font-extrabold">
               {activeBadge ?? "Belum terbuka"}
@@ -342,7 +342,7 @@ export default function CommunityPage() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-                Challenge bersama
+                Tantangan bersama
               </p>
               <h2 className="mt-2 text-2xl font-extrabold">
                 Pilih target kecil yang bisa dijaga
@@ -352,7 +352,7 @@ export default function CommunityPage() {
               className="rounded-full bg-[#DFF3E8] px-4 py-2 text-sm font-extrabold text-[#2F7D57]"
               href="/check-in"
             >
-              Check-in hari ini
+              Absen hari ini
             </Link>
           </div>
 
@@ -405,10 +405,10 @@ export default function CommunityPage() {
             <div className="flex items-end justify-between gap-3">
               <div>
                 <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-                  Ranking aktif
+                  Peringkat aktif
                 </p>
                 <h2 className="mt-2 text-2xl font-extrabold">
-                  Top streak komunitas
+                  Rentetan terbaik komunitas
                 </h2>
               </div>
               <Link
@@ -423,10 +423,10 @@ export default function CommunityPage() {
               {topThree.length === 0 ? (
                 <EmptyState
                   actionHref="/check-in"
-                  actionLabel="Check-in bebas rokok"
-                  body="Top streak akan muncul setelah ada peserta yang menjaga check-in bebas rokok sampai hari ini."
+                  actionLabel="Absen bebas rokok"
+                  body="Rentetan terbaik akan muncul setelah ada peserta yang menjaga absen bebas rokok sampai hari ini."
                   icon={Trophy}
-                  title="Ranking komunitas masih kosong"
+                  title="Peringkat komunitas masih kosong"
                 />
               ) : (
                 topThree.map((entry) => (
@@ -440,7 +440,7 @@ export default function CommunityPage() {
                     <div className="min-w-0">
                       <p className="truncate font-extrabold">{entry.name}</p>
                       <p className="mt-1 text-xs font-bold text-slate-500">
-                        {entry.activeBadge ?? "Belum ada badge"}
+                        {entry.activeBadge ?? "Belum ada lencana"}
                       </p>
                     </div>
                     <p className="text-sm font-extrabold text-[#2F7D57]">
@@ -496,13 +496,13 @@ export default function CommunityPage() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-                Wall dukungan
+                Ruang dukungan
               </p>
               <h2 className="mt-2 text-2xl font-extrabold">
                 Pesan singkat untuk saling menguatkan
               </h2>
               <p className="mt-2 leading-7 text-slate-600">
-                Bagikan progress kecil atau minta semangat. Tetap ringan,
+                Bagikan progres kecil atau minta semangat. Tetap ringan,
                 singkat, dan aman untuk semua.
               </p>
             </div>
@@ -518,7 +518,7 @@ export default function CommunityPage() {
                 className="mt-2 min-h-24 w-full resize-none rounded-2xl border border-slate-200 bg-[#F6F8F7] px-4 py-3 text-sm font-semibold leading-7 outline-none transition placeholder:text-slate-400 focus:border-[#4FAE7B] focus:bg-white"
                 maxLength={180}
                 onChange={(event) => setMessage(event.target.value)}
-                placeholder="Contoh: Aku berhasil melewati craving sore ini."
+                placeholder="Contoh: Aku berhasil melewati dorongan merokok sore ini."
                 value={message}
               />
             </label>
@@ -540,7 +540,7 @@ export default function CommunityPage() {
           <div className="mt-6 space-y-3">
             {posts.length === 0 ? (
               <EmptyState
-                body="Tulis satu pesan singkat di form atas. Bisa progress kecil, minta semangat, atau kalimat yang ingin kamu ingat besok."
+                body="Tulis satu pesan singkat di form atas. Bisa progres kecil, minta semangat, atau kalimat yang ingin kamu ingat besok."
                 icon={MessageCircleHeart}
                 title="Belum ada pesan dukungan"
               />
@@ -554,7 +554,7 @@ export default function CommunityPage() {
                     <div>
                       <p className="font-extrabold">{post.authorName}</p>
                       <p className="mt-1 text-xs font-bold text-slate-500">
-                        Streak {post.streakAtPost} hari
+                        Rentetan {post.streakAtPost} hari
                         {post.badge ? ` - ${post.badge}` : ""}
                       </p>
                     </div>
@@ -592,7 +592,7 @@ export default function CommunityPage() {
                       onClick={() => handleReportPost(post.id)}
                       type="button"
                     >
-                      Report
+                      Laporkan
                     </button>
                   )}
                 </article>

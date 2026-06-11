@@ -39,7 +39,7 @@ export default function LoginPage() {
   async function sendResetEmail() {
     if (!isSupabaseConfigured || !supabase) {
       showToast({
-        message: "Mode demo belum terhubung ke email reset password.",
+        message: "Mode percobaan belum terhubung ke email atur ulang kata sandi.",
         title: "Reset belum tersedia",
         variant: "info",
       });
@@ -48,7 +48,7 @@ export default function LoginPage() {
 
     if (!email) {
       showToast({
-        message: "Isi email dulu, lalu coba kirim link reset.",
+        message: "Isi email dulu, lalu coba kirim tautan atur ulang.",
         title: "Email dibutuhkan",
         variant: "info",
       });
@@ -87,15 +87,15 @@ export default function LoginPage() {
     if (error) {
       showToast({
         message: error.message,
-        title: "Reset password gagal",
+        title: "Atur ulang kata sandi gagal",
         variant: "info",
       });
       return;
     }
 
     showToast({
-      message: "Cek email kamu untuk melanjutkan reset password.",
-      title: "Link reset dikirim",
+      message: "Cek email kamu untuk melanjutkan pengaturan ulang kata sandi.",
+      title: "Tautan atur ulang dikirim",
       variant: "success",
     });
   }
@@ -133,10 +133,10 @@ export default function LoginPage() {
           </Link>
           <div className="mt-10 max-w-xl">
             <p className="text-sm font-extrabold uppercase tracking-[0.14em] text-[#36798D]">
-              Ruang pulang untuk progressmu
+              Ruang pulang untuk progresmu
             </p>
             <h1 className="mt-4 text-5xl font-extrabold leading-tight text-[#132238]">
-              Satu check-in kecil bisa menjaga arah hari ini.
+              Satu absen kecil bisa menjaga arah hari ini.
             </h1>
             <p className="mt-5 max-w-lg text-lg font-medium leading-8 text-slate-600">
               Lanjutkan catatan bebas rokok, lihat penghematanmu, dan rawat
@@ -144,7 +144,7 @@ export default function LoginPage() {
             </p>
           </div>
           <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-3">
-            {["Absen harian", "Savings", "Track record"].map((item) => (
+            {["Absen harian", "Penghematan", "Rekam jejak"].map((item) => (
               <div
                 className="rounded-2xl border border-white/80 bg-white/65 p-4 shadow-sm shadow-slate-200/60 backdrop-blur"
                 key={item}
@@ -186,7 +186,7 @@ export default function LoginPage() {
                 Masuk untuk lanjutkan progresmu.
               </h1>
               <p className="mt-2 leading-6 text-slate-600 sm:mt-3 sm:leading-7">
-                Progressmu tersimpan aman dan pribadi.
+                Progresmu tersimpan aman dan pribadi.
               </p>
             </div>
 
@@ -235,7 +235,7 @@ export default function LoginPage() {
                     resetCaptcha();
                     showToast({
                       message: error.message,
-                      title: "Login gagal",
+                      title: "Masuk gagal",
                       variant: "info",
                     });
                     return;
@@ -259,10 +259,10 @@ export default function LoginPage() {
                 showToast({
                   message: isSupabaseConfigured
                     ? nextPath === "/dashboard"
-                      ? "Kamu masuk ke dashboard."
+                      ? "Kamu masuk ke beranda."
                       : "Lengkapi data awal dulu ya."
-                    : "Kamu masuk ke dashboard demo.",
-                  title: "Login berhasil",
+                    : "Kamu masuk ke beranda percobaan.",
+                  title: "Masuk berhasil",
                   variant: "success",
                 });
                 window.setTimeout(() => router.push(nextPath), 450);
@@ -289,7 +289,7 @@ export default function LoginPage() {
 
               <label className="block">
                 <span className="text-sm font-extrabold text-slate-700">
-                  Password
+                  Kata sandi
                 </span>
                 <span className="mt-2 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm transition focus-within:border-[#4FAE7B] focus-within:ring-4 focus-within:ring-[#DFF3E8]">
                   <LockKeyhole className="size-5 shrink-0 text-slate-400" />
@@ -297,15 +297,15 @@ export default function LoginPage() {
                     autoComplete="current-password"
                     className="min-w-0 flex-1 bg-transparent text-slate-800 outline-none placeholder:text-slate-400"
                     name="password"
-                    placeholder="Password"
+                    placeholder="Kata sandi"
                     required
                     type={isPasswordVisible ? "text" : "password"}
                   />
                   <button
                     aria-label={
                       isPasswordVisible
-                        ? "Sembunyikan password"
-                        : "Lihat password"
+                        ? "Sembunyikan kata sandi"
+                        : "Lihat kata sandi"
                     }
                     className="grid size-9 shrink-0 place-items-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-[#36798D]"
                     onClick={() => setIsPasswordVisible((current) => !current)}
@@ -336,7 +336,7 @@ export default function LoginPage() {
                   onClick={sendResetEmail}
                   type="button"
                 >
-                  {isSendingReset ? "Mengirim..." : "Lupa password?"}
+                  {isSendingReset ? "Mengirim..." : "Lupa kata sandi?"}
                 </button>
               </div>
 

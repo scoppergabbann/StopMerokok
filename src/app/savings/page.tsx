@@ -29,7 +29,7 @@ const supportAmounts = [
   },
   {
     amount: 25000,
-    description: "Bantu menjaga aplikasi tetap gratis untuk lebih banyak user.",
+    description: "Bantu menjaga aplikasi tetap gratis untuk lebih banyak pengguna.",
     isPopular: true,
     label: "25rb",
   },
@@ -206,7 +206,7 @@ export default function SavingsPage() {
                   )}
                 </div>
                 <p className="mt-3 text-center text-sm font-bold text-slate-600">
-                  Scan dengan GoPay, OVO, DANA, ShopeePay, atau m-Banking.
+                  Pindai dengan GoPay, OVO, DANA, ShopeePay, atau m-Banking.
                 </p>
                 <p className="mt-1 text-center text-xs font-semibold leading-5 text-slate-500">
                   Pilih nominal {formatRupiah(selectedSupportAmount)}, screenshot
@@ -252,14 +252,14 @@ export default function SavingsPage() {
           <div className="grid gap-6 lg:grid-cols-[1fr_0.78fr] lg:items-end">
             <div>
               <p className="text-sm font-extrabold uppercase text-[#2F7D57]">
-                Savings pribadi
+                Penghematan pribadi
               </p>
               <h2 className="mt-3 text-3xl font-extrabold leading-tight sm:text-4xl">
                 Uang yang dulu jadi asap, kini bisa punya arah.
               </h2>
               <p className="mt-4 max-w-2xl text-lg font-medium leading-8 text-slate-700">
-                Ringkasan ini menunjukkan dampak kecil dari check-in yang kamu
-                isi. Angkanya bisa jadi pengingat bahwa progress punya bentuk
+                Ringkasan ini menunjukkan dampak kecil dari absen yang kamu
+                isi. Angkanya bisa jadi pengingat bahwa progres punya bentuk
                 nyata.
               </p>
             </div>
@@ -281,7 +281,7 @@ export default function SavingsPage() {
           <EmptyState
             actionHref="/check-in"
             actionLabel="Absen hari ini"
-            body="Savings akan dihitung otomatis setelah kamu mulai check-in. Satu hari jujur mencatat sudah cukup untuk memulai."
+            body="Penghematan akan dihitung otomatis setelah kamu mulai absen. Satu hari jujur mencatat sudah cukup untuk memulai."
             icon={PiggyBank}
             secondaryHref="/onboarding"
             secondaryLabel="Cek data rokok"

@@ -13,7 +13,7 @@ function canNotify() {
 }
 
 async function showReminderNotification() {
-  const title = "Jangan lupa check-in hari ini";
+  const title = "Jangan lupa absen hari ini";
   const options: NotificationOptions = {
     body: "Catat sebentar saja. Jujur hari ini lebih penting daripada sempurna.",
     icon: "/images/icon-192.png",

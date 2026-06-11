@@ -82,10 +82,10 @@ export default function CheckInPage() {
     <AppShell>
       <section className="mx-auto max-w-3xl">
         <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-          Check-in
+          Absen
         </p>
         <h1 className="mt-2 text-4xl font-extrabold">
-          {date === todayKey() ? "Absen hari ini" : "Koreksi check-in"}
+          {date === todayKey() ? "Absen hari ini" : "Koreksi absen"}
         </h1>
         <p className="mt-3 leading-7 text-slate-600">
           Pilih tanggal yang mau dicatat atau dikoreksi. Ini bukan ujian, ini
@@ -176,7 +176,7 @@ export default function CheckInPage() {
         >
           <label className="block">
             <span className="text-sm font-bold text-slate-600">
-              Tanggal check-in
+              Tanggal absen
             </span>
             <input
               className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
@@ -259,7 +259,7 @@ export default function CheckInPage() {
 
           <label className="block">
             <span className="text-sm font-bold text-slate-600">
-              Mood hari ini
+              Perasaan hari ini
             </span>
             <select
               className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-[#4FAE7B]"

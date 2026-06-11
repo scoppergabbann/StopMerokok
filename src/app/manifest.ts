@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "StopMerokok",
     short_name: "StopMerokok",
     description:
-      "Teman harian untuk mencatat progress berhenti merokok tanpa menghakimi.",
+      "Teman harian untuk mencatat progres berhenti merokok tanpa menghakimi.",
     start_url: "/",
     scope: "/",
     display: "standalone",

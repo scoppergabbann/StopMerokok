@@ -15,37 +15,37 @@ const features = [
   {
     title: "Absen harian",
     description:
-      "Pilih bebas rokok, mengurangi, atau kambuh. Setelah tersimpan, ada celebration lembut yang menghargai langkahmu.",
+      "Pilih bebas rokok, mengurangi, atau kambuh. Setelah tersimpan, ada perayaan lembut yang menghargai langkahmu.",
   },
   {
     title: "Komunitas suportif",
     description:
-      "Bagikan progress singkat, beri semangat, dan ikuti tantangan 7, 30, hingga 90 hari tanpa merasa sendirian.",
+      "Bagikan progres singkat, beri semangat, dan ikuti tantangan 7, 30, hingga 90 hari tanpa merasa sendirian.",
   },
   {
-    title: "Leaderboard aktif",
+    title: "Papan peringkat aktif",
     description:
-      "Ranking fokus pada streak bebas rokok yang masih aktif, jadi kompetisinya terasa adil dan sehat.",
+      "Peringkat fokus pada rentetan bebas rokok yang masih aktif, jadi kompetisinya terasa adil dan sehat.",
   },
   {
-    title: "Kalender dan track record",
+    title: "Kalender dan rekam jejak",
     description:
       "Lihat bulan ini atau bulan sebelumnya, lengkap dengan warna status dan nama hari yang jelas.",
   },
   {
-    title: "Savings jadi kebaikan",
+    title: "Penghematan jadi kebaikan",
     description:
-      "Uang yang biasanya habis untuk rokok bisa diarahkan ke reward pribadi, keluarga, atau donasi.",
+      "Uang yang biasanya habis untuk rokok bisa diarahkan ke hadiah pribadi, keluarga, atau donasi.",
   },
   {
-    title: "Reminder dan craving help",
+    title: "Pengingat dan bantuan dorongan",
     description:
-      "Reminder harian, timer 5 menit, napas pelan, dan bantuan kecil saat dorongan merokok muncul.",
+      "Pengingat harian, timer 5 menit, napas pelan, dan bantuan kecil saat dorongan merokok muncul.",
   },
 ];
 
 const stats = [
-  { label: "Streak", value: "7 hari" },
+  { label: "Rentetan", value: "7 hari" },
   { label: "Uang dihemat", value: "Rp84rb" },
   { label: "Batang dihindari", value: "56" },
 ];
@@ -59,12 +59,12 @@ const supportSteps = [
   {
     title: "Rayakan langkah kecil",
     description:
-      "Setelah check-in, splash screen memberi reward yang tenang, badge milestone, dan target berikutnya.",
+      "Setelah absen, layar perayaan memberi apresiasi yang tenang, lencana pencapaian, dan target berikutnya.",
   },
   {
     title: "Kembali besok dengan arah",
     description:
-      "Dashboard menampilkan fokus hari ini, kalender, insight trigger, komunitas, dan reminder agar kebiasaan tetap hidup.",
+      "Beranda menampilkan fokus hari ini, kalender, wawasan pemicu, komunitas, dan pengingat agar kebiasaan tetap hidup.",
   },
 ];
 
@@ -81,12 +81,12 @@ const previewFeatures = [
   },
   {
     icon: BarChart3,
-    label: "Leaderboard",
-    value: "Streak aktif",
+    label: "Peringkat",
+    value: "Rentetan aktif",
   },
   {
     icon: BellRing,
-    label: "Reminder",
+    label: "Pengingat",
     value: "20:00",
   },
 ];
@@ -125,9 +125,9 @@ const statusClass = {
 };
 
 const bottomNavItems = [
-  { label: "Home", icon: HomeIcon, active: true },
-  { label: "Statistic", icon: BarChart3 },
-  { label: "Check-in", icon: CircleCheckBig, featured: true },
+  { label: "Beranda", icon: HomeIcon, active: true },
+  { label: "Statistik", icon: BarChart3 },
+  { label: "Absen", icon: CircleCheckBig, featured: true },
   { label: "Komunitas", icon: UsersRound },
   { label: "Berbagi", icon: HandHeart },
 ];
@@ -167,15 +167,15 @@ export default function Home() {
         <div className="grid flex-1 items-center gap-14 py-16 lg:grid-cols-[1fr_0.92fr] lg:py-20">
           <div className="animate-[fade-up_800ms_ease-out_120ms_both] max-w-3xl">
             <p className="mb-5 inline-flex rounded-full bg-[#E3F3F7] px-4 py-2 text-sm font-semibold text-[#36798D]">
-              Tracking berhenti merokok yang suportif, bukan menghakimi.
+              Pelacak berhenti merokok yang suportif, bukan menghakimi.
             </p>
             <h1 className="max-w-4xl text-[3.25rem] font-extrabold leading-[1.02] tracking-normal text-[#18212B] sm:text-6xl lg:text-[5.75rem]">
               Berhenti merokok tidak harus sendirian.
             </h1>
             <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-slate-600 sm:text-xl">
-              Check-in harian, celebration yang tenang, komunitas suportif,
-              leaderboard streak aktif, reminder, dan savings tracker yang
-              bisa diarahkan ke reward atau donasi.
+              Absen harian, perayaan yang tenang, komunitas suportif,
+              papan peringkat rentetan aktif, pengingat, dan pelacak penghematan
+              yang bisa diarahkan ke hadiah atau donasi.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
@@ -188,7 +188,7 @@ export default function Home() {
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-3 text-base font-extrabold text-slate-700 shadow-sm transition hover:border-[#7BB7C9] hover:text-[#36798D]"
                 href="#fitur"
               >
-                Lihat fitur MVP
+                Lihat fitur utama
               </a>
             </div>
             <div className="mt-8 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4">
@@ -251,7 +251,7 @@ export default function Home() {
 
                 <div className="mt-4 rounded-3xl bg-white p-5">
                   <div className="mb-4 flex items-center justify-between">
-                    <p className="font-extrabold">Progress Mei</p>
+                    <p className="font-extrabold">Progres Mei</p>
                     <span className="text-sm font-semibold text-slate-500">
                       12/30 hari
                     </span>
@@ -390,12 +390,12 @@ export default function Home() {
           </Reveal>
           <div className="grid gap-5 sm:grid-cols-2">
             {[
-              "Streak bebas rokok yang tetap terasa suportif.",
-              "Celebration splash setelah absen tanpa terasa berlebihan.",
+              "Rentetan bebas rokok yang tetap terasa suportif.",
+              "Layar perayaan setelah absen tanpa terasa berlebihan.",
               "Komunitas dengan dukungan singkat dan tantangan bersama.",
-              "Leaderboard khusus streak aktif agar kompetisinya sehat.",
-              "Savings tracker multi target untuk reward pribadi dan donasi.",
-              "Reminder harian agar kebiasaan check-in makin konsisten.",
+              "Papan peringkat khusus rentetan aktif agar kompetisinya sehat.",
+              "Pelacak penghematan multi target untuk hadiah pribadi dan donasi.",
+              "Pengingat harian agar kebiasaan absen makin konsisten.",
             ].map((item) => (
               <Reveal className="rounded-3xl bg-white p-5 shadow-sm" key={item}>
                 <p className="font-semibold leading-7 text-slate-700">{item}</p>
@@ -444,14 +444,14 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.85fr_1fr] lg:items-center">
           <Reveal>
             <p className="text-sm font-extrabold uppercase tracking-normal text-[#36798D]">
-              Savings jadi kebaikan
+              Penghematan jadi kebaikan
             </p>
             <h2 className="mt-3 text-3xl font-extrabold tracking-normal sm:text-4xl">
               Uang yang biasanya hilang bisa berubah jadi target yang terlihat.
             </h2>
             <p className="mt-5 text-lg font-medium leading-8 text-slate-600">
-              Buat beberapa target sekaligus, lihat progress per target, lalu
-              catat riwayat saat savings benar-benar dialokasikan.
+              Buat beberapa target sekaligus, lihat kemajuan per target, lalu
+              catat riwayat saat penghematan benar-benar dialokasikan.
             </p>
           </Reveal>
 
@@ -503,7 +503,7 @@ export default function Home() {
             Mulai dari satu hari
           </p>
           <h2 className="mt-4 text-4xl font-extrabold tracking-normal sm:text-5xl">
-            Mulai dari satu check-in jujur hari ini.
+            Mulai dari satu absen jujur hari ini.
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-300">
             Tidak perlu menunggu siap total. Catat dulu, pahami polanya, lalu

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     template: "%s | StopMerokok",
   },
   description:
-    "Catat progress berhenti merokok, bangun streak harian, lihat uang yang kamu hemat, dan mulai lagi tanpa dihakimi.",
+    "Catat progres berhenti merokok, bangun rentetan harian, lihat uang yang kamu hemat, dan mulai lagi tanpa dihakimi.",
   applicationName: "StopMerokok",
   authors: [{ name: "StopMerokok" }],
   category: "health",
@@ -34,14 +34,14 @@ export const metadata: Metadata = {
     "berhenti merokok",
     "stop merokok",
     "tracker rokok",
-    "streak berhenti merokok",
-    "savings rokok",
-    "craving rokok",
+    "rentetan berhenti merokok",
+    "penghematan rokok",
+    "dorongan merokok",
   ],
   manifest: "/manifest.webmanifest",
   openGraph: {
     description:
-      "Teman harian untuk check-in berhenti merokok, melihat progress, savings, dan motivasi tanpa rasa dihakimi.",
+      "Teman harian untuk absen berhenti merokok, melihat progres, penghematan, dan motivasi tanpa rasa dihakimi.",
     images: [
       {
         alt: "StopMerokok - Berhenti merokok tidak harus sendirian",
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     description:
-      "Check-in harian, streak, savings tracker, craving help, dan motivasi suportif untuk berhenti merokok.",
+      "Absen harian, rentetan, pelacak penghematan, bantuan dorongan merokok, dan motivasi suportif untuk berhenti merokok.",
     images: ["/images/og-image.png"],
     title: "StopMerokok | Teman Berhenti Merokok Harian",
   },
