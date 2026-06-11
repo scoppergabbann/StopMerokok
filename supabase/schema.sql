@@ -111,6 +111,14 @@ create table if not exists community_posts (
 create index if not exists community_posts_created_at_idx
 on community_posts (created_at desc);
 
+create table if not exists community_post_reports (
+  id uuid primary key default gen_random_uuid(),
+  post_id uuid not null references community_posts(id) on delete cascade,
+  reporter_id uuid not null references profiles(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  unique (post_id, reporter_id)
+);
+
 alter table profiles enable row level security;
 alter table daily_checkins enable row level security;
 alter table craving_logs enable row level security;
@@ -120,6 +128,7 @@ alter table donation_allocations enable row level security;
 alter table user_badges enable row level security;
 alter table notification_settings enable row level security;
 alter table community_posts enable row level security;
+alter table community_post_reports enable row level security;
 
 drop policy if exists "profiles own data" on profiles;
 create policy "profiles own data"
@@ -183,6 +192,12 @@ drop policy if exists "community_posts own delete" on community_posts;
 create policy "community_posts own delete"
 on community_posts for delete
 using (auth.uid() = user_id);
+
+drop policy if exists "community_post_reports own data" on community_post_reports;
+create policy "community_post_reports own data"
+on community_post_reports for all
+using (auth.uid() = reporter_id)
+with check (auth.uid() = reporter_id);
 
 create or replace function public.support_community_post(post_id uuid)
 returns void

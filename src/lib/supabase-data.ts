@@ -122,6 +122,7 @@ export async function readSupabaseCommunityPosts(): Promise<CommunityPost[]> {
     message: item.message,
     streakAtPost: item.streak_at_post,
     supportCount: item.support_count,
+    userId: item.user_id,
   }));
 }
 
@@ -160,7 +161,50 @@ export async function saveSupabaseCommunityPost(
     message: data.message,
     streakAtPost: data.streak_at_post,
     supportCount: data.support_count,
+    userId: data.user_id,
   } satisfies CommunityPost;
+}
+
+export async function deleteSupabaseCommunityPost(postId: string) {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return false;
+  }
+
+  const { error } = await supabase
+    .from("community_posts")
+    .delete()
+    .eq("id", postId)
+    .eq("user_id", userId);
+
+  if (error) {
+    throw error;
+  }
+
+  return true;
+}
+
+export async function reportSupabaseCommunityPost(postId: string) {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return false;
+  }
+
+  const { error } = await supabase.from("community_post_reports").upsert(
+    {
+      post_id: postId,
+      reporter_id: userId,
+    },
+    { onConflict: "post_id,reporter_id" },
+  );
+
+  if (error) {
+    throw error;
+  }
+
+  return true;
 }
 
 export async function supportSupabaseCommunityPost(postId: string) {

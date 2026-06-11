@@ -128,6 +128,7 @@ export type CommunityPost = {
   message: string;
   streakAtPost: number;
   supportCount: number;
+  userId?: string;
 };
 
 const PROFILE_KEY = "stopmerokok.profile";
@@ -453,6 +454,15 @@ export function supportCommunityPost(postId: string) {
       : post,
   );
 
+  window.localStorage.setItem(COMMUNITY_POSTS_KEY, JSON.stringify(next));
+}
+
+export function deleteCommunityPost(postId: string) {
+  if (!canUseStorage()) {
+    return;
+  }
+
+  const next = readCommunityPosts().filter((post) => post.id !== postId);
   window.localStorage.setItem(COMMUNITY_POSTS_KEY, JSON.stringify(next));
 }
 

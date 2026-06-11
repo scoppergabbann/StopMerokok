@@ -16,9 +16,12 @@ import { useToast } from "@/components/toast-provider";
 import {
   loadCheckins,
   loadCommunityPosts,
+  loadCurrentUserId,
   loadLeaderboard,
   loadProfile,
   persistCommunityPost,
+  removeCommunityPost,
+  reportCommunityPost,
   sendCommunitySupport,
 } from "@/lib/client-data";
 import {
@@ -55,6 +58,15 @@ const supportPrompts = [
   "Butuh semangat untuk lanjut besok.",
 ];
 
+const blockedWords = [
+  "anjing",
+  "bangsat",
+  "babi",
+  "kontol",
+  "memek",
+  "tolol",
+];
+
 function getCommunityLevel(streak: number) {
   if (streak >= 90) {
     return "Veteran";
@@ -80,15 +92,23 @@ export default function CommunityPage() {
   const [message, setMessage] = useState("");
   const [isPosting, setIsPosting] = useState(false);
   const [supportingPostId, setSupportingPostId] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [moderatingPostId, setModeratingPostId] = useState<string | null>(null);
   const { showToast } = useToast();
 
   useEffect(() => {
     const id = window.setTimeout(() => {
-      Promise.all([loadProfile(), loadCheckins(), loadCommunityPosts()]).then(
-        ([nextProfile, nextCheckins, nextPosts]) => {
+      Promise.all([
+        loadProfile(),
+        loadCheckins(),
+        loadCommunityPosts(),
+        loadCurrentUserId(),
+      ]).then(
+        ([nextProfile, nextCheckins, nextPosts, nextUserId]) => {
           setProfile(nextProfile);
           setCheckins(nextCheckins);
           setPosts(nextPosts);
+          setCurrentUserId(nextUserId);
           loadLeaderboard(nextProfile, nextCheckins).then(setLeaderboard);
         },
       );
@@ -115,6 +135,35 @@ export default function CommunityPage() {
       showToast({
         message: "Tulis minimal 3 karakter.",
         title: "Pesan terlalu pendek",
+        variant: "info",
+      });
+      return;
+    }
+
+    const normalizedMessage = trimmedMessage.toLowerCase();
+    const hasBlockedWord = blockedWords.some((word) =>
+      normalizedMessage.includes(word),
+    );
+
+    if (hasBlockedWord) {
+      showToast({
+        message: "Pakai kata yang lebih aman dan suportif ya.",
+        title: "Pesan belum bisa dikirim",
+        variant: "info",
+      });
+      return;
+    }
+
+    const today = new Date().toISOString().slice(0, 10);
+    const todayPostCount = posts.filter(
+      (post) =>
+        post.userId === currentUserId && post.createdAt.slice(0, 10) === today,
+    ).length;
+
+    if (todayPostCount >= 3) {
+      showToast({
+        message: "Batas posting hari ini 3 pesan agar wall tetap nyaman.",
+        title: "Batas harian tercapai",
         variant: "info",
       });
       return;
@@ -172,6 +221,55 @@ export default function CommunityPage() {
       });
     } finally {
       setSupportingPostId(null);
+    }
+  }
+
+  async function handleDeletePost(postId: string) {
+    const confirmed = window.confirm("Hapus pesan dukungan ini?");
+
+    if (!confirmed) {
+      return;
+    }
+
+    setModeratingPostId(postId);
+
+    try {
+      await removeCommunityPost(postId);
+      setPosts((current) => current.filter((post) => post.id !== postId));
+      showToast({
+        message: "Pesan sudah dihapus.",
+        title: "Terhapus",
+        variant: "success",
+      });
+    } catch {
+      showToast({
+        message: "Coba hapus lagi sebentar lagi.",
+        title: "Gagal menghapus",
+        variant: "info",
+      });
+    } finally {
+      setModeratingPostId(null);
+    }
+  }
+
+  async function handleReportPost(postId: string) {
+    setModeratingPostId(postId);
+
+    try {
+      await reportCommunityPost(postId);
+      showToast({
+        message: "Terima kasih. Laporanmu sudah dicatat.",
+        title: "Pesan dilaporkan",
+        variant: "success",
+      });
+    } catch {
+      showToast({
+        message: "Coba laporkan lagi sebentar lagi.",
+        title: "Gagal melaporkan",
+        variant: "info",
+      });
+    } finally {
+      setModeratingPostId(null);
     }
   }
 
@@ -464,6 +562,25 @@ export default function CommunityPage() {
                   >
                     Semangat {post.supportCount}
                   </button>
+                  {post.userId === currentUserId ? (
+                    <button
+                      className="ml-2 mt-4 inline-flex rounded-2xl bg-[#FBE3E3] px-4 py-2 text-sm font-extrabold text-[#B75D5D] disabled:cursor-not-allowed disabled:opacity-60"
+                      disabled={moderatingPostId === post.id}
+                      onClick={() => handleDeletePost(post.id)}
+                      type="button"
+                    >
+                      Hapus
+                    </button>
+                  ) : (
+                    <button
+                      className="ml-2 mt-4 inline-flex rounded-2xl bg-white px-4 py-2 text-sm font-extrabold text-slate-400 disabled:cursor-not-allowed disabled:opacity-60"
+                      disabled={moderatingPostId === post.id}
+                      onClick={() => handleReportPost(post.id)}
+                      type="button"
+                    >
+                      Report
+                    </button>
+                  )}
                 </article>
               ))
             )}

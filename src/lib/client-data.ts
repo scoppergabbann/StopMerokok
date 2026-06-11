@@ -1,6 +1,7 @@
 import {
   readCheckins,
   readCommunityPosts,
+  deleteCommunityPost,
   readCravingLogs,
   readDonationAllocations,
   readJournals,
@@ -35,6 +36,7 @@ import {
 import {
   readSupabaseCheckins,
   readSupabaseCommunityPosts,
+  deleteSupabaseCommunityPost,
   readSupabaseCravingLogs,
   readSupabaseDonationAllocations,
   readSupabaseJournals,
@@ -55,6 +57,8 @@ import {
   saveSupabaseReward,
   unlockSupabaseUserBadges,
   supportSupabaseCommunityPost,
+  reportSupabaseCommunityPost,
+  getCurrentUserId,
 } from "@/lib/supabase-data";
 import { isSupabaseConfigured } from "@/lib/supabase";
 
@@ -217,6 +221,7 @@ export async function persistCommunityPost(
     ...post,
     id: crypto.randomUUID(),
     supportCount: 0,
+    userId: "local-user",
   };
   saveCommunityPost(storedPost);
   return storedPost;
@@ -229,4 +234,29 @@ export async function sendCommunitySupport(postId: string) {
 
   supportCommunityPost(postId);
   return true;
+}
+
+export async function removeCommunityPost(postId: string) {
+  if (isSupabaseConfigured) {
+    return deleteSupabaseCommunityPost(postId);
+  }
+
+  deleteCommunityPost(postId);
+  return true;
+}
+
+export async function reportCommunityPost(postId: string) {
+  if (isSupabaseConfigured) {
+    return reportSupabaseCommunityPost(postId);
+  }
+
+  return true;
+}
+
+export async function loadCurrentUserId() {
+  if (isSupabaseConfigured) {
+    return getCurrentUserId();
+  }
+
+  return "local-user";
 }

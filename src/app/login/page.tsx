@@ -76,7 +76,7 @@ export default function LoginPage() {
       email,
       {
         captchaToken,
-        redirectTo: `${window.location.origin}/login`,
+        redirectTo: `${window.location.origin}/reset-password`,
       },
     );
     setIsSendingReset(false);
