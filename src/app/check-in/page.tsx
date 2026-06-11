@@ -243,7 +243,7 @@ export default function CheckInPage() {
                 Apa pemicunya?
               </span>
               <select
-                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-[#4FAE7B]"
+                className="select-input mt-2"
                 defaultValue={existingCheckin?.trigger}
                 name="trigger"
                 required
@@ -262,7 +262,7 @@ export default function CheckInPage() {
               Perasaan hari ini
             </span>
             <select
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-[#4FAE7B]"
+              className="select-input mt-2"
               defaultValue={existingCheckin?.mood}
               name="mood"
             >

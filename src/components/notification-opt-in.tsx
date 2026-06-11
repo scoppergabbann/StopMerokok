@@ -169,22 +169,26 @@ export function NotificationOptIn() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 sm:items-end">
-          <label className="text-sm font-bold text-slate-600">
+        <div className="flex w-full flex-col gap-3 sm:w-auto sm:items-end">
+          <label className="w-full text-sm font-bold text-slate-600 sm:w-44">
             Jam pengingat
-            <select
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-[#4FAE7B]"
-              onChange={(event) => updateReminderHour(Number(event.target.value))}
-              value={reminderHour}
-            >
-              {Array.from({ length: 10 }, (_, index) => index + 12).map(
-                (hour) => (
-                  <option key={hour} value={hour}>
-                    {String(hour).padStart(2, "0")}:00
-                  </option>
-                ),
-              )}
-            </select>
+            <span className="mt-2 block">
+              <select
+                className="select-input"
+                onChange={(event) =>
+                  updateReminderHour(Number(event.target.value))
+                }
+                value={reminderHour}
+              >
+                {Array.from({ length: 10 }, (_, index) => index + 12).map(
+                  (hour) => (
+                    <option key={hour} value={hour}>
+                      {String(hour).padStart(2, "0")}:00
+                    </option>
+                  ),
+                )}
+              </select>
+            </span>
           </label>
 
           {isEnabled ? (

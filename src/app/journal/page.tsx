@@ -76,7 +76,7 @@ export default function JournalPage() {
                 Perasaan hari ini
               </span>
               <select
-                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-[#4FAE7B]"
+                className="select-input mt-2"
                 defaultValue={todayJournal?.mood ?? "Tenang"}
                 name="mood"
               >

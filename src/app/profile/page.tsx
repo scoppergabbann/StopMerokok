@@ -219,7 +219,7 @@ export default function ProfilePage() {
                     Target berhenti
                   </span>
                   <select
-                    className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-[#4FAE7B]"
+                    className="select-input mt-2"
                     defaultValue={profile.targetType}
                     name="targetType"
                   >

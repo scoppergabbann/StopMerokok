@@ -311,7 +311,7 @@ export default function OnboardingPage() {
             <div className="space-y-6">
               <Field label="Target berhenti">
                 <select
-                  className="input bg-white"
+                  className="select-input"
                   onChange={(event) =>
                     updateField("targetType", event.target.value)
                   }
