@@ -12,8 +12,10 @@ type BeforeInstallPromptEvent = Event & {
   }>;
 };
 
-const dismissedStorageKey = "stopmerokok.pwa-install.dismissed-at";
-const dismissCooldownDays = 7;
+const dismissCountStorageKey = "stopmerokok.pwa-install.dismiss-count";
+const installedStorageKey = "stopmerokok.pwa-install.installed";
+const nextPromptStorageKey = "stopmerokok.pwa-install.next-prompt-at";
+const promptCooldownDays = [1, 3, 7, 14, 30];
 
 function isStandaloneMode() {
   return (
@@ -23,15 +25,37 @@ function isStandaloneMode() {
   );
 }
 
-function wasDismissedRecently() {
-  const dismissedAt = window.localStorage.getItem(dismissedStorageKey);
+function hasInstalledApp() {
+  return window.localStorage.getItem(installedStorageKey) === "true";
+}
 
-  if (!dismissedAt) {
-    return false;
-  }
+function canShowPromptNow() {
+  const nextPromptAt = Number(
+    window.localStorage.getItem(nextPromptStorageKey) ?? 0,
+  );
 
-  const elapsed = Date.now() - Number(dismissedAt);
-  return elapsed < dismissCooldownDays * 24 * 60 * 60 * 1000;
+  return !nextPromptAt || Date.now() >= nextPromptAt;
+}
+
+function scheduleNextPrompt() {
+  const currentCount = Number(
+    window.localStorage.getItem(dismissCountStorageKey) ?? 0,
+  );
+  const nextCount = currentCount + 1;
+  const cooldownDays =
+    promptCooldownDays[
+      Math.min(nextCount - 1, promptCooldownDays.length - 1)
+    ];
+  const nextPromptAt = Date.now() + cooldownDays * 24 * 60 * 60 * 1000;
+
+  window.localStorage.setItem(dismissCountStorageKey, String(nextCount));
+  window.localStorage.setItem(nextPromptStorageKey, String(nextPromptAt));
+}
+
+function markAppInstalled() {
+  window.localStorage.setItem(installedStorageKey, "true");
+  window.localStorage.removeItem(dismissCountStorageKey);
+  window.localStorage.removeItem(nextPromptStorageKey);
 }
 
 export function PwaInstallPrompt() {
@@ -40,7 +64,8 @@ export function PwaInstallPrompt() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    if (isStandaloneMode() || wasDismissedRecently()) {
+    if (isStandaloneMode() || hasInstalledApp()) {
+      markAppInstalled();
       return;
     }
 
@@ -48,11 +73,15 @@ export function PwaInstallPrompt() {
       event.preventDefault();
       const nextPrompt = event as BeforeInstallPromptEvent;
       setInstallPrompt(nextPrompt);
-      setIsVisible(true);
-      trackEvent("pwa_install_prompt", { action: "shown" });
+
+      if (canShowPromptNow()) {
+        setIsVisible(true);
+        trackEvent("pwa_install_prompt", { action: "shown" });
+      }
     }
 
     function handleAppInstalled() {
+      markAppInstalled();
       setInstallPrompt(null);
       setIsVisible(false);
       trackEvent("pwa_install_prompt", { action: "installed" });
@@ -84,12 +113,18 @@ export function PwaInstallPrompt() {
       platform: choice.platform,
     });
 
+    if (choice.outcome === "accepted") {
+      markAppInstalled();
+    } else {
+      scheduleNextPrompt();
+    }
+
     setInstallPrompt(null);
     setIsVisible(false);
   }
 
   function dismissPrompt() {
-    window.localStorage.setItem(dismissedStorageKey, String(Date.now()));
+    scheduleNextPrompt();
     trackEvent("pwa_install_prompt", { action: "dismissed" });
     setIsVisible(false);
   }
