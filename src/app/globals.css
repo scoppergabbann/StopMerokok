@@ -29,6 +29,37 @@ html {
   scroll-behavior: smooth;
 }
 
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+a[href] {
+  cursor: pointer;
+}
+
+button:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+a[href][class*="rounded"] {
+  transition:
+    transform 180ms ease,
+    filter 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    opacity 180ms ease;
+}
+
+button:focus-visible,
+[role="button"]:focus-visible,
+a[href]:focus-visible {
+  outline: 3px solid rgb(79 174 123 / 0.28);
+  outline-offset: 3px;
+}
+
 .input {
   width: 100%;
   border-radius: 1rem;
@@ -150,6 +181,27 @@ html {
   will-change: transform, opacity;
 }
 
+@media (hover: hover) and (pointer: fine) {
+  button:not(:disabled):not([role="option"]):hover,
+  [role="button"]:not([aria-disabled="true"]):not([role="option"]):hover,
+  a[href][class*="rounded"]:hover {
+    filter: saturate(1.04);
+    transform: translate3d(0, -1px, 0);
+  }
+
+  button:not(:disabled):not([role="option"]):active,
+  [role="button"]:not([aria-disabled="true"]):not([role="option"]):active,
+  a[href][class*="rounded"]:active {
+    filter: saturate(1);
+    transform: translate3d(0, 0, 0) scale(0.99);
+  }
+
+  button[role="option"]:hover {
+    filter: none;
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -163,6 +215,12 @@ html {
   .shimmer-card::after {
     animation: none !important;
     display: none;
+  }
+
+  button,
+  [role="button"],
+  a[href] {
+    transform: none !important;
   }
 
 }
