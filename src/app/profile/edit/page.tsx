@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Save, UserRound } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { CigaretteBrandInput } from "@/components/cigarette-brand-input";
 import { EmptyState } from "@/components/empty-state";
 import { SelectField } from "@/components/select-field";
 import { useToast } from "@/components/toast-provider";
@@ -37,6 +38,7 @@ const targets: { label: string; value: TargetType }[] = [
 
 export default function ProfileEditPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [cigaretteBrandInput, setCigaretteBrandInput] = useState("");
   const [packPriceInput, setPackPriceInput] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
@@ -46,6 +48,9 @@ export default function ProfileEditPage() {
     const id = window.setTimeout(() => {
       loadProfile().then((nextProfile) => {
         setProfile(nextProfile);
+        setCigaretteBrandInput(
+          nextProfile ? getCigaretteBrandText(nextProfile) : "",
+        );
         setPackPriceInput(
           nextProfile ? formatRupiahInput(String(nextProfile.packPrice)) : "",
         );
@@ -109,9 +114,7 @@ export default function ProfileEditPage() {
           onSubmit={async (event) => {
             event.preventDefault();
             const form = new FormData(event.currentTarget);
-            const cigaretteBrands = parseCigaretteBrands(
-              String(form.get("cigaretteBrand") || ""),
-            );
+            const cigaretteBrands = parseCigaretteBrands(cigaretteBrandInput);
             const nextProfile: Profile = {
               age: Number(form.get("age") || 0) || undefined,
               cigaretteBrand: cigaretteBrands.join(", "),
@@ -195,16 +198,10 @@ export default function ProfileEditPage() {
             title="Kebiasaan rokok"
           >
             <Field label="Produk rokok yang sering dipakai" className="sm:col-span-2">
-              <input
-                className="input"
-                defaultValue={getCigaretteBrandText(profile)}
-                name="cigaretteBrand"
-                placeholder="Contoh: Sampoerna Mild, Marlboro, Dji Sam Soe"
+              <CigaretteBrandInput
+                onChange={setCigaretteBrandInput}
+                value={cigaretteBrandInput}
               />
-              <p className="mt-2 text-sm font-semibold leading-6 text-slate-500">
-                Pisahkan dengan koma. Contoh: Sampoerna Mild, Marlboro, Dji Sam
-                Soe.
-              </p>
             </Field>
             <Field label="Baseline rokok per hari">
               <input

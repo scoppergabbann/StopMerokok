@@ -292,8 +292,8 @@ export default function ProfilePage() {
                   <p className="mt-1 font-extrabold">-</p>
                 )}
                 <p className="mt-3 text-sm font-semibold leading-6 text-slate-500">
-                  Merek dipisahkan agar pola kebiasaan bisa dianalisis lebih
-                  rapi tanpa mengubah cerita perjalananmu.
+                  Daftar ini hanya membantu kamu melihat kebiasaan awal dengan
+                  lebih jelas, tanpa menghakimi perjalananmu.
                 </p>
               </div>
               <InfoRow

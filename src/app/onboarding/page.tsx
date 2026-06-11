@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { CigaretteBrandInput } from "@/components/cigarette-brand-input";
 import { SelectField } from "@/components/select-field";
 import { useToast } from "@/components/toast-provider";
 import { persistProfile } from "@/lib/client-data";
@@ -257,18 +258,10 @@ export default function OnboardingPage() {
           {step === 1 && (
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Produk rokok yang sering dipakai" className="sm:col-span-2">
-                <input
-                  className="input"
-                  onChange={(event) =>
-                    updateField("cigaretteBrand", event.target.value)
-                  }
-                  placeholder="Contoh: Sampoerna Mild, Marlboro, Dji Sam Soe"
+                <CigaretteBrandInput
+                  onChange={(value) => updateField("cigaretteBrand", value)}
                   value={formData.cigaretteBrand}
                 />
-                <p className="mt-2 text-sm font-semibold leading-6 text-slate-500">
-                  Pisahkan beberapa merek dengan koma agar datanya lebih rapi
-                  untuk analisis.
-                </p>
               </Field>
               <Field label="Rata-rata rokok per hari">
                 <input
