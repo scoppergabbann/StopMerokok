@@ -23,11 +23,14 @@ import {
   type Profile,
 } from "@/lib/mvp-store";
 
+const historyPageSize = 5;
+
 export default function StatsPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [checkins, setCheckins] = useState<DailyCheckin[]>([]);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [deletingDate, setDeletingDate] = useState<string | null>(null);
+  const [historyPage, setHistoryPage] = useState(1);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -46,9 +49,18 @@ export default function StatsPage() {
 
   const summary = calculateSummary(profile, checkins);
   const insights = getRelapseInsights(checkins);
-  const recentCheckins = [...checkins]
-    .sort((a, b) => b.date.localeCompare(a.date))
-    .slice(0, 8);
+  const sortedCheckins = [...checkins].sort((a, b) =>
+    b.date.localeCompare(a.date),
+  );
+  const historyPageCount = Math.max(
+    1,
+    Math.ceil(sortedCheckins.length / historyPageSize),
+  );
+  const safeHistoryPage = Math.min(historyPage, historyPageCount);
+  const recentCheckins = sortedCheckins.slice(
+    (safeHistoryPage - 1) * historyPageSize,
+    safeHistoryPage * historyPageSize,
+  );
 
   async function handleDeleteCheckin(date: string) {
     const confirmed = window.confirm(
@@ -273,6 +285,38 @@ export default function StatsPage() {
               ))
             )}
           </div>
+
+          {sortedCheckins.length > historyPageSize && (
+            <div className="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm font-bold text-slate-500">
+                Halaman {safeHistoryPage} dari {historyPageCount}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-slate-600 disabled:cursor-not-allowed disabled:opacity-40"
+                  disabled={safeHistoryPage === 1}
+                  onClick={() =>
+                    setHistoryPage((current) => Math.max(1, current - 1))
+                  }
+                  type="button"
+                >
+                  Sebelumnya
+                </button>
+                <button
+                  className="rounded-2xl bg-[#DFF3E8] px-4 py-2 text-sm font-extrabold text-[#2F7D57] disabled:cursor-not-allowed disabled:opacity-40"
+                  disabled={safeHistoryPage === historyPageCount}
+                  onClick={() =>
+                    setHistoryPage((current) =>
+                      Math.min(historyPageCount, current + 1),
+                    )
+                  }
+                  type="button"
+                >
+                  Berikutnya
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="mt-6 rounded-[2rem] bg-[#E3F3F7] p-5">

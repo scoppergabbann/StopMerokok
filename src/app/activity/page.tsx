@@ -59,6 +59,8 @@ const movementLabels: Record<MovementLog["type"], string> = {
   walk_5: "Jalan 5 menit",
 };
 
+const historyPageSize = 5;
+
 function getMovementMessage(totalMinutes: number, count: number) {
   if (count === 0) {
     return "Saat dorongan merokok datang, coba mulai dari jalan 5 menit. Tidak perlu jauh, yang penting tubuh bergerak dulu.";
@@ -81,6 +83,7 @@ export default function ActivityPage() {
     useState<MovementLog["type"]>("walk_5");
   const [note, setNote] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [historyPage, setHistoryPage] = useState(1);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -116,6 +119,12 @@ export default function ActivityPage() {
   const activeDays = new Set(
     recentLogs.map((log) => formatDateKey(new Date(log.createdAt))),
   ).size;
+  const historyPageCount = Math.max(1, Math.ceil(logs.length / historyPageSize));
+  const safeHistoryPage = Math.min(historyPage, historyPageCount);
+  const paginatedLogs = logs.slice(
+    (safeHistoryPage - 1) * historyPageSize,
+    safeHistoryPage * historyPageSize,
+  );
 
   async function submitMovement(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -279,7 +288,7 @@ export default function ActivityPage() {
                 </p>
               </div>
             ) : (
-              logs.slice(0, 8).map((log) => (
+              paginatedLogs.map((log) => (
                 <article
                   className="grid gap-4 rounded-2xl bg-[#F6F8F7] p-4 sm:grid-cols-[1fr_auto]"
                   key={log.id}
@@ -301,6 +310,38 @@ export default function ActivityPage() {
               ))
             )}
           </div>
+
+          {logs.length > historyPageSize && (
+            <div className="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm font-bold text-slate-500">
+                Halaman {safeHistoryPage} dari {historyPageCount}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-slate-600 disabled:cursor-not-allowed disabled:opacity-40"
+                  disabled={safeHistoryPage === 1}
+                  onClick={() =>
+                    setHistoryPage((current) => Math.max(1, current - 1))
+                  }
+                  type="button"
+                >
+                  Sebelumnya
+                </button>
+                <button
+                  className="rounded-2xl bg-[#DFF3E8] px-4 py-2 text-sm font-extrabold text-[#2F7D57] disabled:cursor-not-allowed disabled:opacity-40"
+                  disabled={safeHistoryPage === historyPageCount}
+                  onClick={() =>
+                    setHistoryPage((current) =>
+                      Math.min(historyPageCount, current + 1),
+                    )
+                  }
+                  type="button"
+                >
+                  Berikutnya
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="grid gap-4 lg:grid-cols-2">
