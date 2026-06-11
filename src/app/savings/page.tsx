@@ -5,7 +5,14 @@ import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { EmptyState } from "@/components/empty-state";
 import { useToast } from "@/components/toast-provider";
-import { HandHeart, PiggyBank, PlusCircle } from "lucide-react";
+import {
+  Copy,
+  HandHeart,
+  PiggyBank,
+  PlusCircle,
+  Server,
+  ShieldCheck,
+} from "lucide-react";
 import {
   loadCheckins,
   loadDonationAllocations,
@@ -46,6 +53,36 @@ const donationTargets = [
 
 const asmaulHusnaAmounts = [10099, 25099, 50099, 99099];
 
+const supportAmounts = [
+  {
+    amount: 10000,
+    description: "Setara satu kopi untuk bantu server tetap menyala.",
+    label: "10rb",
+  },
+  {
+    amount: 25000,
+    description: "Bantu menjaga aplikasi tetap gratis untuk lebih banyak user.",
+    isPopular: true,
+    label: "25rb",
+  },
+  {
+    amount: 50000,
+    description: "Dukung pengembangan fitur baru dan komunitas.",
+    label: "50rb",
+  },
+  {
+    amount: 100000,
+    description: "Sponsor kecil untuk ruang berhenti merokok yang lebih sehat.",
+    label: "100rb",
+  },
+];
+
+const supportBank = {
+  accountName: "Mochammad Fawwaz",
+  accountNumber: "1780001929922",
+  bankName: "Bank Mandiri",
+};
+
 export default function SavingsPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [checkins, setCheckins] = useState<DailyCheckin[]>([]);
@@ -56,6 +93,9 @@ export default function SavingsPage() {
   const [selectedDirection, setSelectedDirection] = useState(directionOptions[0]);
   const [selectedQrTarget, setSelectedQrTarget] = useState(donationTargets[0]);
   const [selectedQrAmount, setSelectedQrAmount] = useState(asmaulHusnaAmounts[0]);
+  const [selectedSupportAmount, setSelectedSupportAmount] = useState(
+    supportAmounts[1].amount,
+  );
   const [isQrVisible, setIsQrVisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const { showToast } = useToast();
@@ -114,6 +154,15 @@ export default function SavingsPage() {
   }, [allocations]);
   const hasSavings = summary.savedMoney > 0 || checkins.length > 0;
 
+  async function copySupportAccount() {
+    await navigator.clipboard.writeText(supportBank.accountNumber);
+    showToast({
+      message: "Nomor rekening dukungan sudah disalin.",
+      title: "Disalin",
+      variant: "success",
+    });
+  }
+
   if (isLoading) {
     return (
       <AppShell>
@@ -132,19 +181,152 @@ export default function SavingsPage() {
   return (
     <AppShell>
       <section className="space-y-6">
-        <div className="overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#DFF3E8_0%,#E3F3F7_52%,#FFFFFF_100%)] p-6 shadow-xl shadow-slate-200/70">
-          <p className="text-sm font-extrabold uppercase text-[#2F7D57]">
-            Uang yang dulu jadi asap
+        <div className="overflow-hidden rounded-[2rem] bg-[#10231D] p-6 text-white shadow-xl shadow-slate-300/70">
+          <p className="text-sm font-extrabold uppercase text-[#9DE5BD]">
+            Berbagi untuk StopMerokok
           </p>
-          <div className="mt-4 grid gap-6 lg:grid-cols-[1fr_0.78fr] lg:items-end">
+          <div className="mt-4 grid gap-8 lg:grid-cols-[1fr_0.82fr] lg:items-start">
             <div>
               <h1 className="text-4xl font-extrabold leading-tight sm:text-5xl">
-                Uang yang Berhasil Kamu Selamatkan
+                Bantu StopMerokok tetap gratis dan nyaman.
               </h1>
+              <p className="mt-4 max-w-2xl text-lg font-medium leading-8 text-slate-200">
+                Kamu fokus menjaga hari tanpa rokok. Kami menjaga ruangnya
+                tetap hidup: server, database, keamanan, dan pengembangan fitur
+                yang tetap ringan tanpa iklan mengganggu.
+              </p>
+
+              <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
+                <p className="text-lg font-bold leading-8 text-slate-100">
+                  Satu batang yang tidak kamu beli hari ini bisa ikut membantu
+                  orang lain punya tempat untuk mulai berhenti.
+                </p>
+              </div>
+
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                <SupportPoint
+                  icon={Server}
+                  text="Membantu biaya server, database, dan domain."
+                />
+                <SupportPoint
+                  icon={ShieldCheck}
+                  text="Menjaga aplikasi tetap aman dan tanpa jual data pribadi."
+                />
+              </div>
+            </div>
+
+            <div className="rounded-[1.75rem] bg-white p-5 text-[#1F2933] shadow-2xl shadow-black/20">
+              <p className="text-sm font-extrabold uppercase text-[#2F7D57]">
+                Pilih dukungan
+              </p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {supportAmounts.map((support) => (
+                  <button
+                    className={`relative rounded-2xl border p-4 text-left transition ${
+                      selectedSupportAmount === support.amount
+                        ? "border-[#4FAE7B] bg-[#DFF3E8]"
+                        : "border-slate-100 bg-[#F6F8F7] hover:border-[#BFE7D1]"
+                    }`}
+                    key={support.amount}
+                    onClick={() => {
+                      setSelectedSupportAmount(support.amount);
+                    }}
+                    type="button"
+                  >
+                    {support.isPopular && (
+                      <span className="absolute -top-3 left-4 rounded-full bg-[#1F2933] px-3 py-1 text-[10px] font-extrabold uppercase text-white">
+                        Paling dipilih
+                      </span>
+                    )}
+                    <span className="block text-3xl font-extrabold">
+                      {support.label}
+                    </span>
+                    <span className="mt-2 block text-sm font-semibold leading-6 text-slate-600">
+                      {support.description}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-5 rounded-3xl bg-[#F6F8F7] p-4">
+                <div className="mx-auto grid aspect-square max-w-[15rem] place-items-center rounded-[1.25rem] bg-white p-4 text-center">
+                  {isQrVisible ? (
+                    <Image
+                      alt="QRIS dukungan StopMerokok"
+                      className="h-full w-full rounded-2xl object-contain"
+                      height={512}
+                      onError={() => setIsQrVisible(false)}
+                      priority
+                      src="/images/gopay-qr.png"
+                      width={512}
+                    />
+                  ) : (
+                    <div>
+                      <div className="mx-auto grid size-32 place-items-center rounded-3xl border-2 border-dashed border-slate-300">
+                        <span className="text-sm font-extrabold">QRIS</span>
+                      </div>
+                      <p className="mt-3 text-xs font-bold text-slate-500">
+                        File QR belum terbaca di /images/gopay-qr.png
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <p className="mt-3 text-center text-sm font-bold text-slate-600">
+                  Scan dengan GoPay, OVO, DANA, ShopeePay, atau m-Banking.
+                </p>
+                <p className="mt-1 text-center text-xs font-semibold leading-5 text-slate-500">
+                  Pilih nominal {formatRupiah(selectedSupportAmount)}, screenshot
+                  QR jika perlu, lalu bayar via QRIS.
+                </p>
+              </div>
+
+              <div className="mt-4 rounded-3xl border border-slate-100 p-4">
+                <p className="text-sm font-extrabold text-[#2F7D57]">
+                  Transfer bank
+                </p>
+                <div className="mt-3 space-y-2 text-sm font-semibold text-slate-600">
+                  <div className="flex justify-between gap-3">
+                    <span>Bank</span>
+                    <span className="text-right font-extrabold text-[#1F2933]">
+                      {supportBank.bankName}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span>No. Rekening</span>
+                    <button
+                      className="inline-flex items-center gap-2 rounded-full bg-[#DFF3E8] px-3 py-1 font-extrabold text-[#2F7D57]"
+                      onClick={copySupportAccount}
+                      type="button"
+                    >
+                      {supportBank.accountNumber}
+                      <Copy className="size-4" />
+                    </button>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <span>Atas nama</span>
+                    <span className="text-right font-extrabold text-[#1F2933]">
+                      {supportBank.accountName}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#DFF3E8_0%,#E3F3F7_52%,#FFFFFF_100%)] p-6 shadow-xl shadow-slate-200/70">
+          <div className="grid gap-6 lg:grid-cols-[1fr_0.78fr] lg:items-end">
+            <div>
+              <p className="text-sm font-extrabold uppercase text-[#2F7D57]">
+                Savings pribadi
+              </p>
+              <h2 className="mt-3 text-3xl font-extrabold leading-tight sm:text-4xl">
+                Uang yang dulu jadi asap, kini bisa punya arah.
+              </h2>
               <p className="mt-4 max-w-2xl text-lg font-medium leading-8 text-slate-700">
-                Setiap batang yang tidak kamu hisap hari ini bukan cuma baik
-                untuk tubuhmu, tapi juga menyelamatkan sedikit uang untuk hal
-                yang lebih berarti.
+                Lihat uang yang berhasil kamu selamatkan, buat target kecil,
+                lalu catat saat uang itu benar-benar kamu arahkan untuk diri
+                sendiri, keluarga, tabungan, atau sedekah.
               </p>
             </div>
             <div className="rounded-[1.75rem] bg-white/85 p-5 shadow-sm">
@@ -229,8 +411,8 @@ export default function SavingsPage() {
               Kamu sedang membangun sesuatu dari kebiasaan baru.
             </h2>
             <p className="mt-2 leading-7 text-slate-600">
-              Buat target seperti sepatu baru, tabungan kecil, atau hadiah
-              sederhana untuk diri sendiri.
+              Buat target seperti sepatu baru, tabungan kecil, traktir
+              keluarga, atau sedekah.
             </p>
           </div>
 
@@ -272,7 +454,7 @@ export default function SavingsPage() {
             <input
               className="rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#4FAE7B]"
               name="title"
-              placeholder="Contoh: Sepatu baru"
+              placeholder="Contoh: Sedekah Jumat"
               required
             />
             <input
@@ -281,7 +463,7 @@ export default function SavingsPage() {
               onChange={(event) =>
                 setTargetAmountInput(formatRupiahInput(event.target.value))
               }
-              placeholder="Rp500.000"
+              placeholder="Rp100.000"
               required
               type="text"
               value={targetAmountInput}
@@ -296,7 +478,7 @@ export default function SavingsPage() {
               <EmptyState
                 body="Buat target kecil seperti sepatu, tabungan, traktir keluarga, atau sedekah Jumat agar savings punya arah yang terasa nyata."
                 icon={PlusCircle}
-                title="Target reward belum dibuat"
+                title="Target berbagi belum dibuat"
               />
             ) : (
               rewards.slice(0, 2).map((reward) => {
@@ -638,6 +820,23 @@ function Metric({ label, value }: { label: string; value: string }) {
     <div className="rounded-[2rem] bg-white p-5 shadow-sm">
       <p className="text-sm font-bold text-slate-500">{label}</p>
       <p className="mt-2 text-2xl font-extrabold">{value}</p>
+    </div>
+  );
+}
+
+function SupportPoint({
+  icon: Icon,
+  text,
+}: {
+  icon: typeof Server;
+  text: string;
+}) {
+  return (
+    <div className="flex items-start gap-3 rounded-2xl bg-white/8 p-4 text-slate-200">
+      <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-white/10 text-[#9DE5BD]">
+        <Icon className="size-5" />
+      </span>
+      <p className="text-sm font-semibold leading-6">{text}</p>
     </div>
   );
 }

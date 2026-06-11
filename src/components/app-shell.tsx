@@ -27,7 +27,7 @@ const navItems = [
   { href: "/stats", icon: BarChart3, label: "Statistic" },
   { href: "/check-in", icon: CircleCheckBig, label: "Check-in", primary: true },
   { href: "/community", icon: UsersRound, label: "Komunitas" },
-  { href: "/savings", icon: HandHeart, label: "Berbagi" },
+  { href: "/berbagi", icon: HandHeart, label: "Berbagi" },
 ];
 
 type AppShellProps = {
