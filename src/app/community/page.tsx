@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
-  CheckCircle2,
   Flame,
   MessageCircleHeart,
   Send,
@@ -35,24 +34,6 @@ import {
   type LeaderboardEntry,
   type Profile,
 } from "@/lib/mvp-store";
-
-const challengeTargets = [
-  {
-    days: 7,
-    label: "7 hari",
-    title: "Tantangan awal",
-  },
-  {
-    days: 30,
-    label: "30 hari",
-    title: "Bangun ritme",
-  },
-  {
-    days: 90,
-    label: "3 bulan",
-    title: "Level kuat",
-  },
-];
 
 const supportPrompts = [
   "Hari ini berat, tapi aku tetap hadir.",
@@ -92,6 +73,7 @@ export default function CommunityPage() {
   const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [selectedSupport, setSelectedSupport] = useState(supportPrompts[0]);
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const [isPosting, setIsPosting] = useState(false);
   const [supportingPostId, setSupportingPostId] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -105,15 +87,14 @@ export default function CommunityPage() {
         loadCheckins(),
         loadCommunityPosts(),
         loadCurrentUserId(),
-      ]).then(
-        ([nextProfile, nextCheckins, nextPosts, nextUserId]) => {
-          setProfile(nextProfile);
-          setCheckins(nextCheckins);
-          setPosts(nextPosts);
-          setCurrentUserId(nextUserId);
-          loadLeaderboard(nextProfile, nextCheckins).then(setLeaderboard);
-        },
-      );
+      ]).then(([nextProfile, nextCheckins, nextPosts, nextUserId]) => {
+        setProfile(nextProfile);
+        setCheckins(nextCheckins);
+        setPosts(nextPosts);
+        setCurrentUserId(nextUserId);
+        loadLeaderboard(nextProfile, nextCheckins).then(setLeaderboard);
+        setIsLoading(false);
+      });
     }, 0);
 
     return () => window.clearTimeout(id);
@@ -127,6 +108,7 @@ export default function CommunityPage() {
   const activeBadge = getStreakBadge(activeStreak);
   const communityLevel = getCommunityLevel(activeStreak);
   const topThree = leaderboard.slice(0, 3);
+  const visiblePosts = posts.slice(0, 8);
 
   async function handleSubmitPost(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -281,26 +263,34 @@ export default function CommunityPage() {
     }
   }
 
+  if (isLoading) {
+    return (
+      <AppShell>
+        <CommunitySkeleton />
+      </AppShell>
+    );
+  }
+
   return (
     <AppShell>
-      <section className="space-y-6">
-        <div className="rounded-[2rem] bg-[#1F2933] p-5 text-white shadow-xl shadow-slate-300/60 sm:p-6">
-          <p className="text-sm font-extrabold uppercase text-[#9DE5BD]">
-            Komunitas
-          </p>
-          <div className="mt-3 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
+      <section className="mx-auto max-w-5xl space-y-5">
+        <div className="overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#123B3F_0%,#1F555B_58%,#4FAE7B_145%)] p-6 text-white shadow-xl shadow-slate-300/70">
+          <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
-              <h1 className="text-4xl font-extrabold">
-                Bertahan bareng, satu hari dulu.
+              <p className="text-sm font-extrabold uppercase text-[#9DE5BD]">
+                Komunitas
+              </p>
+              <h1 className="mt-3 max-w-3xl text-4xl font-extrabold leading-tight sm:text-5xl">
+                Ruang kecil untuk saling menguatkan.
               </h1>
-              <p className="mt-3 max-w-2xl leading-7 text-slate-300">
-                Lihat tantangan, peringkat rentetan aktif, dan ambil dukungan kecil
-                saat perjalanan terasa berat.
+              <p className="mt-4 max-w-2xl text-lg font-medium leading-8 text-slate-200">
+                Tidak perlu cerita panjang. Satu kalimat jujur sudah cukup
+                untuk merasa tidak sendirian hari ini.
               </p>
             </div>
-            <div className="rounded-3xl bg-white/10 p-4">
+            <div className="rounded-[1.6rem] bg-white/10 p-5">
               <p className="text-sm font-bold text-slate-300">Level kamu</p>
-              <p className="mt-1 text-2xl font-extrabold">{communityLevel}</p>
+              <p className="mt-1 text-3xl font-extrabold">{communityLevel}</p>
               <p className="mt-1 text-sm font-semibold text-[#9DE5BD]">
                 {activeStreak} hari rentetan aktif
               </p>
@@ -308,107 +298,114 @@ export default function CommunityPage() {
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-[1.5rem] bg-white p-5 shadow-sm">
-            <Flame className="size-7 text-[#4FAE7B]" />
-            <p className="mt-4 text-sm font-bold text-slate-500">
-              Rentetan aktif
-            </p>
-            <p className="mt-1 text-2xl font-extrabold">
-              {activeStreak} hari
-            </p>
-          </div>
-          <div className="rounded-[1.5rem] bg-white p-5 shadow-sm">
-            <Trophy className="size-7 text-[#36798D]" />
-            <p className="mt-4 text-sm font-bold text-slate-500">
-              Lencana aktif
-            </p>
-            <p className="mt-1 text-2xl font-extrabold">
-              {activeBadge ?? "Belum terbuka"}
-            </p>
-          </div>
-          <div className="rounded-[1.5rem] bg-white p-5 shadow-sm">
-            <UsersRound className="size-7 text-[#4FAE7B]" />
-            <p className="mt-4 text-sm font-bold text-slate-500">
-              Peserta aktif
-            </p>
-            <p className="mt-1 text-2xl font-extrabold">
-              {leaderboard.length} orang
-            </p>
-          </div>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <MiniStat icon={Flame} label="Rentetan" value={`${activeStreak} hari`} />
+          <MiniStat
+            icon={Trophy}
+            label="Lencana"
+            value={activeBadge ?? "Belum terbuka"}
+          />
+          <MiniStat
+            icon={UsersRound}
+            label="Peserta aktif"
+            value={`${leaderboard.length} orang`}
+          />
         </div>
 
-        <div className="rounded-[2rem] bg-white p-5 shadow-xl shadow-slate-200/70">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-                Tantangan bersama
-              </p>
-              <h2 className="mt-2 text-2xl font-extrabold">
-                Pilih target kecil yang bisa dijaga
-              </h2>
+        <div className="grid gap-5 lg:grid-cols-[1fr_0.72fr]">
+          <section className="rounded-[2rem] bg-white p-5 shadow-sm">
+            <div className="flex items-start gap-4">
+              <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[#DFF3E8] text-[#2F7D57]">
+                <MessageCircleHeart className="size-6" />
+              </span>
+              <div>
+                <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
+                  Tulis dukungan
+                </p>
+                <h2 className="mt-2 text-2xl font-extrabold">
+                  Bagikan satu kalimat hari ini
+                </h2>
+                <p className="mt-2 leading-7 text-slate-600">
+                  Bisa progres kecil, minta semangat, atau kalimat yang ingin
+                  kamu ingat besok.
+                </p>
+              </div>
             </div>
-            <Link
-              className="rounded-full bg-[#DFF3E8] px-4 py-2 text-sm font-extrabold text-[#2F7D57]"
-              href="/check-in"
-            >
-              Absen hari ini
-            </Link>
-          </div>
 
-          <div className="mt-5 grid gap-4 md:grid-cols-3">
-            {challengeTargets.map((challenge) => {
-              const progress = Math.min(activeStreak, challenge.days);
-              const percentage = Math.min(
-                100,
-                (progress / challenge.days) * 100,
-              );
-              const isComplete = progress >= challenge.days;
-
-              return (
-                <div
-                  className="rounded-3xl border border-slate-100 bg-[#F6F8F7] p-4"
-                  key={challenge.days}
+            <div className="mt-5 flex flex-wrap gap-2">
+              {supportPrompts.map((prompt) => (
+                <button
+                  className={`rounded-full px-4 py-2 text-sm font-extrabold transition ${
+                    selectedSupport === prompt
+                      ? "bg-[#DFF3E8] text-[#2F7D57]"
+                      : "bg-[#F6F8F7] text-slate-500 hover:bg-[#E3F3F7]"
+                  }`}
+                  key={prompt}
+                  onClick={() => {
+                    setSelectedSupport(prompt);
+                    setMessage(prompt);
+                  }}
+                  type="button"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-bold text-slate-500">
-                        {challenge.title}
-                      </p>
-                      <h3 className="mt-1 text-xl font-extrabold">
-                        {challenge.label}
-                      </h3>
-                    </div>
-                    {isComplete && (
-                      <span className="grid size-9 place-items-center rounded-2xl bg-[#DFF3E8] text-[#2F7D57]">
-                        <CheckCircle2 className="size-5" />
-                      </span>
-                    )}
-                  </div>
-                  <div className="mt-5 h-3 overflow-hidden rounded-full bg-white">
-                    <div
-                      className="h-full rounded-full bg-[#4FAE7B]"
-                      style={{ width: `${percentage}%` }}
-                    />
-                  </div>
-                  <p className="mt-3 text-sm font-bold text-slate-500">
-                    {progress} dari {challenge.days} hari
-                  </p>
-                </div>
-              );
-            })}
-          </div>
+                  {prompt}
+                </button>
+              ))}
+            </div>
+
+            <form className="mt-5 space-y-3" onSubmit={handleSubmitPost}>
+              <textarea
+                className="min-h-28 w-full resize-none rounded-2xl border border-slate-200 bg-[#F6F8F7] px-4 py-3 text-sm font-semibold leading-7 outline-none transition placeholder:text-slate-400 focus:border-[#4FAE7B] focus:bg-white"
+                maxLength={180}
+                onChange={(event) => setMessage(event.target.value)}
+                placeholder="Contoh: Aku berhasil melewati dorongan merokok sore ini."
+                value={message}
+              />
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-xs font-bold text-slate-400">
+                  {message.length}/180 karakter
+                </p>
+                <button
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#4FAE7B] px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20 disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={isPosting}
+                  type="submit"
+                >
+                  <Send className="size-4" />
+                  {isPosting ? "Mengirim..." : "Kirim dukungan"}
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <aside className="rounded-[2rem] bg-[#E3F3F7] p-5">
+            <Sparkles className="size-7 text-[#36798D]" />
+            <h2 className="mt-4 text-2xl font-extrabold">Pengingat lembut</h2>
+            <p className="mt-2 leading-7 text-slate-700">
+              Komunitas ini bukan tempat membandingkan siapa paling kuat.
+              Tujuannya sederhana: saling mengingatkan untuk kembali mencoba.
+            </p>
+            <div className="mt-5 rounded-3xl bg-white/75 p-4">
+              <p className="text-sm font-bold text-slate-500">
+                Progressmu
+              </p>
+              <p className="mt-2 text-lg font-extrabold">
+                {summary.smokeFreeDays} hari bebas rokok tercatat
+              </p>
+              <p className="mt-2 text-sm font-semibold leading-6 text-slate-600">
+                Tetap mulai dari hari ini, bukan dari ekspektasi orang lain.
+              </p>
+            </div>
+          </aside>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-[1fr_0.85fr]">
-          <div className="rounded-[2rem] bg-white p-5 shadow-xl shadow-slate-200/70">
+        <div className="grid gap-5 lg:grid-cols-[0.72fr_1fr]">
+          <section className="rounded-[2rem] bg-white p-5 shadow-sm">
             <div className="flex items-end justify-between gap-3">
               <div>
                 <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-                  Peringkat aktif
+                  Peringkat mini
                 </p>
                 <h2 className="mt-2 text-2xl font-extrabold">
-                  Rentetan terbaik komunitas
+                  Rentetan aktif
                 </h2>
               </div>
               <Link
@@ -424,17 +421,17 @@ export default function CommunityPage() {
                 <EmptyState
                   actionHref="/check-in"
                   actionLabel="Absen bebas rokok"
-                  body="Rentetan terbaik akan muncul setelah ada peserta yang menjaga absen bebas rokok sampai hari ini."
+                  body="Peringkat mini muncul setelah ada peserta yang menjaga rentetan aktif."
                   icon={Trophy}
-                  title="Peringkat komunitas masih kosong"
+                  title="Peringkat masih kosong"
                 />
               ) : (
                 topThree.map((entry) => (
                   <div
-                    className="grid grid-cols-[48px_1fr_auto] items-center gap-3 rounded-2xl bg-[#F6F8F7] p-3"
+                    className="grid grid-cols-[44px_1fr_auto] items-center gap-3 rounded-2xl bg-[#F6F8F7] p-3"
                     key={`${entry.rank}-${entry.name}`}
                   >
-                    <div className="grid size-11 place-items-center rounded-2xl bg-white font-extrabold text-[#2F7D57]">
+                    <div className="grid size-10 place-items-center rounded-2xl bg-white font-extrabold text-[#2F7D57]">
                       #{entry.rank}
                     </div>
                     <div className="min-w-0">
@@ -450,157 +447,129 @@ export default function CommunityPage() {
                 ))
               )}
             </div>
-          </div>
+          </section>
 
-          <div className="rounded-[2rem] bg-[#E3F3F7] p-5">
-            <MessageCircleHeart className="size-7 text-[#36798D]" />
-            <h2 className="mt-4 text-2xl font-extrabold">
-              Dukungan cepat
-            </h2>
-            <p className="mt-2 leading-7 text-slate-700">
-              Pilih kalimat kecil untuk mengingatkan diri sendiri bahwa kamu
-              tidak harus sempurna untuk tetap lanjut.
-            </p>
-
-            <div className="mt-5 space-y-2">
-              {supportPrompts.map((prompt) => (
-                <button
-                  className={`w-full rounded-2xl px-4 py-3 text-left text-sm font-extrabold transition ${
-                    selectedSupport === prompt
-                      ? "bg-white text-[#1F2933] shadow-sm"
-                      : "bg-white/45 text-[#36798D] hover:bg-white/75"
-                  }`}
-                  key={prompt}
-                  onClick={() => setSelectedSupport(prompt)}
-                  type="button"
-                >
-                  {prompt}
-                </button>
-              ))}
-            </div>
-
-            <div className="mt-5 rounded-3xl bg-white p-4">
-              <p className="text-sm font-bold text-slate-500">Kalimat hari ini</p>
-              <p className="mt-2 text-lg font-extrabold leading-8">
-                {selectedSupport}
-              </p>
-              <p className="mt-3 text-sm font-semibold leading-6 text-slate-600">
-                Statistikmu mencatat {summary.smokeFreeDays} hari bebas rokok.
-                Tetap mulai dari hari ini.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-[2rem] bg-white p-5 shadow-xl shadow-slate-200/70">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
-                Ruang dukungan
-              </p>
-              <h2 className="mt-2 text-2xl font-extrabold">
-                Pesan singkat untuk saling menguatkan
-              </h2>
-              <p className="mt-2 leading-7 text-slate-600">
-                Bagikan progres kecil atau minta semangat. Tetap ringan,
-                singkat, dan aman untuk semua.
-              </p>
-            </div>
-            <Sparkles className="hidden size-8 text-[#4FAE7B] sm:block" />
-          </div>
-
-          <form className="mt-5 space-y-3" onSubmit={handleSubmitPost}>
-            <label className="block">
-              <span className="text-sm font-bold text-slate-600">
-                Tulis pesan
+          <section className="rounded-[2rem] bg-white p-5 shadow-sm">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-sm font-extrabold uppercase text-[#4FAE7B]">
+                  Ruang dukungan
+                </p>
+                <h2 className="mt-2 text-2xl font-extrabold">
+                  Pesan terbaru
+                </h2>
+              </div>
+              <span className="rounded-full bg-[#DFF3E8] px-4 py-2 text-sm font-extrabold text-[#2F7D57]">
+                {posts.length} pesan
               </span>
-              <textarea
-                className="mt-2 min-h-24 w-full resize-none rounded-2xl border border-slate-200 bg-[#F6F8F7] px-4 py-3 text-sm font-semibold leading-7 outline-none transition placeholder:text-slate-400 focus:border-[#4FAE7B] focus:bg-white"
-                maxLength={180}
-                onChange={(event) => setMessage(event.target.value)}
-                placeholder="Contoh: Aku berhasil melewati dorongan merokok sore ini."
-                value={message}
-              />
-            </label>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-xs font-bold text-slate-400">
-                {message.length}/180 karakter
-              </p>
-              <button
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#4FAE7B] px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20 disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={isPosting}
-                type="submit"
-              >
-                <Send className="size-4" />
-                {isPosting ? "Mengirim..." : "Kirim dukungan"}
-              </button>
             </div>
-          </form>
 
-          <div className="mt-6 space-y-3">
-            {posts.length === 0 ? (
-              <EmptyState
-                body="Tulis satu pesan singkat di form atas. Bisa progres kecil, minta semangat, atau kalimat yang ingin kamu ingat besok."
-                icon={MessageCircleHeart}
-                title="Belum ada pesan dukungan"
-              />
-            ) : (
-              posts.map((post) => (
-                <article
-                  className="rounded-3xl border border-slate-100 bg-[#F6F8F7] p-4"
-                  key={post.id}
-                >
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <p className="font-extrabold">{post.authorName}</p>
-                      <p className="mt-1 text-xs font-bold text-slate-500">
-                        Rentetan {post.streakAtPost} hari
-                        {post.badge ? ` - ${post.badge}` : ""}
+            <div className="mt-5 space-y-3">
+              {visiblePosts.length === 0 ? (
+                <EmptyState
+                  body="Tulis satu pesan singkat di form atas. Bisa progres kecil, minta semangat, atau kalimat yang ingin kamu ingat besok."
+                  icon={MessageCircleHeart}
+                  title="Belum ada pesan dukungan"
+                />
+              ) : (
+                visiblePosts.map((post) => (
+                  <article
+                    className="rounded-3xl border border-slate-100 bg-[#F6F8F7] p-4"
+                    key={post.id}
+                  >
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <p className="font-extrabold">{post.authorName}</p>
+                        <p className="mt-1 text-xs font-bold text-slate-500">
+                          Rentetan {post.streakAtPost} hari
+                          {post.badge ? ` - ${post.badge}` : ""}
+                        </p>
+                      </div>
+                      <p className="text-xs font-bold text-slate-400">
+                        {new Date(post.createdAt).toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "short",
+                        })}
                       </p>
                     </div>
-                    <p className="text-xs font-bold text-slate-400">
-                      {new Date(post.createdAt).toLocaleDateString("id-ID", {
-                        day: "numeric",
-                        month: "short",
-                      })}
+                    <p className="mt-3 leading-7 text-slate-700">
+                      {post.message}
                     </p>
-                  </div>
-                  <p className="mt-3 leading-7 text-slate-700">
-                    {post.message}
-                  </p>
-                  <button
-                    className="mt-4 inline-flex rounded-2xl bg-white px-4 py-2 text-sm font-extrabold text-[#36798D] shadow-sm disabled:cursor-not-allowed disabled:opacity-60"
-                    disabled={supportingPostId === post.id}
-                    onClick={() => handleSupportPost(post.id)}
-                    type="button"
-                  >
-                    Semangat {post.supportCount}
-                  </button>
-                  {post.userId === currentUserId ? (
-                    <button
-                      className="ml-2 mt-4 inline-flex rounded-2xl bg-[#FBE3E3] px-4 py-2 text-sm font-extrabold text-[#B75D5D] disabled:cursor-not-allowed disabled:opacity-60"
-                      disabled={moderatingPostId === post.id}
-                      onClick={() => handleDeletePost(post.id)}
-                      type="button"
-                    >
-                      Hapus
-                    </button>
-                  ) : (
-                    <button
-                      className="ml-2 mt-4 inline-flex rounded-2xl bg-white px-4 py-2 text-sm font-extrabold text-slate-400 disabled:cursor-not-allowed disabled:opacity-60"
-                      disabled={moderatingPostId === post.id}
-                      onClick={() => handleReportPost(post.id)}
-                      type="button"
-                    >
-                      Laporkan
-                    </button>
-                  )}
-                </article>
-              ))
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <button
+                        className="inline-flex rounded-2xl bg-white px-4 py-2 text-sm font-extrabold text-[#36798D] shadow-sm disabled:cursor-not-allowed disabled:opacity-60"
+                        disabled={supportingPostId === post.id}
+                        onClick={() => handleSupportPost(post.id)}
+                        type="button"
+                      >
+                        Semangat {post.supportCount}
+                      </button>
+                      {post.userId === currentUserId ? (
+                        <button
+                          className="inline-flex rounded-2xl bg-[#FBE3E3] px-4 py-2 text-sm font-extrabold text-[#B75D5D] disabled:cursor-not-allowed disabled:opacity-60"
+                          disabled={moderatingPostId === post.id}
+                          onClick={() => handleDeletePost(post.id)}
+                          type="button"
+                        >
+                          Hapus
+                        </button>
+                      ) : (
+                        <button
+                          className="inline-flex rounded-2xl bg-white px-4 py-2 text-sm font-extrabold text-slate-400 disabled:cursor-not-allowed disabled:opacity-60"
+                          disabled={moderatingPostId === post.id}
+                          onClick={() => handleReportPost(post.id)}
+                          type="button"
+                        >
+                          Laporkan
+                        </button>
+                      )}
+                    </div>
+                  </article>
+                ))
+              )}
+            </div>
+
+            {posts.length > visiblePosts.length && (
+              <p className="mt-4 text-center text-sm font-bold text-slate-500">
+                Menampilkan {visiblePosts.length} pesan terbaru agar halaman
+                tetap ringan.
+              </p>
             )}
-          </div>
+          </section>
         </div>
       </section>
     </AppShell>
+  );
+}
+
+function MiniStat({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof Flame;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="rounded-[1.5rem] bg-white p-5 shadow-sm">
+      <Icon className="size-6 text-[#4FAE7B]" />
+      <p className="mt-4 text-sm font-bold text-slate-500">{label}</p>
+      <p className="mt-1 text-xl font-extrabold">{value}</p>
+    </div>
+  );
+}
+
+function CommunitySkeleton() {
+  return (
+    <section className="mx-auto max-w-5xl space-y-5">
+      <div className="h-56 rounded-[2rem] bg-white skeleton-shimmer" />
+      <div className="grid gap-3 sm:grid-cols-3">
+        <div className="h-28 rounded-[1.5rem] bg-white skeleton-shimmer" />
+        <div className="h-28 rounded-[1.5rem] bg-white skeleton-shimmer" />
+        <div className="h-28 rounded-[1.5rem] bg-white skeleton-shimmer" />
+      </div>
+      <div className="h-80 rounded-[2rem] bg-white skeleton-shimmer" />
+    </section>
   );
 }
