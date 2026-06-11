@@ -26,6 +26,14 @@ const fallbackPayload: CelebrationPayload = {
   streak: 0,
 };
 
+const milestoneLabels: Record<number, string> = {
+  7: "7 Hari Tarik Nafas Baru",
+  30: "30 Hari Bebas Rokok",
+  90: "3 Bulan Bertahan",
+  180: "6 Bulan Konsisten",
+  365: "1 Tahun Lega",
+};
+
 function getCopy(payload: CelebrationPayload) {
   if (payload.milestone) {
     return {
@@ -71,6 +79,38 @@ function getCopy(payload: CelebrationPayload) {
   };
 }
 
+function getNextTarget(payload: CelebrationPayload) {
+  if (payload.status === "relapsed") {
+    return {
+      description: "Mulai lagi dari satu hari yang bisa kamu jaga.",
+      label: "Target berikutnya",
+      progress: 0,
+      value: "1 hari",
+    };
+  }
+
+  const milestones = [7, 30, 90, 180, 365];
+  const nextMilestone = milestones.find((day) => day > payload.streak);
+
+  if (!nextMilestone) {
+    return {
+      description: "Kamu sudah jauh. Fokusnya sekarang menjaga ritme minggu ini.",
+      label: "Target berikutnya",
+      progress: 100,
+      value: "Jaga ritme",
+    };
+  }
+
+  const remaining = nextMilestone - payload.streak;
+
+  return {
+    description: `${remaining} hari lagi menuju ${milestoneLabels[nextMilestone]}.`,
+    label: "Target berikutnya",
+    progress: Math.min(100, (payload.streak / nextMilestone) * 100),
+    value: `${payload.streak} / ${nextMilestone} hari`,
+  };
+}
+
 export default function CheckInCelebrationPage() {
   const router = useRouter();
   const reduceMotion = useReducedMotion();
@@ -93,6 +133,7 @@ export default function CheckInCelebrationPage() {
   });
 
   const copy = useMemo(() => getCopy(payload), [payload]);
+  const nextTarget = useMemo(() => getNextTarget(payload), [payload]);
 
   function goToDashboard() {
     window.sessionStorage.removeItem("stopmerokok.celebration");
@@ -208,6 +249,28 @@ export default function CheckInCelebrationPage() {
               </p>
             </div>
           ) : null}
+
+          <div className="mt-3 rounded-3xl border border-slate-100 bg-white p-4 text-left shadow-sm">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-sm font-bold text-slate-500">
+                {nextTarget.label}
+              </p>
+              <p className="text-sm font-extrabold text-[#36798D]">
+                {nextTarget.value}
+              </p>
+            </div>
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
+              <motion.div
+                animate={{ width: `${nextTarget.progress}%` }}
+                className="h-full rounded-full bg-[#4FAE7B]"
+                initial={{ width: 0 }}
+                transition={{ duration: 0.9, ease: "easeOut" }}
+              />
+            </div>
+            <p className="mt-3 text-sm font-semibold leading-6 text-slate-600">
+              {nextTarget.description}
+            </p>
+          </div>
 
           <div className="mt-6 flex flex-col gap-2">
             <button
