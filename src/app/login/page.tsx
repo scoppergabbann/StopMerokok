@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { Check, Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
+import { Eye, EyeOff, LockKeyhole, Mail, ShieldCheck, Sparkles } from "lucide-react";
 import {
   hasTurnstileSiteKey,
   TurnstileCaptcha,
@@ -133,28 +133,25 @@ export default function LoginPage() {
           </Link>
           <div className="mt-10 max-w-xl">
             <p className="text-sm font-extrabold uppercase tracking-[0.14em] text-[#36798D]">
-              Ruang pulang untuk progresmu
+              Ruang pulang progresmu
             </p>
             <h1 className="mt-4 text-5xl font-extrabold leading-tight text-[#132238]">
-              Satu absen kecil bisa menjaga arah hari ini.
+              Lanjutkan satu langkah kecil hari ini.
             </h1>
             <p className="mt-5 max-w-lg text-lg font-medium leading-8 text-slate-600">
-              Lanjutkan catatan bebas rokok, lihat penghematanmu, dan rawat
-              momentum tanpa perlu mulai dari nol.
+              Masuk untuk melihat status hari ini, menjaga rentetan, dan
+              kembali ke progresmu tanpa banyak distraksi.
             </p>
           </div>
-          <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-3">
-            {["Absen harian", "Penghematan", "Rekam jejak"].map((item) => (
-              <div
-                className="rounded-2xl border border-white/80 bg-white/65 p-4 shadow-sm shadow-slate-200/60 backdrop-blur"
-                key={item}
-              >
-                <Check className="size-5 text-[#4FAE7B]" />
-                <p className="mt-3 text-sm font-extrabold text-slate-700">
-                  {item}
-                </p>
-              </div>
-            ))}
+          <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-2">
+            <MiniAuthNote
+              icon={ShieldCheck}
+              text="Progresmu tersimpan aman dan pribadi."
+            />
+            <MiniAuthNote
+              icon={Sparkles}
+              text="Dashboard fokus pada aksi hari ini."
+            />
           </div>
         </div>
 
@@ -183,10 +180,10 @@ export default function LoginPage() {
                 Selamat datang
               </p>
               <h1 className="mt-2 text-[2rem] font-extrabold leading-tight text-[#132238] sm:mt-3 sm:text-4xl">
-                Masuk untuk lanjutkan progresmu.
+                Masuk
               </h1>
               <p className="mt-2 leading-6 text-slate-600 sm:mt-3 sm:leading-7">
-                Progresmu tersimpan aman dan pribadi.
+                Lanjutkan absen dan lihat progres hari ini.
               </p>
             </div>
 
@@ -366,5 +363,22 @@ export default function LoginPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+function MiniAuthNote({
+  icon: Icon,
+  text,
+}: {
+  icon: typeof ShieldCheck;
+  text: string;
+}) {
+  return (
+    <div className="flex items-start gap-3 rounded-2xl border border-white/80 bg-white/65 p-4 shadow-sm shadow-slate-200/60 backdrop-blur">
+      <span className="grid size-9 shrink-0 place-items-center rounded-2xl bg-[#DFF3E8] text-[#2F7D57]">
+        <Icon className="size-4" />
+      </span>
+      <p className="text-sm font-extrabold leading-6 text-slate-700">{text}</p>
+    </div>
   );
 }

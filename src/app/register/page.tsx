@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { Check, LockKeyhole, Mail, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, LockKeyhole, Mail, ShieldCheck, Sparkles } from "lucide-react";
 import {
   hasTurnstileSiteKey,
   TurnstileCaptcha,
@@ -18,16 +18,11 @@ import {
 } from "@/lib/supabase";
 import { trackEvent } from "@/lib/analytics";
 
-const benefits = [
-  "Absen harian yang ringan",
-  "Progres dan rentetan tersimpan",
-  "Penghematan rokok terlihat jelas",
-];
-
 export default function RegisterPage() {
   const router = useRouter();
   const { showToast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
   const captchaRef = useRef<TurnstileCaptchaHandle | null>(null);
 
@@ -73,26 +68,23 @@ export default function RegisterPage() {
               Mulai tanpa tekanan
             </p>
             <h1 className="mt-4 text-5xl font-extrabold leading-tight text-[#132238]">
-              Catatan kecil hari ini bisa jadi napas baru besok.
+              Buat ruang kecil untuk mulai berubah.
             </h1>
             <p className="mt-5 max-w-lg text-lg font-medium leading-8 text-slate-600">
-              Buat akun untuk menyimpan perjalanan berhenti merokokmu dengan
-              aman, sederhana, dan terasa manusiawi.
+              Cukup buat akun dulu. Setelah itu, kamu bisa isi data awal dan
+              mulai absen dengan ritme yang nyaman.
             </p>
           </div>
 
-          <div className="mt-8 grid max-w-xl gap-3">
-            {benefits.map((item) => (
-              <div
-                className="flex items-center gap-3 rounded-2xl border border-white/80 bg-white/65 p-4 shadow-sm shadow-slate-200/60 backdrop-blur"
-                key={item}
-              >
-                <span className="grid size-9 place-items-center rounded-2xl bg-[#DFF3E8] text-[#2F7D57]">
-                  <Check className="size-5" />
-                </span>
-                <p className="font-extrabold text-slate-700">{item}</p>
-              </div>
-            ))}
+          <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-2">
+            <MiniRegisterNote
+              icon={ShieldCheck}
+              text="Data perjalanan tetap pribadi."
+            />
+            <MiniRegisterNote
+              icon={Sparkles}
+              text="Langsung lanjut ke onboarding ringan."
+            />
           </div>
         </div>
 
@@ -121,11 +113,10 @@ export default function RegisterPage() {
                 Daftar akun
               </p>
               <h1 className="mt-3 text-3xl font-extrabold leading-tight text-[#132238] sm:text-4xl">
-                Mulai simpan progresmu.
+                Buat akun
               </h1>
               <p className="mt-3 leading-7 text-slate-600">
-                Cukup email dan kata sandi. Setelah itu kamu bisa langsung isi
-                data awal perjalananmu.
+                Cukup email dan kata sandi. Data awal diisi setelah akun siap.
               </p>
             </div>
 
@@ -237,8 +228,24 @@ export default function RegisterPage() {
                     name="password"
                     placeholder="Minimal 6 karakter"
                     required
-                    type="password"
+                    type={isPasswordVisible ? "text" : "password"}
                   />
+                  <button
+                    aria-label={
+                      isPasswordVisible
+                        ? "Sembunyikan kata sandi"
+                        : "Lihat kata sandi"
+                    }
+                    className="grid size-9 shrink-0 place-items-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-[#36798D]"
+                    onClick={() => setIsPasswordVisible((current) => !current)}
+                    type="button"
+                  >
+                    {isPasswordVisible ? (
+                      <EyeOff className="size-5" />
+                    ) : (
+                      <Eye className="size-5" />
+                    )}
+                  </button>
                 </span>
               </label>
 
@@ -259,7 +266,7 @@ export default function RegisterPage() {
               >
                 {isSubmitting
                   ? "Menyiapkan akunmu..."
-                  : "Buat akun dan mulai progres"}
+                  : "Buat akun"}
               </button>
             </form>
 
@@ -273,5 +280,22 @@ export default function RegisterPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+function MiniRegisterNote({
+  icon: Icon,
+  text,
+}: {
+  icon: typeof ShieldCheck;
+  text: string;
+}) {
+  return (
+    <div className="flex items-start gap-3 rounded-2xl border border-white/80 bg-white/65 p-4 shadow-sm shadow-slate-200/60 backdrop-blur">
+      <span className="grid size-9 shrink-0 place-items-center rounded-2xl bg-[#DFF3E8] text-[#2F7D57]">
+        <Icon className="size-4" />
+      </span>
+      <p className="text-sm font-extrabold leading-6 text-slate-700">{text}</p>
+    </div>
   );
 }
