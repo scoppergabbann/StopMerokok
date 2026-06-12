@@ -359,6 +359,11 @@ export default function LoginPage() {
                 Daftar
               </Link>
             </p>
+            <p className="mt-3 text-center text-xs font-bold text-slate-400">
+              <Link className="hover:text-[#36798D]" href="/privacy">
+                Privasi & keamanan
+              </Link>
+            </p>
           </div>
         </div>
       </section>

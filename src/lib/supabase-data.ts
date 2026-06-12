@@ -6,6 +6,7 @@ import type {
   CravingLog,
   DailyCheckin,
   DonationAllocation,
+  FeedbackReport,
   JournalEntry,
   LeaderboardEntry,
   Mood,
@@ -209,6 +210,28 @@ export async function reportSupabaseCommunityPost(postId: string) {
   }
 
   return true;
+}
+
+export async function saveSupabaseFeedbackReport(
+  report: Omit<FeedbackReport, "id" | "createdAt">,
+) {
+  const userId = await getCurrentUserId();
+
+  if (!supabase || !userId) {
+    return false;
+  }
+
+  const { error } = await supabase.from("feedback_reports").insert({
+    category: report.category,
+    contact: report.contact ?? null,
+    message: report.message,
+    page_url: report.pageUrl ?? null,
+    reporter_id: userId,
+    severity: report.severity,
+    title: report.title,
+  });
+
+  return !error;
 }
 
 export async function supportSupabaseCommunityPost(postId: string) {

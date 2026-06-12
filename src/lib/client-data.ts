@@ -15,6 +15,7 @@ import {
   saveCommunityPost,
   saveCravingLog,
   saveDonationAllocation,
+  saveFeedbackReport,
   saveJournal,
   saveMovementLog,
   saveNotificationSettings,
@@ -28,6 +29,7 @@ import {
   type CravingLog,
   type DailyCheckin,
   type DonationAllocation,
+  type FeedbackReport,
   type JournalEntry,
   type LeaderboardEntry,
   type MovementLog,
@@ -61,6 +63,7 @@ import {
   unlockSupabaseUserBadges,
   supportSupabaseCommunityPost,
   reportSupabaseCommunityPost,
+  saveSupabaseFeedbackReport,
   getCurrentUserId,
 } from "@/lib/supabase-data";
 import { isSupabaseConfigured } from "@/lib/supabase";
@@ -253,6 +256,21 @@ export async function reportCommunityPost(postId: string) {
     return reportSupabaseCommunityPost(postId);
   }
 
+  return true;
+}
+
+export async function persistFeedbackReport(
+  report: Omit<FeedbackReport, "id" | "createdAt">,
+) {
+  if (isSupabaseConfigured) {
+    return saveSupabaseFeedbackReport(report);
+  }
+
+  saveFeedbackReport({
+    ...report,
+    createdAt: new Date().toISOString(),
+    id: crypto.randomUUID(),
+  });
   return true;
 }
 

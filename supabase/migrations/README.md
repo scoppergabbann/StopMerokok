@@ -12,3 +12,5 @@ Urutan saat ini:
 2. `202606110002_engagement_savings_notifications.sql`
 3. `202606110003_community.sql`
 4. `202606110004_leaderboard.sql`
+5. `202606110005_profile_cigarette_brands.sql`
+6. `202606110006_feedback_reports.sql`

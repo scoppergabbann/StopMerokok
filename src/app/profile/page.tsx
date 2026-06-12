@@ -6,12 +6,14 @@ import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
   BellRing,
+  Bug,
   CalendarDays,
   Cigarette,
   Coins,
   HeartHandshake,
   Leaf,
   Pencil,
+  LockKeyhole,
   ShieldCheck,
   Sparkles,
   Target,
@@ -340,6 +342,48 @@ export default function ProfilePage() {
               />
               <PreferenceRow icon={UserRound} label="Bahasa" value="Indonesia" />
             </div>
+          </div>
+        </div>
+
+        <div className="rounded-[2rem] bg-white p-5 shadow-sm">
+          <p className="text-sm font-extrabold uppercase text-[#36798D]">
+            Bantuan
+          </p>
+          <h2 className="mt-2 text-2xl font-extrabold">Bantu rapikan StopMerokok</h2>
+          <p className="mt-2 leading-7 text-slate-600">
+            Kalau ada bug, tampilan aneh, atau bagian yang membingungkan,
+            kirimkan lewat form singkat. Laporan ini disiapkan agar nanti bisa
+            dibaca dari admin panel.
+          </p>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <Link
+              className="flex items-start gap-3 rounded-2xl bg-[#F6F8F7] p-4 transition hover:-translate-y-0.5"
+              href="/feedback"
+            >
+              <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-[#DFF3E8] text-[#2F7D57]">
+                <Bug className="size-5" />
+              </span>
+              <span>
+                <span className="block font-extrabold">Laporkan masalah</span>
+                <span className="mt-1 block text-sm font-semibold leading-6 text-slate-500">
+                  Bug, ide, atau bagian yang bikin bingung.
+                </span>
+              </span>
+            </Link>
+            <Link
+              className="flex items-start gap-3 rounded-2xl bg-[#F6F8F7] p-4 transition hover:-translate-y-0.5"
+              href="/privacy"
+            >
+              <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-[#E3F3F7] text-[#36798D]">
+                <LockKeyhole className="size-5" />
+              </span>
+              <span>
+                <span className="block font-extrabold">Privasi & keamanan</span>
+                <span className="mt-1 block text-sm font-semibold leading-6 text-slate-500">
+                  Lihat cara data progresmu dipakai.
+                </span>
+              </span>
+            </Link>
           </div>
         </div>
 

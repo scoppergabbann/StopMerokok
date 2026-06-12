@@ -132,6 +132,17 @@ export type CommunityPost = {
   userId?: string;
 };
 
+export type FeedbackReport = {
+  category: "bug" | "idea" | "confusing" | "other";
+  contact?: string;
+  createdAt: string;
+  id: string;
+  message: string;
+  pageUrl?: string;
+  severity: "low" | "medium" | "high";
+  title: string;
+};
+
 export type MovementLog = {
   createdAt: string;
   durationMinutes: number;
@@ -151,6 +162,7 @@ const JOURNALS_KEY = "stopmerokok.journals";
 const USER_BADGES_KEY = "stopmerokok.userBadges";
 const COMMUNITY_POSTS_KEY = "stopmerokok.communityPosts";
 const MOVEMENT_LOGS_KEY = "stopmerokok.movementLogs";
+const FEEDBACK_REPORTS_KEY = "stopmerokok.feedbackReports";
 
 export const targetLabels: Record<TargetType, string> = {
   quit_total: "Berhenti total",
@@ -515,6 +527,27 @@ export function supportCommunityPost(postId: string) {
   );
 
   window.localStorage.setItem(COMMUNITY_POSTS_KEY, JSON.stringify(next));
+}
+
+export function readFeedbackReports(): FeedbackReport[] {
+  if (typeof window === "undefined") {
+    return [];
+  }
+
+  const raw = window.localStorage.getItem(FEEDBACK_REPORTS_KEY);
+  return raw ? (JSON.parse(raw) as FeedbackReport[]) : [];
+}
+
+export function saveFeedbackReport(report: FeedbackReport) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const reports = readFeedbackReports();
+  window.localStorage.setItem(
+    FEEDBACK_REPORTS_KEY,
+    JSON.stringify([report, ...reports].slice(0, 30)),
+  );
 }
 
 export function deleteCommunityPost(postId: string) {

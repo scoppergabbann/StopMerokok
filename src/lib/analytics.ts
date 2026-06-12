@@ -4,6 +4,7 @@ export type AnalyticsEventName =
   | "celebration_viewed"
   | "check_in_submit"
   | "community_post"
+  | "feedback_submit"
   | "login"
   | "pwa_install_prompt"
   | "register"
