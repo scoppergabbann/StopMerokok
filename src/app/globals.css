@@ -155,6 +155,80 @@ a[href]:focus-visible {
   }
 }
 
+.auth-fade-in {
+  animation: auth-fade-in 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.auth-fade-up {
+  animation: auth-fade-up 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.auth-shimmer {
+  isolation: isolate;
+  overflow: hidden;
+  position: relative;
+}
+
+.auth-shimmer::after {
+  animation: auth-shimmer-sweep 7.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgb(255 255 255 / 0.06) 34%,
+    rgb(79 174 123 / 0.16) 46%,
+    rgb(66 169 232 / 0.12) 54%,
+    rgb(255 255 255 / 0.08) 62%,
+    transparent 76%
+  );
+  content: "";
+  inset: -40%;
+  pointer-events: none;
+  position: absolute;
+  transform: translate3d(-82%, 0, 0) rotate(10deg);
+  width: 62%;
+  z-index: 0;
+}
+
+@keyframes auth-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes auth-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes auth-shimmer-sweep {
+  0%,
+  72% {
+    opacity: 0;
+    transform: translate3d(-82%, 0, 0) rotate(10deg);
+  }
+
+  78%,
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(205%, 0, 0) rotate(10deg);
+  }
+}
+
 .shimmer-card {
   animation: pwa-prompt-enter 460ms cubic-bezier(0.16, 1, 0.3, 1) both;
   overflow: hidden;
@@ -230,6 +304,16 @@ a[href]:focus-visible {
   }
 
   .shimmer-card::after {
+    animation: none !important;
+    display: none;
+  }
+
+  .auth-fade-in,
+  .auth-fade-up {
+    animation: none !important;
+  }
+
+  .auth-shimmer::after {
     animation: none !important;
     display: none;
   }

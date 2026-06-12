@@ -101,7 +101,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-[linear-gradient(145deg,#F7FBF9_0%,#EEF8F5_46%,#F7FBFF_100%)] px-4 py-4 text-[#1F2933] sm:px-5 sm:py-8">
+    <main className="auth-fade-in relative min-h-screen overflow-x-hidden bg-[linear-gradient(145deg,#F7FBF9_0%,#EEF8F5_46%,#F7FBFF_100%)] px-4 py-4 text-[#1F2933] sm:px-5 sm:py-8">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-16 h-40 bg-[linear-gradient(100deg,transparent_0%,rgba(79,174,123,0.16)_28%,rgba(66,169,232,0.18)_50%,transparent_78%)] blur-3xl"
@@ -116,7 +116,7 @@ export default function LoginPage() {
       />
 
       <section className="relative z-10 mx-auto grid min-h-[calc(100vh-2rem)] w-full max-w-6xl items-center gap-10 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[0.92fr_1fr]">
-        <div className="hidden lg:block">
+        <div className="auth-fade-up hidden lg:block">
           <Link className="inline-flex items-center gap-3" href="/">
             <Image
               alt="StopMerokok"
@@ -156,7 +156,7 @@ export default function LoginPage() {
         </div>
 
         <div className="mx-auto w-full max-w-md lg:mr-0">
-          <div className="rounded-[1.35rem] border border-white/80 bg-white/88 p-5 shadow-[0_20px_70px_rgba(31,41,51,0.11)] backdrop-blur sm:rounded-[1.75rem] sm:p-8">
+          <div className="auth-fade-up auth-shimmer rounded-[1.35rem] border border-white/80 bg-white/88 p-5 shadow-[0_20px_70px_rgba(31,41,51,0.11)] backdrop-blur sm:rounded-[1.75rem] sm:p-8">
             <Link
               className="mb-6 flex items-center justify-center gap-2.5 lg:hidden"
               href="/"
@@ -343,7 +343,7 @@ export default function LoginPage() {
               />
 
               <button
-                className="w-full rounded-2xl bg-[#4FAE7B] px-5 py-3.5 font-extrabold text-white shadow-xl shadow-[#4FAE7B]/25 transition hover:-translate-y-0.5 hover:bg-[#449F6E] disabled:cursor-not-allowed disabled:opacity-70 sm:py-4"
+                className="auth-shimmer w-full rounded-2xl bg-[#4FAE7B] px-5 py-3.5 font-extrabold text-white shadow-xl shadow-[#4FAE7B]/25 transition hover:-translate-y-0.5 hover:bg-[#449F6E] disabled:cursor-not-allowed disabled:opacity-70 sm:py-4"
                 disabled={isSubmitting}
                 type="submit"
               >

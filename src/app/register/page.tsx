@@ -32,7 +32,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[linear-gradient(145deg,#F7FBF9_0%,#EEF8F5_48%,#F7FBFF_100%)] px-5 py-8 text-[#1F2933]">
+    <main className="auth-fade-in relative min-h-screen overflow-hidden bg-[linear-gradient(145deg,#F7FBF9_0%,#EEF8F5_48%,#F7FBFF_100%)] px-5 py-8 text-[#1F2933]">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-12 h-44 bg-[linear-gradient(100deg,transparent_0%,rgba(79,174,123,0.16)_26%,rgba(66,169,232,0.18)_54%,transparent_82%)] blur-3xl"
@@ -47,7 +47,7 @@ export default function RegisterPage() {
       />
 
       <section className="relative z-10 mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-6xl items-center gap-10 lg:grid-cols-[0.95fr_1fr]">
-        <div className="hidden lg:block">
+        <div className="auth-fade-up hidden lg:block">
           <Link className="inline-flex items-center gap-3" href="/">
             <Image
               alt="StopMerokok"
@@ -89,7 +89,7 @@ export default function RegisterPage() {
         </div>
 
         <div className="mx-auto w-full max-w-md lg:mr-0">
-          <div className="rounded-[1.75rem] border border-white/80 bg-white/88 p-6 shadow-[0_28px_90px_rgba(31,41,51,0.12)] backdrop-blur sm:p-8">
+          <div className="auth-fade-up auth-shimmer rounded-[1.75rem] border border-white/80 bg-white/88 p-6 shadow-[0_28px_90px_rgba(31,41,51,0.12)] backdrop-blur sm:p-8">
             <Link
               className="mb-8 flex items-center justify-center gap-3 lg:hidden"
               href="/"
@@ -260,7 +260,7 @@ export default function RegisterPage() {
               />
 
               <button
-                className="w-full rounded-2xl bg-[#4FAE7B] px-5 py-4 font-extrabold text-white shadow-xl shadow-[#4FAE7B]/25 transition hover:-translate-y-0.5 hover:bg-[#449F6E] disabled:cursor-not-allowed disabled:opacity-70"
+                className="auth-shimmer w-full rounded-2xl bg-[#4FAE7B] px-5 py-4 font-extrabold text-white shadow-xl shadow-[#4FAE7B]/25 transition hover:-translate-y-0.5 hover:bg-[#449F6E] disabled:cursor-not-allowed disabled:opacity-70"
                 disabled={isSubmitting}
                 type="submit"
               >
