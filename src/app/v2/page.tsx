@@ -508,8 +508,8 @@ export default function LandingV2Page() {
             Suara asli pengguna dan edukasi sehat punya panggung sendiri.
           </h2>
           <p className="mt-6 max-w-xl text-lg font-medium leading-8 text-[#315E62]">
-            Dummy testimoni dan video edukatif ini disiapkan sebagai contoh
-            panggung cerita sebelum testimoni real user mulai dikumpulkan.
+            Cerita sederhana dan edukasi ringan untuk membantu kamu merasa
+            lebih ditemani saat membangun kebiasaan baru.
           </p>
         </Reveal>
 
