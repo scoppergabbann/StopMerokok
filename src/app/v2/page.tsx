@@ -52,34 +52,40 @@ const featureCards = [
 
 const testimonialPlaceholders = [
   {
-    body: "Aku cuma butuh tempat yang tidak menghakimi. Check-in harian bikin progres kecil terasa kelihatan.",
-    label: "Pengguna awal",
-    title: "Mulai lebih jujur",
+    body: "Check-in harian bikin aku lebih jujur sama kondisi sendiri. Tidak harus sempurna, yang penting tetap balik lagi.",
+    label: "Fawwaz, 24 tahun",
+    title: "Lebih mudah mulai lagi",
   },
   {
-    body: "Melihat uang yang dihemat bikin keputusan menunda rokok terasa lebih konkret.",
-    label: "Calon testimoni",
-    title: "Progress jadi nyata",
+    body: "Bagian penghematan bikin progress terasa nyata. Uang yang biasanya hilang jadi kelihatan arahnya.",
+    label: "Riko, pengguna awal",
+    title: "Progress jadi kelihatan",
   },
   {
-    body: "Kalau kambuh, copy-nya tidak bikin malu. Rasanya lebih mudah mulai lagi besok.",
-    label: "Calon testimoni",
-    title: "Aman untuk kembali",
+    body: "Kalau lagi berat, fitur craving membantu aku menunda sebentar. Kadang lima menit itu cukup buat lewat.",
+    label: "Ardi, pengguna awal",
+    title: "Dorongan terasa lebih aman",
   },
 ];
 
 const educationSlots = [
   {
-    label: "Podcast dokter",
-    title: "Obrolan santai tentang efek rokok ke tubuh",
+    label: "Edukasi dokter",
+    thumbnail: "https://img.youtube.com/vi/DB9n7aNM6q0/hqdefault.jpg",
+    title: "Obrolan santai tentang rokok dan tubuh",
+    url: "https://www.youtube.com/watch?v=DB9n7aNM6q0",
   },
   {
-    label: "Spesialis jantung",
-    title: "Kenapa berhenti pelan-pelan tetap berarti",
+    label: "Cerita kesehatan",
+    thumbnail: "https://img.youtube.com/vi/nKq8G2o4u0s/hqdefault.jpg",
+    title: "Kenapa mulai mengurangi tetap berarti",
+    url: "https://www.youtube.com/watch?v=nKq8G2o4u0s",
   },
   {
-    label: "Public figure",
-    title: "Cerita anak muda yang memilih hidup lebih sehat",
+    label: "Podcast pilihan",
+    thumbnail: "https://img.youtube.com/vi/oIq9yVlMOQ4/hqdefault.jpg",
+    title: "Sudut pandang baru soal hidup lebih sehat",
+    url: "https://www.youtube.com/watch?v=oIq9yVlMOQ4&t=1857s",
   },
 ];
 
@@ -502,9 +508,8 @@ export default function LandingV2Page() {
             Suara asli pengguna dan edukasi sehat punya panggung sendiri.
           </h2>
           <p className="mt-6 max-w-xl text-lg font-medium leading-8 text-[#315E62]">
-            Section ini disiapkan untuk testimoni real user dan video edukatif
-            dari dokter, podcast kesehatan, atau figur publik yang relevan untuk
-            anak muda.
+            Dummy testimoni dan video edukatif ini disiapkan sebagai contoh
+            panggung cerita sebelum testimoni real user mulai dikumpulkan.
           </p>
         </Reveal>
 
@@ -533,18 +538,31 @@ export default function LandingV2Page() {
 
           <Reveal className="grid gap-4 md:grid-cols-3" delay={220}>
             {educationSlots.map((slot) => (
-              <div
+              <a
                 className="group overflow-hidden rounded-[2rem] border border-[#C9E7EF] bg-[#E3F3F7] p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(6,61,67,0.1)]"
+                href={slot.url}
                 key={slot.title}
+                rel="noreferrer"
+                target="_blank"
               >
-                <div className="grid aspect-video place-items-center rounded-[1.5rem] bg-[linear-gradient(135deg,#063D43,#4FAE7B)] text-white">
-                  <PlayCircle className="size-12 transition duration-300 group-hover:scale-110" />
+                <div
+                  className="relative grid aspect-video place-items-center overflow-hidden rounded-[1.5rem] bg-[#123B3F] text-white"
+                  style={{
+                    backgroundImage: `linear-gradient(135deg, rgba(6, 61, 67, 0.28), rgba(79, 174, 123, 0.26)), url(${slot.thumbnail})`,
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                  }}
+                >
+                  <span className="absolute inset-0 bg-[#063D43]/18 transition duration-300 group-hover:bg-[#063D43]/8" />
+                  <span className="relative grid size-16 place-items-center rounded-full border border-white/35 bg-white/20 shadow-2xl shadow-black/20 backdrop-blur-sm transition duration-300 group-hover:scale-105">
+                    <PlayCircle className="size-9" />
+                  </span>
                 </div>
                 <p className="mt-4 text-xs font-extrabold uppercase text-[#245F6F]">
                   {slot.label}
                 </p>
                 <h3 className="mt-2 text-lg font-extrabold leading-6">{slot.title}</h3>
-              </div>
+              </a>
             ))}
           </Reveal>
         </div>
