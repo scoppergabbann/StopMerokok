@@ -428,7 +428,7 @@ export default function CommunityPage() {
               ) : (
                 topThree.map((entry) => (
                   <div
-                    className="grid grid-cols-[44px_1fr_auto] items-center gap-3 rounded-2xl bg-[#F6F8F7] p-3"
+                    className="grid grid-cols-[44px_1fr] items-center gap-3 rounded-2xl bg-[#F6F8F7] p-3 sm:grid-cols-[44px_1fr_auto]"
                     key={`${entry.rank}-${entry.name}`}
                   >
                     <div className="grid size-10 place-items-center rounded-2xl bg-white font-extrabold text-[#2F7D57]">
@@ -440,7 +440,7 @@ export default function CommunityPage() {
                         {entry.activeBadge ?? "Belum ada lencana"}
                       </p>
                     </div>
-                    <p className="text-sm font-extrabold text-[#2F7D57]">
+                    <p className="col-span-2 text-sm font-extrabold text-[#2F7D57] sm:col-span-1 sm:text-right">
                       {entry.currentStreak} hari
                     </p>
                   </div>

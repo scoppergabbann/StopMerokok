@@ -161,7 +161,7 @@ export default function CheckInCelebrationPage() {
   }
 
   return (
-    <main className="relative grid min-h-screen overflow-hidden bg-[linear-gradient(145deg,#F7FBF9_0%,#EEF8F5_48%,#F7FBFF_100%)] px-5 py-8 text-[#1F2933]">
+    <main className="relative grid min-h-screen overflow-x-hidden bg-[linear-gradient(145deg,#F7FBF9_0%,#EEF8F5_48%,#F7FBFF_100%)] px-4 py-8 text-[#1F2933] sm:px-5">
       <motion.div
         aria-hidden="true"
         animate={reduceMotion ? undefined : { x: ["-8%", "8%", "-4%"] }}

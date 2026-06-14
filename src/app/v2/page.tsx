@@ -241,7 +241,7 @@ export default function LandingV2Page() {
 
   return (
     <main
-      className="h-screen overflow-y-auto overscroll-contain scroll-smooth bg-[#FBFCFB] font-sans text-[#063D43] [scroll-padding-top:5.5rem]"
+      className="h-dvh overflow-x-hidden overflow-y-auto overscroll-contain scroll-smooth bg-[#FBFCFB] font-sans text-[#063D43] [scroll-padding-top:5.5rem]"
       ref={scrollRootRef}
     >
       <nav
@@ -300,21 +300,21 @@ export default function LandingV2Page() {
           className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(6,61,67,0.045)_1px,transparent_1px)] bg-[size:25%_100%]"
         />
 
-        <div className="relative z-10 mx-auto flex min-h-[calc(100vh-6rem)] max-w-6xl flex-col justify-center px-5 pb-14 pt-12 sm:px-8">
-          <Reveal className="relative overflow-visible rounded-[2rem] bg-[linear-gradient(135deg,#113C40_0%,#1D5A60_60%,#4FAE7B_145%)] p-6 text-white shadow-[0_30px_90px_rgba(6,61,67,0.22)] sm:p-10 lg:min-h-[34rem] lg:p-12">
+        <div className="relative z-10 mx-auto flex min-h-[calc(100dvh-6rem)] max-w-6xl flex-col justify-center px-4 pb-12 pt-10 sm:px-8 sm:pb-14 sm:pt-12">
+          <Reveal className="relative overflow-hidden rounded-[1.75rem] bg-[linear-gradient(135deg,#113C40_0%,#1D5A60_60%,#4FAE7B_145%)] p-5 text-white shadow-[0_30px_90px_rgba(6,61,67,0.22)] sm:rounded-[2rem] sm:p-10 lg:min-h-[34rem] lg:overflow-visible lg:p-12">
             <div className="relative z-10 max-w-2xl">
               <p className="text-sm font-extrabold uppercase text-[#9DE5BD]">
                 StopMerokok
               </p>
-              <h1 className="mt-6 text-5xl font-black leading-[1.04] tracking-normal sm:text-7xl lg:text-[5.4rem]">
+              <h1 className="mt-5 text-[2.65rem] font-black leading-[1.04] tracking-normal sm:mt-6 sm:text-7xl lg:text-[5.4rem]">
                 Berhenti merokok tidak harus terasa sendirian.
               </h1>
-              <p className="mt-7 max-w-xl text-lg font-semibold leading-8 text-[#EAF8F1] sm:text-xl sm:leading-9">
+              <p className="mt-5 max-w-xl text-base font-semibold leading-7 text-[#EAF8F1] sm:mt-7 sm:text-xl sm:leading-9">
                 Catat hari, pahami pola, dan jaga progress kecil yang bisa kamu
                 ulang besok.
               </p>
 
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row">
                 <Link
                   className="btn-brand-secondary min-h-14 rounded-full px-7 py-4 text-base"
                   href="/register"
@@ -331,7 +331,7 @@ export default function LandingV2Page() {
               </div>
             </div>
 
-            <div className="mt-10 lg:absolute lg:right-8 lg:top-1/2 lg:mt-0 lg:-translate-y-1/2 xl:right-12">
+            <div className="mx-auto mt-9 max-w-full lg:absolute lg:right-8 lg:top-1/2 lg:mt-0 lg:-translate-y-1/2 xl:right-12">
               <AppPreviewMockup />
             </div>
           </Reveal>
@@ -339,14 +339,14 @@ export default function LandingV2Page() {
       </section>
 
       <section
-        className="mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-5 py-28 sm:px-8"
+        className="mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-4 py-20 sm:px-8 sm:py-28"
         id="fitur"
       >
         <Reveal>
           <p className="text-center text-sm font-extrabold uppercase text-[#2B8B61]">
             Fitur inti
           </p>
-          <h2 className="mx-auto mt-4 max-w-3xl text-center text-4xl font-black leading-tight sm:text-6xl">
+          <h2 className="mx-auto mt-4 max-w-3xl text-center text-3xl font-black leading-tight sm:text-6xl">
             Dibuat untuk dibuka sebentar, tapi terasa menemani.
           </h2>
         </Reveal>
@@ -357,14 +357,14 @@ export default function LandingV2Page() {
 
             return (
               <Reveal
-                className="min-h-72 rounded-[2rem] border border-[#E6F0EC] bg-white p-6 shadow-[0_22px_70px_rgba(6,61,67,0.06)]"
+                className="min-h-60 rounded-[2rem] border border-[#E6F0EC] bg-white p-6 shadow-[0_22px_70px_rgba(6,61,67,0.06)] sm:min-h-72"
                 delay={index * 80}
                 key={feature.title}
               >
                 <span className="grid size-12 place-items-center rounded-full bg-[#E3F3F7] text-[#063D43]">
                   <Icon className="size-6" />
                 </span>
-                <h3 className="mt-16 text-2xl font-extrabold leading-tight">
+                <h3 className="mt-10 text-2xl font-extrabold leading-tight sm:mt-16">
                   {feature.title}
                 </h3>
                 <p className="mt-4 text-sm font-medium leading-6 text-[#315E62]">
@@ -400,14 +400,14 @@ export default function LandingV2Page() {
       </section>
 
       <section
-        className="mx-auto grid min-h-screen max-w-7xl gap-10 px-5 py-24 sm:px-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-center"
+        className="mx-auto grid min-h-screen max-w-7xl gap-10 px-4 py-20 sm:px-8 sm:py-24 lg:grid-cols-[0.88fr_1.12fr] lg:items-center"
         id="tabungan"
       >
         <Reveal>
           <p className="text-sm font-extrabold uppercase text-[#36798D]">
             Penghematan jadi kebaikan
           </p>
-          <h2 className="mt-4 max-w-2xl text-5xl font-black leading-tight text-[#123B3F] sm:text-6xl">
+          <h2 className="mt-4 max-w-2xl text-4xl font-black leading-tight text-[#123B3F] sm:text-6xl">
             Uang yang biasanya hilang bisa berubah jadi target yang terlihat.
           </h2>
           <p className="mt-6 max-w-xl text-lg font-semibold leading-8 text-[#315E62]">
@@ -491,14 +491,14 @@ export default function LandingV2Page() {
       </section>
 
       <section
-        className="mx-auto grid min-h-screen max-w-7xl gap-10 px-5 py-24 sm:px-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-center"
+        className="mx-auto grid min-h-screen max-w-7xl gap-10 px-4 py-20 sm:px-8 sm:py-24 lg:grid-cols-[0.88fr_1.12fr] lg:items-center"
         id="cerita"
       >
         <Reveal>
           <p className="text-sm font-extrabold uppercase text-[#2B8B61]">
             Cerita dan edukasi
           </p>
-          <h2 className="mt-4 text-5xl font-black leading-tight sm:text-6xl">
+          <h2 className="mt-4 text-4xl font-black leading-tight sm:text-6xl">
             Suara asli pengguna dan edukasi sehat punya panggung sendiri.
           </h2>
           <p className="mt-6 max-w-xl text-lg font-medium leading-8 text-[#315E62]">
@@ -551,7 +551,7 @@ export default function LandingV2Page() {
       </section>
 
       <section
-        className="mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-5 py-24 sm:px-8"
+        className="mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-4 py-20 sm:px-8 sm:py-24"
         id="mulai"
       >
         <Reveal className="rounded-[2rem] bg-[linear-gradient(135deg,#123B3F_0%,#1F555B_58%,#4FAE7B_145%)] p-7 text-white shadow-[0_30px_90px_rgba(6,61,67,0.22)] sm:p-12">
@@ -560,7 +560,7 @@ export default function LandingV2Page() {
               <p className="text-sm font-extrabold uppercase text-[#9DE5BD]">
                 Mulai dengan ringan
               </p>
-              <h2 className="mt-6 max-w-4xl text-5xl font-black leading-[1.06] sm:text-7xl">
+              <h2 className="mt-6 max-w-4xl text-4xl font-black leading-[1.06] sm:text-7xl">
                 Satu absen jujur hari ini sudah cukup untuk mulai.
               </h2>
               <p className="mt-6 max-w-2xl text-lg font-semibold leading-8 text-[#EAF8F1]">

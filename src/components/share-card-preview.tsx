@@ -242,7 +242,7 @@ export function ShareCardPreview({
               Bagikan
             </button>
             <button
-              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 font-extrabold text-slate-700"
+              className="btn-brand-secondary"
               disabled={isWorking}
               onClick={downloadPng}
               type="button"
@@ -251,7 +251,7 @@ export function ShareCardPreview({
               Download PNG
             </button>
             <button
-              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 font-extrabold text-slate-700"
+              className="btn-brand-secondary"
               onClick={copyCaption}
               type="button"
             >

@@ -93,8 +93,8 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
   }, [pathname, router, showToast]);
 
   return (
-    <main className="min-h-screen bg-[#F6F8F7] pb-28 text-[#1F2933]">
-      <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-[#F6F8F7]/90 px-5 py-4 backdrop-blur">
+    <main className="min-h-screen overflow-x-hidden bg-[#F6F8F7] pb-28 text-[#1F2933]">
+      <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-[#F6F8F7]/90 px-4 py-4 backdrop-blur sm:px-5">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <Link className="flex min-w-0 items-center gap-2" href="/dashboard">
             <Image
@@ -139,9 +139,9 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
         </div>
       </header>
 
-      <div className="mx-auto w-full max-w-5xl px-5 py-6">{children}</div>
+      <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-5">{children}</div>
 
-      <nav className="fixed inset-x-0 bottom-4 z-30 mx-auto w-[min(92vw,430px)]">
+      <nav className="fixed inset-x-0 bottom-4 z-30 mx-auto w-[min(94vw,430px)]">
         <div className="relative grid h-20 grid-cols-5 items-center rounded-[1.75rem] border border-slate-100 bg-white px-2 py-2 shadow-2xl shadow-slate-300/70">
           {navItems.map((item) => {
             const Icon = item.icon;

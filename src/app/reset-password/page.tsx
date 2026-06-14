@@ -25,7 +25,7 @@ export default function ResetPasswordPage() {
   }, []);
 
   return (
-    <main className="relative grid min-h-screen place-items-center overflow-hidden bg-[linear-gradient(145deg,#F7FBF9_0%,#EEF8F5_48%,#F7FBFF_100%)] px-4 py-8 text-[#1F2933]">
+    <main className="relative grid min-h-screen place-items-center overflow-x-hidden bg-[linear-gradient(145deg,#F7FBF9_0%,#EEF8F5_48%,#F7FBFF_100%)] px-4 py-8 text-[#1F2933]">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-20 h-44 bg-[linear-gradient(100deg,transparent_0%,rgba(79,174,123,0.16)_28%,rgba(66,169,232,0.18)_52%,transparent_80%)] blur-3xl"

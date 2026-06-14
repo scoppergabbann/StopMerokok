@@ -32,7 +32,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="auth-fade-in relative min-h-screen overflow-hidden bg-[linear-gradient(145deg,#F7FBF9_0%,#EEF8F5_48%,#F7FBFF_100%)] px-5 py-8 text-[#1F2933]">
+    <main className="auth-fade-in relative min-h-screen overflow-x-hidden bg-[linear-gradient(145deg,#F7FBF9_0%,#EEF8F5_48%,#F7FBFF_100%)] px-4 py-6 text-[#1F2933] sm:px-5 sm:py-8">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-12 h-44 bg-[linear-gradient(100deg,transparent_0%,rgba(79,174,123,0.16)_26%,rgba(66,169,232,0.18)_54%,transparent_82%)] blur-3xl"
@@ -89,27 +89,27 @@ export default function RegisterPage() {
         </div>
 
         <div className="mx-auto w-full max-w-md lg:mr-0">
-          <div className="auth-fade-up rounded-[1.75rem] border border-white/80 bg-white/88 p-6 shadow-[0_28px_90px_rgba(31,41,51,0.12)] backdrop-blur sm:p-8">
+          <div className="auth-fade-up rounded-[1.35rem] border border-white/80 bg-white/88 p-5 shadow-[0_28px_90px_rgba(31,41,51,0.12)] backdrop-blur sm:rounded-[1.75rem] sm:p-8">
             <Link
-              className="mb-8 flex items-center justify-center gap-3 lg:hidden"
+              className="mb-6 flex items-center justify-center gap-2.5 lg:hidden"
               href="/"
             >
               <Image
                 alt="StopMerokok"
-                className="size-11"
+                className="size-9"
                 height={44}
                 priority
                 src="/images/logo-noto-mark-transparent.png"
                 width={44}
               />
-              <span className="text-2xl font-extrabold tracking-normal">
+              <span className="text-xl font-extrabold tracking-normal">
                 <span className="text-[#5DCB4F]">Stop</span>
                 <span className="text-[#42A9E8]">Merokok</span>
               </span>
             </Link>
 
             <div>
-              <p className="text-sm font-extrabold uppercase tracking-[0.12em] text-[#4FAE7B]">
+              <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-[#4FAE7B] sm:text-sm">
                 Daftar akun
               </p>
               <h1 className="mt-3 text-3xl font-extrabold leading-tight text-[#132238] sm:text-4xl">
@@ -121,7 +121,7 @@ export default function RegisterPage() {
             </div>
 
             <form
-              className="mt-8 space-y-5"
+              className="mt-6 space-y-4 sm:mt-8 sm:space-y-5"
               onSubmit={async (event) => {
                 event.preventDefault();
                 setIsSubmitting(true);
