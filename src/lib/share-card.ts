@@ -26,18 +26,18 @@ export const shareCardTemplates: {
   value: ShareCardTemplate;
 }[] = [
   {
-    description: "Untuk absen hari ini dengan tone ringan dan suportif.",
-    label: "Daily Check-in",
+    description: "Clean Premium untuk check-in harian yang tenang.",
+    label: "Clean Premium",
     value: "daily",
   },
   {
-    description: "Untuk merayakan rentetan tanpa rokok yang sedang berjalan.",
-    label: "Streak",
+    description: "Soft Wellness untuk merayakan rentetan aktif.",
+    label: "Soft Wellness",
     value: "streak",
   },
   {
-    description: "Untuk menampilkan uang dan batang yang berhasil dihindari.",
-    label: "Savings",
+    description: "Minimal Stats untuk uang dan batang yang dihindari.",
+    label: "Minimal Stats",
     value: "savings",
   },
 ];
@@ -51,7 +51,7 @@ function escapeXml(value: string) {
     .replaceAll("'", "&apos;");
 }
 
-function wrapText(text: string, maxLength = 30) {
+function wrapText(text: string, maxLength = 30, maxLines = 3) {
   const words = text.split(" ");
   const lines: string[] = [];
   let currentLine = "";
@@ -71,21 +71,37 @@ function wrapText(text: string, maxLength = 30) {
     lines.push(currentLine);
   }
 
-  return lines.slice(0, 4);
+  return lines.slice(0, maxLines);
 }
 
-function renderLines(lines: string[], x: number, y: number, size: number, color: string) {
+function renderLines({
+  color,
+  fontWeight = 800,
+  lineGap = 14,
+  lines,
+  size,
+  x,
+  y,
+}: {
+  color: string;
+  fontWeight?: number;
+  lineGap?: number;
+  lines: string[];
+  size: number;
+  x: number;
+  y: number;
+}) {
   return lines
     .map(
       (line, index) =>
-        `<text x="${x}" y="${y + index * (size + 18)}" fill="${color}" font-size="${size}" font-weight="700">${escapeXml(line)}</text>`,
+        `<text x="${x}" y="${y + index * (size + lineGap)}" fill="${color}" font-size="${size}" font-weight="${fontWeight}">${escapeXml(line)}</text>`,
     )
     .join("");
 }
 
 function getDisplayName(profile: Profile | null, privacy: ShareCardPrivacy) {
   if (!privacy.showName) {
-    return "Teman StopMerokok";
+    return "Anonim";
   }
 
   return profile?.name || "Teman StopMerokok";
@@ -94,30 +110,30 @@ function getDisplayName(profile: Profile | null, privacy: ShareCardPrivacy) {
 function getDailyCopy(status: CheckinStatus, dayNumber: number) {
   if (status === "smoke_free") {
     return {
-      accent: "Satu napas lebih lega",
-      body: "Hari ini aku berhasil bebas rokok.",
-      emoji: "🌱",
-      stat: `Hari ke-${dayNumber}`,
-      title: `Hari ke-${dayNumber} tercatat`,
+      eyebrow: "Daily Check-in",
+      metric: `Hari ${dayNumber}`,
+      metricLabel: "bebas rokok tercatat",
+      message: "Satu hari lagi, satu napas lebih lega.",
+      title: "Hari ini berhasil dilewati.",
     };
   }
 
   if (status === "reduced") {
     return {
-      accent: "Progress kecil tetap progress",
-      body: "Hari ini aku berhasil mengurangi.",
-      emoji: "🌿",
-      stat: `Hari ke-${dayNumber}`,
-      title: `Hari ke-${dayNumber} tercatat`,
+      eyebrow: "Daily Check-in",
+      metric: `Hari ${dayNumber}`,
+      metricLabel: "progress tercatat",
+      message: "Belum harus sempurna. Mengurangi tetap progress.",
+      title: "Hari ini tetap bergerak.",
     };
   }
 
   return {
-    accent: "Tidak sempurna, tapi belum menyerah",
-    body: "Hari ini aku mulai lagi.",
-    emoji: "🤍",
-    stat: "Mulai lagi",
-    title: "Langkah hari ini tercatat",
+    eyebrow: "Comeback",
+    metric: "Mulai lagi",
+    metricLabel: "hadir kembali",
+    message: "Mulai lagi bukan gagal. Itu tanda belum menyerah.",
+    title: "Hari berat tetap tercatat.",
   };
 }
 
@@ -130,18 +146,18 @@ export function getShareCaption(
 
   if (template === "daily") {
     if (data.latestStatus === "smoke_free") {
-      return `${namePrefix}Aku lagi mencoba berhenti merokok pelan-pelan. Hari ini satu langkah kecil tercatat. 🌱`;
+      return `${namePrefix}Hari ini satu langkah kecil tercatat. Satu napas lebih lega.`;
     }
 
     if (data.latestStatus === "reduced") {
-      return `${namePrefix}Hari ini belum sempurna, tapi aku berhasil mengurangi. Progress kecil tetap progress.`;
+      return `${namePrefix}Belum harus sempurna. Mengurangi tetap progress.`;
     }
 
     return `${namePrefix}Aku mulai lagi hari ini. Tidak sempurna, tapi belum menyerah.`;
   }
 
   if (template === "streak") {
-    return `${namePrefix}Beberapa hari terakhir tidak selalu mudah, tapi aku masih berjalan.`;
+    return `${namePrefix}Pelan-pelan, satu hari dalam satu waktu. Perjalanan ini tetap berjalan.`;
   }
 
   return `${namePrefix}Uang yang dulu jadi asap, sekarang mulai punya arah.`;
@@ -155,81 +171,282 @@ export function buildShareCardSvg(
   const name = getDisplayName(data.profile, privacy);
   const showNumbers = privacy.showNumbers;
   const dailyCopy = getDailyCopy(data.latestStatus, data.dayNumber);
+  const streak = data.summary.currentStreak || data.summary.longestStreak;
   const savedMoney = formatRupiah(data.summary.savedMoney);
   const avoidedSticks = Math.round(data.summary.avoidedSticks);
 
   if (template === "streak") {
-    const streakValue = showNumbers ? `${data.summary.currentStreak || data.summary.longestStreak}` : "••";
-    const title = showNumbers
-      ? `${streakValue} Hari Perjalanan`
-      : "Perjalanan masih berjalan";
-
-    return cardFrame({
-      accent: "#9DE5BD",
-      background: "#10231D",
-      body: "Pelan-pelan, satu hari dalam satu waktu.",
+    return renderSoftWellnessCard({
       footer: name,
-      foreground: "#FFFFFF",
-      metric: streakValue,
-      metricLabel: showNumbers ? "hari berturut-turut" : "rentetan disembunyikan",
-      title,
-      variant: "dark",
+      hidden: !showNumbers,
+      metric: showNumbers ? `${streak}` : "--",
+      metricSuffix: showNumbers ? "hari" : "rentetan",
+      message: "Tidak semua hari mudah, tapi perjalanan ini tetap tercatat.",
+      title: showNumbers ? `${streak} Hari Berturut-turut` : "Rentetan masih berjalan",
     });
   }
 
   if (template === "savings") {
-    return cardFrame({
-      accent: "#36798D",
-      background: "#F7FBF9",
-      body: showNumbers
-        ? `Aku sudah menghindari ${avoidedSticks} batang rokok.`
-        : "Ada uang dan energi yang pelan-pelan kembali punya arah.",
+    return renderMinimalStatsCard({
+      avoidedSticks,
       footer: name,
-      foreground: "#063D43",
+      hidden: !showNumbers,
       metric: showNumbers ? savedMoney : "Progress",
-      metricLabel: showNumbers ? "terselamatkan" : "angka disembunyikan",
-      title: "Uang yang dulu jadi asap, sekarang bisa jadi sesuatu yang berarti.",
-      variant: "light",
+      message: showNumbers
+        ? `${avoidedSticks} batang tidak jadi dibeli. Pelan-pelan, uangnya punya arah baru.`
+        : "Ada uang dan energi yang pelan-pelan kembali punya arah.",
+      title: "Uang yang dulu jadi asap.",
     });
   }
 
-  return cardFrame({
-    accent: data.latestStatus === "relapsed" ? "#B8C7D6" : "#4FAE7B",
-    background: "#EEF8F5",
-    body: dailyCopy.body,
-    footer: `${name} • ${statusLabels[data.latestStatus]}`,
-    foreground: "#063D43",
-    metric: showNumbers ? dailyCopy.stat : dailyCopy.emoji,
-    metricLabel: dailyCopy.accent,
+  return renderCleanPremiumCard({
+    eyebrow: dailyCopy.eyebrow,
+    footer: `${name} - ${statusLabels[data.latestStatus]}`,
+    hidden: !showNumbers,
+    metric: showNumbers ? dailyCopy.metric : "Hari ini",
+    metricLabel: showNumbers ? dailyCopy.metricLabel : "angka disembunyikan",
+    message: dailyCopy.message,
     title: dailyCopy.title,
-    variant: "calm",
   });
 }
 
-function cardFrame({
-  accent,
-  background,
-  body,
+function brandHeader(color = "#123B3F", muted = "#4FAE7B") {
+  return `
+    <g transform="translate(96 92)">
+      <rect x="0" y="0" width="300" height="74" rx="37" fill="#FFFFFF" opacity="0.78"/>
+      <path d="M42 42 C78 31 98 13 112 -12 C112 37 89 63 42 42 Z" fill="${muted}" opacity="0.92"/>
+      <path d="M28 46 C57 61 86 61 116 38" fill="none" stroke="#42A9E8" stroke-width="10" stroke-linecap="round"/>
+      <circle cx="34" cy="31" r="8" fill="#F5A623"/>
+      <text x="128" y="47" fill="${color}" font-size="29" font-weight="900">StopMerokok</text>
+    </g>
+  `;
+}
+
+function renderCleanPremiumCard({
+  eyebrow,
   footer,
-  foreground,
+  hidden,
+  message,
   metric,
   metricLabel,
   title,
-  variant,
 }: {
-  accent: string;
-  background: string;
-  body: string;
+  eyebrow: string;
   footer: string;
-  foreground: string;
+  hidden: boolean;
+  message: string;
   metric: string;
   metricLabel: string;
   title: string;
-  variant: "calm" | "dark" | "light";
 }) {
-  const titleLines = renderLines(wrapText(title, 25), 108, 560, 58, foreground);
-  const bodyLines = renderLines(wrapText(body, 34), 108, 875, 38, variant === "dark" ? "#D8E8E3" : "#315E62");
+  const titleLines = renderLines({
+    color: "#123B3F",
+    fontWeight: 900,
+    lineGap: 16,
+    lines: wrapText(title, 23, 3),
+    size: 70,
+    x: 104,
+    y: 755,
+  });
+  const messageLines = renderLines({
+    color: "#426070",
+    fontWeight: 750,
+    lineGap: 14,
+    lines: wrapText(message, 31, 3),
+    size: 37,
+    x: 104,
+    y: 985,
+  });
 
+  return svgShell(`
+    <defs>
+      <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+        <stop offset="0%" stop-color="#F7FBF9"/>
+        <stop offset="58%" stop-color="#EEF8F5"/>
+        <stop offset="100%" stop-color="#F7FBFF"/>
+      </linearGradient>
+      <linearGradient id="hero" x1="0" x2="1" y1="0" y2="1">
+        <stop offset="0%" stop-color="#FFFFFF"/>
+        <stop offset="100%" stop-color="#DFF3E8"/>
+      </linearGradient>
+    </defs>
+    <rect width="1080" height="1920" fill="url(#bg)"/>
+    <path d="M-90 1510 C170 1370 370 1420 545 1560 C725 1704 905 1654 1170 1470" fill="none" stroke="#42A9E8" stroke-width="54" opacity="0.11" stroke-linecap="round"/>
+    <circle cx="915" cy="245" r="265" fill="#DFF3E8" opacity="0.9"/>
+    <circle cx="930" cy="250" r="190" fill="#FFFFFF" opacity="0.55"/>
+    <rect x="58" y="56" width="964" height="1808" rx="82" fill="#FFFFFF" opacity="0.74"/>
+    ${brandHeader()}
+    <text x="104" y="342" fill="#36798D" font-size="34" font-weight="900" letter-spacing="3">${escapeXml(eyebrow.toUpperCase())}</text>
+    <rect x="104" y="415" width="872" height="240" rx="48" fill="url(#hero)" stroke="#CBEFE0" stroke-width="2"/>
+    <text x="152" y="535" fill="#123B3F" font-size="${metric.length > 9 ? 76 : 112}" font-weight="950">${escapeXml(metric)}</text>
+    <text x="154" y="600" fill="#2F7D57" font-size="30" font-weight="900">${escapeXml(metricLabel)}</text>
+    ${renderProgressRing(850, 535, hidden ? 0.42 : 0.78, "#4FAE7B", "#E3F3F7")}
+    ${titleLines}
+    ${messageLines}
+    ${renderLeaf(820, 1030, "#4FAE7B", 0.22, 1.4)}
+    <rect x="104" y="1450" width="872" height="180" rx="42" fill="#F7FBF9" stroke="#E6F0EC" stroke-width="2"/>
+    <text x="152" y="1534" fill="#123B3F" font-size="31" font-weight="900">${escapeXml(footer)}</text>
+    <text x="152" y="1590" fill="#6A7E8A" font-size="24" font-weight="750">Kamu bebas membagikan atau menyimpan kartu ini.</text>
+    <text x="104" y="1760" fill="#2F7D57" font-size="29" font-weight="950">Kartu Perjalanan</text>
+  `);
+}
+
+function renderSoftWellnessCard({
+  footer,
+  hidden,
+  message,
+  metric,
+  metricSuffix,
+  title,
+}: {
+  footer: string;
+  hidden: boolean;
+  message: string;
+  metric: string;
+  metricSuffix: string;
+  title: string;
+}) {
+  const titleLines = renderLines({
+    color: "#123B3F",
+    fontWeight: 950,
+    lines: wrapText(title, 24, 3),
+    size: 68,
+    x: 112,
+    y: 795,
+  });
+  const messageLines = renderLines({
+    color: "#426070",
+    fontWeight: 750,
+    lines: wrapText(message, 32, 3),
+    size: 36,
+    x: 112,
+    y: 1025,
+  });
+
+  return svgShell(`
+    <defs>
+      <linearGradient id="wellnessBg" x1="0" x2="1" y1="0" y2="1">
+        <stop offset="0%" stop-color="#EAF8F1"/>
+        <stop offset="50%" stop-color="#F8FCFA"/>
+        <stop offset="100%" stop-color="#E3F3F7"/>
+      </linearGradient>
+      <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#9DE5BD" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#9DE5BD" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <rect width="1080" height="1920" fill="url(#wellnessBg)"/>
+    <circle cx="542" cy="566" r="390" fill="url(#glow)"/>
+    <path d="M110 1230 C300 1115 474 1145 642 1264 C786 1367 913 1371 1060 1275" fill="none" stroke="#42A9E8" stroke-width="36" opacity="0.18" stroke-linecap="round"/>
+    <rect x="56" y="56" width="968" height="1808" rx="86" fill="#FFFFFF" opacity="0.66"/>
+    ${brandHeader()}
+    <text x="112" y="348" fill="#2F7D57" font-size="34" font-weight="950" letter-spacing="3">SOFT WELLNESS</text>
+    <g transform="translate(112 424)">
+      <circle cx="220" cy="220" r="194" fill="none" stroke="#DFF3E8" stroke-width="36"/>
+      <circle cx="220" cy="220" r="194" fill="none" stroke="#4FAE7B" stroke-width="36" stroke-linecap="round" stroke-dasharray="${hidden ? "235 1219" : "870 584"}" transform="rotate(-90 220 220)"/>
+      <text x="220" y="204" text-anchor="middle" fill="#123B3F" font-size="${metric.length > 3 ? 82 : 124}" font-weight="950">${escapeXml(metric)}</text>
+      <text x="220" y="263" text-anchor="middle" fill="#36798D" font-size="33" font-weight="900">${escapeXml(metricSuffix)}</text>
+    </g>
+    ${renderLeaf(740, 472, "#4FAE7B", 0.28, 2)}
+    ${titleLines}
+    ${messageLines}
+    <rect x="112" y="1438" width="856" height="178" rx="44" fill="#FFFFFF" opacity="0.82" stroke="#D7ECE3" stroke-width="2"/>
+    <text x="158" y="1521" fill="#123B3F" font-size="31" font-weight="900">${escapeXml(footer)}</text>
+    <text x="158" y="1578" fill="#6A7E8A" font-size="24" font-weight="750">Satu hari dalam satu waktu.</text>
+    <text x="112" y="1760" fill="#2F7D57" font-size="29" font-weight="950">Kartu Perjalanan</text>
+  `);
+}
+
+function renderMinimalStatsCard({
+  avoidedSticks,
+  footer,
+  hidden,
+  message,
+  metric,
+  title,
+}: {
+  avoidedSticks: number;
+  footer: string;
+  hidden: boolean;
+  message: string;
+  metric: string;
+  title: string;
+}) {
+  const messageLines = renderLines({
+    color: "#D8E8E3",
+    fontWeight: 750,
+    lines: wrapText(message, 34, 3),
+    size: 35,
+    x: 110,
+    y: 930,
+  });
+
+  return svgShell(`
+    <defs>
+      <linearGradient id="statsBg" x1="0" x2="1" y1="0" y2="1">
+        <stop offset="0%" stop-color="#123B3F"/>
+        <stop offset="65%" stop-color="#1F555B"/>
+        <stop offset="100%" stop-color="#36798D"/>
+      </linearGradient>
+      <linearGradient id="statsPanel" x1="0" x2="1" y1="0" y2="1">
+        <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.17"/>
+        <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.06"/>
+      </linearGradient>
+    </defs>
+    <rect width="1080" height="1920" fill="url(#statsBg)"/>
+    <circle cx="920" cy="275" r="310" fill="#9DE5BD" opacity="0.15"/>
+    <circle cx="128" cy="1650" r="360" fill="#42A9E8" opacity="0.13"/>
+    <path d="M92 1232 C292 1110 445 1130 612 1249 C783 1370 921 1335 1060 1235" fill="none" stroke="#9DE5BD" stroke-width="34" opacity="0.2" stroke-linecap="round"/>
+    <rect x="56" y="56" width="968" height="1808" rx="86" fill="url(#statsPanel)" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="2"/>
+    ${brandHeader("#FFFFFF", "#9DE5BD")}
+    <text x="110" y="358" fill="#9DE5BD" font-size="34" font-weight="950" letter-spacing="3">MINIMAL STATS</text>
+    <text x="110" y="535" fill="#FFFFFF" font-size="${metric.length > 11 ? 78 : 118}" font-weight="950">${escapeXml(metric)}</text>
+    <text x="112" y="606" fill="#B8F1CE" font-size="32" font-weight="900">${escapeXml(hidden ? "angka disembunyikan" : "uang terselamatkan")}</text>
+    <text x="110" y="770" fill="#FFFFFF" font-size="72" font-weight="950">${escapeXml(title)}</text>
+    ${messageLines}
+    <g transform="translate(110 1190)">
+      <rect x="0" y="0" width="860" height="260" rx="50" fill="#FFFFFF" opacity="0.1"/>
+      <text x="52" y="92" fill="#D8E8E3" font-size="27" font-weight="850">Batang dihindari</text>
+      <text x="52" y="180" fill="#FFFFFF" font-size="74" font-weight="950">${escapeXml(hidden ? "--" : String(avoidedSticks))}</text>
+      <line x1="360" y1="58" x2="360" y2="205" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="2"/>
+      <text x="420" y="92" fill="#D8E8E3" font-size="27" font-weight="850">Arah baru</text>
+      <text x="420" y="176" fill="#FFFFFF" font-size="38" font-weight="900">lebih sehat</text>
+    </g>
+    <text x="110" y="1630" fill="#D8E8E3" font-size="30" font-weight="900">${escapeXml(footer)}</text>
+    <text x="110" y="1688" fill="#B8F1CE" font-size="24" font-weight="750">Progress ini boleh dibagikan seperlunya.</text>
+    <text x="110" y="1780" fill="#9DE5BD" font-size="29" font-weight="950">Kartu Perjalanan</text>
+  `);
+}
+
+function renderLeaf(x: number, y: number, color: string, opacity: number, scale = 1) {
+  return `
+    <g transform="translate(${x} ${y}) scale(${scale})" opacity="${opacity}">
+      <path d="M8 82 C118 42 152 -32 174 -118 C202 42 132 138 8 82 Z" fill="${color}"/>
+      <path d="M24 75 C83 37 124 -9 163 -89" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" opacity="0.55"/>
+    </g>
+  `;
+}
+
+function renderProgressRing(
+  cx: number,
+  cy: number,
+  progress: number,
+  color: string,
+  track: string,
+) {
+  const radius = 72;
+  const circumference = Math.round(2 * Math.PI * radius);
+  const active = Math.round(circumference * progress);
+
+  return `
+    <g>
+      <circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${track}" stroke-width="18"/>
+      <circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${color}" stroke-width="18" stroke-linecap="round" stroke-dasharray="${active} ${circumference - active}" transform="rotate(-90 ${cx} ${cy})"/>
+    </g>
+  `;
+}
+
+function svgShell(content: string) {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
   <style>
@@ -238,23 +455,6 @@ function cardFrame({
       letter-spacing: 0;
     }
   </style>
-  <rect width="1080" height="1920" fill="${background}"/>
-  <circle cx="910" cy="220" r="260" fill="${accent}" opacity="${variant === "dark" ? "0.22" : "0.18"}"/>
-  <circle cx="120" cy="1700" r="330" fill="#42A9E8" opacity="${variant === "dark" ? "0.16" : "0.11"}"/>
-  <rect x="64" y="72" width="952" height="1776" rx="72" fill="${variant === "dark" ? "#123B3F" : "#FFFFFF"}" opacity="${variant === "calm" ? "0.78" : "0.92"}"/>
-  <rect x="108" y="128" width="248" height="72" rx="36" fill="${variant === "dark" ? "#FFFFFF" : "#E3F3F7"}" opacity="${variant === "dark" ? "0.12" : "1"}"/>
-  <circle cx="150" cy="164" r="18" fill="${accent}"/>
-  <path d="M153 167 C190 154 207 123 218 96 C224 144 203 181 153 167 Z" fill="${variant === "dark" ? "#9DE5BD" : "#4FAE7B"}"/>
-  <text x="188" y="174" fill="${variant === "dark" ? "#FFFFFF" : "#063D43"}" font-size="28" font-weight="800">StopMerokok</text>
-  <text x="108" y="386" fill="${accent}" font-size="34" font-weight="900" letter-spacing="3">${escapeXml(metricLabel.toUpperCase())}</text>
-  <text x="108" y="500" fill="${foreground}" font-size="${metric.length > 12 ? "82" : "116"}" font-weight="900">${escapeXml(metric)}</text>
-  ${titleLines}
-  ${bodyLines}
-  <rect x="108" y="1280" width="864" height="260" rx="44" fill="${variant === "dark" ? "#FFFFFF" : "#F7FBF9"}" opacity="${variant === "dark" ? "0.08" : "1"}"/>
-  <text x="156" y="1365" fill="${variant === "dark" ? "#D8E8E3" : "#315E62"}" font-size="30" font-weight="800">Progress ini milikku.</text>
-  <text x="156" y="1430" fill="${variant === "dark" ? "#D8E8E3" : "#315E62"}" font-size="30" font-weight="700">Aku bebas membagikannya atau</text>
-  <text x="156" y="1485" fill="${variant === "dark" ? "#D8E8E3" : "#315E62"}" font-size="30" font-weight="700">menyimpannya sendiri.</text>
-  <text x="108" y="1735" fill="${variant === "dark" ? "#D8E8E3" : "#315E62"}" font-size="28" font-weight="800">${escapeXml(footer)}</text>
-  <text x="108" y="1794" fill="${variant === "dark" ? "#9DE5BD" : "#4FAE7B"}" font-size="28" font-weight="900">Kartu Perjalanan</text>
+  ${content}
 </svg>`;
 }
