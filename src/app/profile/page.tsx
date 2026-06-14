@@ -170,7 +170,7 @@ export default function ProfilePage() {
               </p>
             </div>
             <Link
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20"
+              className="btn-brand-primary"
               href="/profile/edit"
             >
               <Pencil className="size-4" />
@@ -395,7 +395,7 @@ export default function ProfilePage() {
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <button
-              className="rounded-2xl bg-[#1F2933] px-5 py-3 font-extrabold text-white"
+              className="btn-brand-primary"
               onClick={logout}
               type="button"
             >

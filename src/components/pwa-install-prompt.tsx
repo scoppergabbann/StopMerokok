@@ -149,14 +149,14 @@ export function PwaInstallPrompt() {
           </p>
           <div className="mt-3 flex gap-2">
             <button
-              className="rounded-2xl bg-[#4FAE7B] px-4 py-2 text-sm font-extrabold text-white"
+              className="btn-brand-primary min-h-10 px-4 py-2 text-sm"
               onClick={installApp}
               type="button"
             >
               Pasang
             </button>
             <button
-              className="rounded-2xl bg-slate-100 px-4 py-2 text-sm font-extrabold text-slate-600"
+              className="btn-brand-secondary min-h-10 px-4 py-2 text-sm"
               onClick={dismissPrompt}
               type="button"
             >

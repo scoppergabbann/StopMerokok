@@ -393,7 +393,7 @@ export default function OnboardingPage() {
 
           <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
             <button
-                className="rounded-2xl border border-slate-200 bg-white px-5 py-3 font-extrabold text-slate-700 disabled:opacity-40"
+                className="btn-brand-secondary disabled:opacity-40"
                 disabled={step === 0}
               onClick={() => {
                 setIsOptionalOpen(false);
@@ -405,7 +405,7 @@ export default function OnboardingPage() {
             </button>
             {step < 2 ? (
               <button
-                className="rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20"
+                className="btn-brand-primary"
                 onClick={() => {
                   if (validateStep()) {
                     setIsOptionalOpen(false);
@@ -418,7 +418,7 @@ export default function OnboardingPage() {
               </button>
             ) : (
               <button
-                className="rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20"
+                className="btn-brand-primary"
                 onClick={finishOnboarding}
                 type="button"
               >
@@ -463,7 +463,7 @@ function OptionalPanel({
   return (
     <div className="sm:col-span-2">
       <button
-        className="flex w-full items-center justify-between rounded-2xl bg-[#F6F8F7] px-4 py-3 text-left font-extrabold text-slate-700"
+        className="btn-brand-secondary w-full justify-between text-left"
         onClick={onToggle}
         type="button"
       >

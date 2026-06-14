@@ -52,7 +52,7 @@ export default function PrivacyPage() {
             </span>
           </Link>
           <Link
-            className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white px-4 py-2 text-sm font-extrabold text-slate-600 shadow-sm"
+            className="btn-brand-secondary min-h-10 rounded-full px-4 py-2 text-sm"
             href="/login"
           >
             Masuk
@@ -120,7 +120,7 @@ export default function PrivacyPage() {
               kontak agar bisa dihubungi balik.
             </p>
             <Link
-              className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white"
+              className="btn-brand-primary mt-6 w-full"
               href="/feedback"
             >
               Buka feedback

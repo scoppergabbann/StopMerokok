@@ -20,6 +20,7 @@ import { Reveal } from "@/components/reveal";
 const navItems = [
   { href: "#beranda", label: "Beranda" },
   { href: "#fitur", label: "Fitur" },
+  { href: "#tabungan", label: "Tabungan" },
   { href: "#cerita", label: "Cerita" },
   { href: "#mulai", label: "Mulai" },
 ];
@@ -80,6 +81,30 @@ const educationSlots = [
     label: "Public figure",
     title: "Cerita anak muda yang memilih hidup lebih sehat",
   },
+];
+
+const savingTargets = [
+  {
+    current: "Rp40.000",
+    progress: "40%",
+    target: "Rp100.000",
+    title: "Donasi anak yatim",
+  },
+  {
+    current: "Rp75.000",
+    progress: "50%",
+    target: "Rp150.000",
+    title: "Traktir keluarga",
+  },
+];
+
+const savingTags = [
+  "Anak yatim",
+  "Fakir miskin",
+  "Lansia",
+  "Keluarga",
+  "Masjid",
+  "Panti asuhan",
 ];
 
 export default function LandingV2Page() {
@@ -258,7 +283,7 @@ export default function LandingV2Page() {
         </div>
 
         <Link
-          className="inline-flex items-center gap-2 rounded-full border border-[#063D43]/10 bg-[#063D43]/95 px-5 py-3 text-sm font-extrabold text-white shadow-[0_18px_45px_rgba(6,61,67,0.22)] backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:bg-[#0A4E55]"
+          className="btn-brand-dark min-h-12 rounded-full px-5 py-3 text-sm backdrop-blur-xl"
           href="/register"
         >
           Mulai
@@ -291,14 +316,14 @@ export default function LandingV2Page() {
 
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <Link
-                  className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-white px-7 py-4 text-base font-extrabold text-[#113C40] shadow-[0_18px_40px_rgba(0,0,0,0.14)] transition duration-300 hover:-translate-y-0.5"
+                  className="btn-brand-secondary min-h-14 rounded-full px-7 py-4 text-base"
                   href="/register"
                 >
                   Mulai perjalanan
                   <ArrowRight className="size-5" />
                 </Link>
                 <Link
-                  className="inline-flex min-h-14 items-center justify-center rounded-full border border-white/25 bg-white/10 px-7 py-4 font-extrabold text-white transition duration-300 hover:bg-white/16"
+                  className="btn-brand-ghost min-h-14 rounded-full px-7 py-4"
                   href="/login"
                 >
                   Masuk
@@ -364,12 +389,103 @@ export default function LandingV2Page() {
               </h3>
             </div>
             <Link
-              className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-white px-7 py-4 font-extrabold text-[#123B3F] shadow-[0_18px_40px_rgba(0,0,0,0.12)]"
+              className="btn-brand-secondary min-h-14 rounded-full px-7 py-4"
               href="/craving"
             >
               Buka bantuan craving
               <ArrowRight className="size-5" />
             </Link>
+          </div>
+        </Reveal>
+      </section>
+
+      <section
+        className="mx-auto grid min-h-screen max-w-7xl gap-10 px-5 py-24 sm:px-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-center"
+        id="tabungan"
+      >
+        <Reveal>
+          <p className="text-sm font-extrabold uppercase text-[#36798D]">
+            Penghematan jadi kebaikan
+          </p>
+          <h2 className="mt-4 max-w-2xl text-5xl font-black leading-tight text-[#123B3F] sm:text-6xl">
+            Uang yang biasanya hilang bisa berubah jadi target yang terlihat.
+          </h2>
+          <p className="mt-6 max-w-xl text-lg font-semibold leading-8 text-[#315E62]">
+            Buat beberapa target sekaligus, lihat kemajuan per target, lalu
+            catat saat penghematan benar-benar dialokasikan.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Link
+              className="btn-brand-dark min-h-14 rounded-full px-7 py-4"
+              href="/register"
+            >
+              Mulai hitung penghematan
+              <ArrowRight className="size-5" />
+            </Link>
+            <Link
+              className="btn-brand-secondary min-h-14 rounded-full px-7 py-4"
+              href="/berbagi"
+            >
+              Lihat berbagi
+            </Link>
+          </div>
+        </Reveal>
+
+        <Reveal
+          className="relative rounded-[2.4rem] border border-white/80 bg-white p-5 shadow-[0_30px_100px_rgba(6,61,67,0.11)] sm:p-7"
+          delay={120}
+        >
+          <div
+            aria-hidden="true"
+            className="absolute -right-5 -top-5 size-32 rounded-full bg-[#DFF3E8] blur-2xl"
+          />
+          <div className="relative">
+            <div className="rounded-[2rem] bg-[#DFF3E8] p-6">
+              <p className="text-sm font-extrabold text-[#2F7D57]">
+                Simulasi bulan ini
+              </p>
+              <p className="mt-3 text-4xl font-black text-[#1F2933] sm:text-5xl">
+                Rp184.000
+              </p>
+              <p className="mt-3 text-base font-semibold text-[#426070]">
+                Bisa kamu simpan, rayakan, atau bagikan.
+              </p>
+            </div>
+
+            <div className="mt-5 space-y-4">
+              {savingTargets.map((target) => (
+                <div
+                  className="rounded-[1.5rem] bg-[#F6F8F7] p-4"
+                  key={target.title}
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <p className="font-extrabold text-[#1F2933]">
+                      {target.title}
+                    </p>
+                    <p className="shrink-0 text-sm font-extrabold text-[#2F7D57]">
+                      {target.current} / {target.target}
+                    </p>
+                  </div>
+                  <div className="mt-4 h-2 rounded-full bg-white">
+                    <div
+                      className="h-full rounded-full bg-[#4FAE7B]"
+                      style={{ width: target.progress }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {savingTags.map((tag) => (
+                <div
+                  className="rounded-[1.2rem] bg-[#F6F8F7] px-4 py-3 font-extrabold text-[#315E62]"
+                  key={tag}
+                >
+                  {tag}
+                </div>
+              ))}
+            </div>
           </div>
         </Reveal>
       </section>
@@ -454,14 +570,14 @@ export default function LandingV2Page() {
 
             <div className="flex flex-col gap-3 lg:min-w-80">
               <Link
-                className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-white px-7 py-4 text-base font-extrabold text-[#123B3F] shadow-[0_18px_40px_rgba(0,0,0,0.14)] transition duration-300 hover:-translate-y-0.5"
+                className="btn-brand-secondary min-h-14 rounded-full px-7 py-4 text-base"
                 href="/register"
               >
                 Buat akun
                 <ArrowRight className="size-5" />
               </Link>
               <Link
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/25 bg-white/10 px-7 py-3 font-extrabold text-white transition duration-300 hover:bg-white/16"
+                className="btn-brand-ghost min-h-12 rounded-full px-7 py-3"
                 href="/login"
               >
                 Masuk ke akun

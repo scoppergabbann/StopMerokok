@@ -88,14 +88,14 @@ export default function FeedbackPage() {
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <button
-                className="rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white"
+                className="btn-brand-primary"
                 onClick={() => setIsSubmitted(false)}
                 type="button"
               >
                 Kirim laporan lain
               </button>
               <Link
-                className="rounded-2xl border border-slate-200 bg-white px-5 py-3 font-extrabold text-slate-700"
+                className="btn-brand-secondary"
                 href="/profile"
               >
                 Kembali ke profil
@@ -283,7 +283,7 @@ export default function FeedbackPage() {
           </label>
 
           <button
-            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#4FAE7B] px-5 py-4 font-extrabold text-white shadow-xl shadow-[#4FAE7B]/20 disabled:cursor-not-allowed disabled:opacity-70"
+            className="btn-brand-primary w-full py-4"
             disabled={isSubmitting}
             type="submit"
           >

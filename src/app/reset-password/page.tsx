@@ -140,7 +140,7 @@ export default function ResetPasswordPage() {
             </label>
 
             <button
-              className="w-full rounded-2xl bg-[#4FAE7B] px-5 py-4 font-extrabold text-white shadow-xl shadow-[#4FAE7B]/25 disabled:cursor-not-allowed disabled:opacity-70"
+              className="btn-brand-primary w-full py-4 disabled:cursor-not-allowed disabled:opacity-70"
               disabled={isSubmitting}
               type="submit"
             >

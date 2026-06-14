@@ -89,7 +89,7 @@ export default function RegisterPage() {
         </div>
 
         <div className="mx-auto w-full max-w-md lg:mr-0">
-          <div className="auth-fade-up auth-shimmer rounded-[1.75rem] border border-white/80 bg-white/88 p-6 shadow-[0_28px_90px_rgba(31,41,51,0.12)] backdrop-blur sm:p-8">
+          <div className="auth-fade-up rounded-[1.75rem] border border-white/80 bg-white/88 p-6 shadow-[0_28px_90px_rgba(31,41,51,0.12)] backdrop-blur sm:p-8">
             <Link
               className="mb-8 flex items-center justify-center gap-3 lg:hidden"
               href="/"
@@ -260,7 +260,7 @@ export default function RegisterPage() {
               />
 
               <button
-                className="auth-shimmer w-full rounded-2xl bg-[#4FAE7B] px-5 py-4 font-extrabold text-white shadow-xl shadow-[#4FAE7B]/25 transition hover:-translate-y-0.5 hover:bg-[#449F6E] disabled:cursor-not-allowed disabled:opacity-70"
+                className="btn-brand-primary w-full py-4"
                 disabled={isSubmitting}
                 type="submit"
               >

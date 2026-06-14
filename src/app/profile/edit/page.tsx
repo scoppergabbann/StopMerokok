@@ -319,7 +319,7 @@ export default function ProfileEditPage() {
             >
               Batal
             </Link>
-            <button className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20">
+            <button className="btn-brand-primary">
               <Save className="size-4" />
               Simpan perubahan
             </button>

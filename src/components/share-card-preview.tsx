@@ -233,7 +233,7 @@ export function ShareCardPreview({
           </p>
           <div className="mt-4 grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
             <button
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20 disabled:opacity-60"
+              className="btn-brand-primary disabled:opacity-60"
               disabled={isWorking}
               onClick={shareCard}
               type="button"

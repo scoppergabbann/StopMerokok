@@ -108,7 +108,7 @@ export default function JournalPage() {
               name="tomorrowFocus"
               placeholder="Contoh: menghindari kopi malam, jalan 5 menit saat dorongan merokok muncul."
             />
-            <button className="w-full rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20">
+            <button className="btn-brand-primary w-full">
               Simpan jurnal hari ini
             </button>
           </form>

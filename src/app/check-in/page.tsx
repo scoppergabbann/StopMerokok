@@ -281,7 +281,7 @@ export default function CheckInPage() {
             />
           </label>
 
-          <button className="w-full rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20">
+          <button className="btn-brand-primary w-full">
             {existingCheckin ? "Simpan koreksi" : "Simpan absen"}
           </button>
         </form>

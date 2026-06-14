@@ -208,7 +208,7 @@ export function NotificationOptIn() {
             </button>
           ) : (
             <button
-              className="rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20 disabled:cursor-not-allowed disabled:bg-slate-300"
+              className="btn-brand-primary disabled:cursor-not-allowed disabled:bg-slate-300"
               disabled={!canEnable}
               onClick={enableNotifications}
               type="button"

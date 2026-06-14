@@ -156,7 +156,7 @@ export default function LoginPage() {
         </div>
 
         <div className="mx-auto w-full max-w-md lg:mr-0">
-          <div className="auth-fade-up auth-shimmer rounded-[1.35rem] border border-white/80 bg-white/88 p-5 shadow-[0_20px_70px_rgba(31,41,51,0.11)] backdrop-blur sm:rounded-[1.75rem] sm:p-8">
+          <div className="auth-fade-up rounded-[1.35rem] border border-white/80 bg-white/88 p-5 shadow-[0_20px_70px_rgba(31,41,51,0.11)] backdrop-blur sm:rounded-[1.75rem] sm:p-8">
             <Link
               className="mb-6 flex items-center justify-center gap-2.5 lg:hidden"
               href="/"
@@ -343,7 +343,7 @@ export default function LoginPage() {
               />
 
               <button
-                className="auth-shimmer w-full rounded-2xl bg-[#4FAE7B] px-5 py-3.5 font-extrabold text-white shadow-xl shadow-[#4FAE7B]/25 transition hover:-translate-y-0.5 hover:bg-[#449F6E] disabled:cursor-not-allowed disabled:opacity-70 sm:py-4"
+                className="btn-brand-primary w-full sm:py-4"
                 disabled={isSubmitting}
                 type="submit"
               >

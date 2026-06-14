@@ -235,7 +235,7 @@ export default function ActivityPage() {
             />
           </label>
 
-          <button className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20 sm:w-auto">
+          <button className="btn-brand-primary mt-4 w-full sm:w-auto">
             Simpan aktivitas
             <MoveRight className="size-4" />
           </button>
@@ -262,7 +262,7 @@ export default function ActivityPage() {
               </p>
             </div>
             <Link
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20"
+              className="btn-brand-primary"
               href="/share"
             >
               <Images className="size-4" />

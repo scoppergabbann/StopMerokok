@@ -180,7 +180,7 @@ export default function CalendarPage() {
                 <Info label="Pemicu" value={selected.trigger || "-"} />
                 <Info label="Catatan" value={selected.note || "-"} />
                 <Link
-                  className="inline-flex rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white"
+                  className="btn-brand-primary"
                   href={`/check-in?date=${selected.date}`}
                 >
                   Koreksi absen tanggal ini

@@ -31,7 +31,7 @@ export function EmptyState({
         <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
           {actionHref && actionLabel ? (
             <Link
-              className="inline-flex justify-center rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20"
+              className="btn-brand-primary"
               href={actionHref}
             >
               {actionLabel}
@@ -39,7 +39,7 @@ export function EmptyState({
           ) : null}
           {secondaryHref && secondaryLabel ? (
             <Link
-              className="inline-flex justify-center rounded-2xl bg-white px-5 py-3 font-extrabold text-slate-600 shadow-sm"
+              className="btn-brand-secondary"
               href={secondaryHref}
             >
               {secondaryLabel}

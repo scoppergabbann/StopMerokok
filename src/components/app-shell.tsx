@@ -110,13 +110,13 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
           </Link>
           <div className="flex items-center gap-2">
             <Link
-              className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-600 shadow-sm"
+              className="btn-brand-secondary min-h-10 rounded-full px-4 py-2 text-sm"
               href="/profile"
             >
               Profil
             </Link>
             <button
-              className="rounded-full bg-[#1F2933] px-4 py-2 text-sm font-bold text-white shadow-sm"
+              className="btn-brand-dark min-h-10 rounded-full px-4 py-2 text-sm"
               onClick={async () => {
                 if (isSupabaseConfigured && supabase) {
                   await supabase.auth.signOut();
@@ -155,7 +155,7 @@ export function AppShell({ children, title = "StopMerokok" }: AppShellProps) {
                   href={item.href}
                   key={item.href}
                 >
-                  <span className="absolute -top-12 grid size-[4.35rem] place-items-center rounded-full bg-[#4FAE7B] text-white shadow-xl shadow-[#4FAE7B]/35 ring-8 ring-[#F6F8F7] transition group-hover:-translate-y-0.5">
+                  <span className="absolute -top-12 grid size-[4.35rem] place-items-center rounded-full bg-[#123B3F] text-white shadow-xl shadow-[#123B3F]/25 ring-8 ring-[#F6F8F7] transition group-hover:-translate-y-0.5">
                     <Icon aria-hidden="true" className="size-7" />
                   </span>
                   <span className="sr-only">{item.label}</span>

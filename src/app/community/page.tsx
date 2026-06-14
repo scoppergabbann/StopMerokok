@@ -365,7 +365,7 @@ export default function CommunityPage() {
                   {message.length}/180 karakter
                 </p>
                 <button
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#4FAE7B] px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="btn-brand-primary min-h-12 px-5 py-3 text-sm disabled:cursor-not-allowed disabled:opacity-60"
                   disabled={isPosting}
                   type="submit"
                 >

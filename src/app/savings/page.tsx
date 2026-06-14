@@ -223,7 +223,7 @@ export default function SavingsPage() {
                 kamu hindari.
               </p>
               <Link
-                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20"
+                className="btn-brand-primary mt-5 w-full"
                 href="/share"
               >
                 <Images className="size-4" />

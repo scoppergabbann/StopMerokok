@@ -263,7 +263,7 @@ export default function DashboardPage() {
               </p>
             </div>
           </div>
-          <span className="rounded-2xl bg-[#1F2933] px-5 py-3 text-center font-extrabold text-white">
+          <span className="btn-brand-primary min-h-12 px-5 py-3">
             Buka bantuan
           </span>
         </Link>

@@ -297,7 +297,7 @@ export default function CheckInCelebrationPage() {
               Buat Kartu Perjalanan
             </button>
             <button
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20"
+              className="btn-brand-primary"
               onClick={goToDashboard}
               type="button"
             >

@@ -146,7 +146,7 @@ export default function CravingPage() {
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
           <button
-            className="rounded-2xl bg-[#4FAE7B] px-5 py-3 font-extrabold text-white shadow-lg shadow-[#4FAE7B]/20"
+            className="btn-brand-primary"
             onClick={() => save("passed")}
             type="button"
           >
