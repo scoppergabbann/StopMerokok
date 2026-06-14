@@ -77,7 +77,7 @@ function wrapText(text: string, maxLength = 30, maxLines = 3) {
 function renderLines({
   color,
   fontWeight = 800,
-  lineGap = 14,
+  lineGap = 10,
   lines,
   size,
   x,
@@ -210,14 +210,14 @@ export function buildShareCardSvg(
   });
 }
 
-function brandHeader(color = "#123B3F", muted = "#4FAE7B") {
+function brandHeader(x = 72, y = 54, color = "#123B3F", muted = "#4FAE7B") {
   return `
-    <g transform="translate(96 92)">
-      <rect x="0" y="0" width="300" height="74" rx="37" fill="#FFFFFF" opacity="0.78"/>
-      <path d="M42 42 C78 31 98 13 112 -12 C112 37 89 63 42 42 Z" fill="${muted}" opacity="0.92"/>
-      <path d="M28 46 C57 61 86 61 116 38" fill="none" stroke="#42A9E8" stroke-width="10" stroke-linecap="round"/>
-      <circle cx="34" cy="31" r="8" fill="#F5A623"/>
-      <text x="128" y="47" fill="${color}" font-size="29" font-weight="900">StopMerokok</text>
+    <g transform="translate(${x} ${y})">
+      <rect x="0" y="0" width="252" height="58" rx="29" fill="#FFFFFF" opacity="0.78"/>
+      <path d="M34 35 C62 25 78 10 90 -10 C91 28 72 51 34 35 Z" fill="${muted}" opacity="0.94"/>
+      <path d="M24 38 C49 50 72 50 96 32" fill="none" stroke="#42A9E8" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="29" cy="27" r="6" fill="#F5A623"/>
+      <text x="108" y="38" fill="${color}" font-size="24" font-weight="900">StopMerokok</text>
     </g>
   `;
 }
@@ -241,21 +241,19 @@ function renderCleanPremiumCard({
 }) {
   const titleLines = renderLines({
     color: "#123B3F",
-    fontWeight: 900,
-    lineGap: 16,
-    lines: wrapText(title, 23, 3),
-    size: 70,
-    x: 104,
-    y: 755,
+    fontWeight: 950,
+    lines: wrapText(title, 21, 2),
+    size: 49,
+    x: 78,
+    y: 329,
   });
   const messageLines = renderLines({
     color: "#426070",
     fontWeight: 750,
-    lineGap: 14,
-    lines: wrapText(message, 31, 3),
-    size: 37,
-    x: 104,
-    y: 985,
+    lines: wrapText(message, 38, 2),
+    size: 26,
+    x: 78,
+    y: 451,
   });
 
   return svgShell(`
@@ -270,24 +268,28 @@ function renderCleanPremiumCard({
         <stop offset="100%" stop-color="#DFF3E8"/>
       </linearGradient>
     </defs>
-    <rect width="1080" height="1920" fill="url(#bg)"/>
-    <path d="M-90 1510 C170 1370 370 1420 545 1560 C725 1704 905 1654 1170 1470" fill="none" stroke="#42A9E8" stroke-width="54" opacity="0.11" stroke-linecap="round"/>
-    <circle cx="915" cy="245" r="265" fill="#DFF3E8" opacity="0.9"/>
-    <circle cx="930" cy="250" r="190" fill="#FFFFFF" opacity="0.55"/>
-    <rect x="58" y="56" width="964" height="1808" rx="82" fill="#FFFFFF" opacity="0.74"/>
+    <rect width="1200" height="675" fill="url(#bg)"/>
+    <circle cx="1038" cy="95" r="230" fill="#DFF3E8" opacity="0.85"/>
+    <circle cx="1060" cy="114" r="150" fill="#FFFFFF" opacity="0.52"/>
+    <path d="M-60 555 C162 450 330 468 492 565 C682 678 875 638 1265 456" fill="none" stroke="#42A9E8" stroke-width="38" opacity="0.11" stroke-linecap="round"/>
+    <rect x="34" y="30" width="1132" height="615" rx="52" fill="#FFFFFF" opacity="0.77"/>
     ${brandHeader()}
-    <text x="104" y="342" fill="#36798D" font-size="34" font-weight="900" letter-spacing="3">${escapeXml(eyebrow.toUpperCase())}</text>
-    <rect x="104" y="415" width="872" height="240" rx="48" fill="url(#hero)" stroke="#CBEFE0" stroke-width="2"/>
-    <text x="152" y="535" fill="#123B3F" font-size="${metric.length > 9 ? 76 : 112}" font-weight="950">${escapeXml(metric)}</text>
-    <text x="154" y="600" fill="#2F7D57" font-size="30" font-weight="900">${escapeXml(metricLabel)}</text>
-    ${renderProgressRing(850, 535, hidden ? 0.42 : 0.78, "#4FAE7B", "#E3F3F7")}
+    <text x="78" y="187" fill="#36798D" font-size="24" font-weight="950" letter-spacing="2">${escapeXml(eyebrow.toUpperCase())}</text>
+    <text x="76" y="277" fill="#123B3F" font-size="${metric.length > 10 ? 58 : 84}" font-weight="950">${escapeXml(metric)}</text>
+    <text x="82" y="307" fill="#2F7D57" font-size="22" font-weight="900">${escapeXml(metricLabel)}</text>
     ${titleLines}
     ${messageLines}
-    ${renderLeaf(820, 1030, "#4FAE7B", 0.22, 1.4)}
-    <rect x="104" y="1450" width="872" height="180" rx="42" fill="#F7FBF9" stroke="#E6F0EC" stroke-width="2"/>
-    <text x="152" y="1534" fill="#123B3F" font-size="31" font-weight="900">${escapeXml(footer)}</text>
-    <text x="152" y="1590" fill="#6A7E8A" font-size="24" font-weight="750">Kamu bebas membagikan atau menyimpan kartu ini.</text>
-    <text x="104" y="1760" fill="#2F7D57" font-size="29" font-weight="950">Kartu Perjalanan</text>
+    <g transform="translate(732 155)">
+      <rect x="0" y="0" width="350" height="300" rx="46" fill="url(#hero)" stroke="#CBEFE0" stroke-width="2"/>
+      ${renderProgressRing(252, 96, hidden ? 0.42 : 0.78, "#4FAE7B", "#E3F3F7")}
+      ${renderLeaf(70, 168, "#4FAE7B", 0.22, 1.2)}
+      <text x="36" y="85" fill="#123B3F" font-size="28" font-weight="950">Kartu Perjalanan</text>
+      <text x="36" y="128" fill="#426070" font-size="18" font-weight="800">Progress kecil hari ini</text>
+      <rect x="34" y="226" width="280" height="42" rx="21" fill="#FFFFFF" opacity="0.78"/>
+      <text x="54" y="254" fill="#2F7D57" font-size="18" font-weight="900">Tenang, bangga, tercatat.</text>
+    </g>
+    <text x="78" y="592" fill="#123B3F" font-size="24" font-weight="900">${escapeXml(footer)}</text>
+    <text x="78" y="626" fill="#6A7E8A" font-size="18" font-weight="750">Kamu bebas membagikan atau menyimpan kartu ini.</text>
   `);
 }
 
@@ -309,18 +311,18 @@ function renderSoftWellnessCard({
   const titleLines = renderLines({
     color: "#123B3F",
     fontWeight: 950,
-    lines: wrapText(title, 24, 3),
-    size: 68,
-    x: 112,
-    y: 795,
+    lines: wrapText(title, 22, 2),
+    size: 48,
+    x: 490,
+    y: 264,
   });
   const messageLines = renderLines({
     color: "#426070",
     fontWeight: 750,
-    lines: wrapText(message, 32, 3),
-    size: 36,
-    x: 112,
-    y: 1025,
+    lines: wrapText(message, 42, 2),
+    size: 25,
+    x: 492,
+    y: 385,
   });
 
   return svgShell(`
@@ -331,29 +333,28 @@ function renderSoftWellnessCard({
         <stop offset="100%" stop-color="#E3F3F7"/>
       </linearGradient>
       <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#9DE5BD" stop-opacity="0.85"/>
+        <stop offset="0%" stop-color="#9DE5BD" stop-opacity="0.9"/>
         <stop offset="100%" stop-color="#9DE5BD" stop-opacity="0"/>
       </radialGradient>
     </defs>
-    <rect width="1080" height="1920" fill="url(#wellnessBg)"/>
-    <circle cx="542" cy="566" r="390" fill="url(#glow)"/>
-    <path d="M110 1230 C300 1115 474 1145 642 1264 C786 1367 913 1371 1060 1275" fill="none" stroke="#42A9E8" stroke-width="36" opacity="0.18" stroke-linecap="round"/>
-    <rect x="56" y="56" width="968" height="1808" rx="86" fill="#FFFFFF" opacity="0.66"/>
+    <rect width="1200" height="675" fill="url(#wellnessBg)"/>
+    <circle cx="315" cy="350" r="285" fill="url(#glow)"/>
+    <path d="M44 535 C245 420 440 435 620 548 C780 648 970 630 1165 485" fill="none" stroke="#42A9E8" stroke-width="28" opacity="0.17" stroke-linecap="round"/>
+    <rect x="34" y="30" width="1132" height="615" rx="52" fill="#FFFFFF" opacity="0.68"/>
     ${brandHeader()}
-    <text x="112" y="348" fill="#2F7D57" font-size="34" font-weight="950" letter-spacing="3">SOFT WELLNESS</text>
-    <g transform="translate(112 424)">
-      <circle cx="220" cy="220" r="194" fill="none" stroke="#DFF3E8" stroke-width="36"/>
-      <circle cx="220" cy="220" r="194" fill="none" stroke="#4FAE7B" stroke-width="36" stroke-linecap="round" stroke-dasharray="${hidden ? "235 1219" : "870 584"}" transform="rotate(-90 220 220)"/>
-      <text x="220" y="204" text-anchor="middle" fill="#123B3F" font-size="${metric.length > 3 ? 82 : 124}" font-weight="950">${escapeXml(metric)}</text>
-      <text x="220" y="263" text-anchor="middle" fill="#36798D" font-size="33" font-weight="900">${escapeXml(metricSuffix)}</text>
+    <text x="492" y="167" fill="#2F7D57" font-size="24" font-weight="950" letter-spacing="2">SOFT WELLNESS</text>
+    <g transform="translate(94 155)">
+      <circle cx="180" cy="180" r="150" fill="none" stroke="#DFF3E8" stroke-width="30"/>
+      <circle cx="180" cy="180" r="150" fill="none" stroke="#4FAE7B" stroke-width="30" stroke-linecap="round" stroke-dasharray="${hidden ? "190 753" : "650 293"}" transform="rotate(-90 180 180)"/>
+      <text x="180" y="173" text-anchor="middle" fill="#123B3F" font-size="${metric.length > 3 ? 70 : 102}" font-weight="950">${escapeXml(metric)}</text>
+      <text x="180" y="226" text-anchor="middle" fill="#36798D" font-size="27" font-weight="900">${escapeXml(metricSuffix)}</text>
     </g>
-    ${renderLeaf(740, 472, "#4FAE7B", 0.28, 2)}
+    ${renderLeaf(940, 182, "#4FAE7B", 0.21, 1.4)}
     ${titleLines}
     ${messageLines}
-    <rect x="112" y="1438" width="856" height="178" rx="44" fill="#FFFFFF" opacity="0.82" stroke="#D7ECE3" stroke-width="2"/>
-    <text x="158" y="1521" fill="#123B3F" font-size="31" font-weight="900">${escapeXml(footer)}</text>
-    <text x="158" y="1578" fill="#6A7E8A" font-size="24" font-weight="750">Satu hari dalam satu waktu.</text>
-    <text x="112" y="1760" fill="#2F7D57" font-size="29" font-weight="950">Kartu Perjalanan</text>
+    <rect x="492" y="505" width="488" height="78" rx="39" fill="#FFFFFF" opacity="0.78" stroke="#D7ECE3" stroke-width="2"/>
+    <text x="525" y="553" fill="#123B3F" font-size="23" font-weight="900">${escapeXml(footer)}</text>
+    <text x="78" y="626" fill="#2F7D57" font-size="24" font-weight="950">Kartu Perjalanan</text>
   `);
 }
 
@@ -375,10 +376,10 @@ function renderMinimalStatsCard({
   const messageLines = renderLines({
     color: "#D8E8E3",
     fontWeight: 750,
-    lines: wrapText(message, 34, 3),
-    size: 35,
-    x: 110,
-    y: 930,
+    lines: wrapText(message, 40, 2),
+    size: 24,
+    x: 78,
+    y: 384,
   });
 
   return svgShell(`
@@ -393,28 +394,26 @@ function renderMinimalStatsCard({
         <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.06"/>
       </linearGradient>
     </defs>
-    <rect width="1080" height="1920" fill="url(#statsBg)"/>
-    <circle cx="920" cy="275" r="310" fill="#9DE5BD" opacity="0.15"/>
-    <circle cx="128" cy="1650" r="360" fill="#42A9E8" opacity="0.13"/>
-    <path d="M92 1232 C292 1110 445 1130 612 1249 C783 1370 921 1335 1060 1235" fill="none" stroke="#9DE5BD" stroke-width="34" opacity="0.2" stroke-linecap="round"/>
-    <rect x="56" y="56" width="968" height="1808" rx="86" fill="url(#statsPanel)" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="2"/>
-    ${brandHeader("#FFFFFF", "#9DE5BD")}
-    <text x="110" y="358" fill="#9DE5BD" font-size="34" font-weight="950" letter-spacing="3">MINIMAL STATS</text>
-    <text x="110" y="535" fill="#FFFFFF" font-size="${metric.length > 11 ? 78 : 118}" font-weight="950">${escapeXml(metric)}</text>
-    <text x="112" y="606" fill="#B8F1CE" font-size="32" font-weight="900">${escapeXml(hidden ? "angka disembunyikan" : "uang terselamatkan")}</text>
-    <text x="110" y="770" fill="#FFFFFF" font-size="72" font-weight="950">${escapeXml(title)}</text>
+    <rect width="1200" height="675" fill="url(#statsBg)"/>
+    <circle cx="1042" cy="128" r="245" fill="#9DE5BD" opacity="0.14"/>
+    <circle cx="145" cy="642" r="275" fill="#42A9E8" opacity="0.12"/>
+    <path d="M70 542 C258 432 430 438 606 542 C798 656 970 608 1168 462" fill="none" stroke="#9DE5BD" stroke-width="28" opacity="0.18" stroke-linecap="round"/>
+    <rect x="34" y="30" width="1132" height="615" rx="52" fill="url(#statsPanel)" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="2"/>
+    ${brandHeader(72, 54, "#FFFFFF", "#9DE5BD")}
+    <text x="78" y="187" fill="#9DE5BD" font-size="24" font-weight="950" letter-spacing="2">MINIMAL STATS</text>
+    <text x="76" y="292" fill="#FFFFFF" font-size="${metric.length > 11 ? 62 : 90}" font-weight="950">${escapeXml(metric)}</text>
+    <text x="80" y="330" fill="#B8F1CE" font-size="23" font-weight="900">${escapeXml(hidden ? "angka disembunyikan" : "uang terselamatkan")}</text>
+    <text x="78" y="466" fill="#FFFFFF" font-size="50" font-weight="950">${escapeXml(title)}</text>
     ${messageLines}
-    <g transform="translate(110 1190)">
-      <rect x="0" y="0" width="860" height="260" rx="50" fill="#FFFFFF" opacity="0.1"/>
-      <text x="52" y="92" fill="#D8E8E3" font-size="27" font-weight="850">Batang dihindari</text>
-      <text x="52" y="180" fill="#FFFFFF" font-size="74" font-weight="950">${escapeXml(hidden ? "--" : String(avoidedSticks))}</text>
-      <line x1="360" y1="58" x2="360" y2="205" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="2"/>
-      <text x="420" y="92" fill="#D8E8E3" font-size="27" font-weight="850">Arah baru</text>
-      <text x="420" y="176" fill="#FFFFFF" font-size="38" font-weight="900">lebih sehat</text>
+    <g transform="translate(760 172)">
+      <rect x="0" y="0" width="330" height="296" rx="48" fill="#FFFFFF" opacity="0.1"/>
+      <text x="42" y="82" fill="#D8E8E3" font-size="21" font-weight="850">Batang dihindari</text>
+      <text x="42" y="172" fill="#FFFFFF" font-size="76" font-weight="950">${escapeXml(hidden ? "--" : String(avoidedSticks))}</text>
+      <line x1="42" y1="210" x2="288" y2="210" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="2"/>
+      <text x="42" y="257" fill="#B8F1CE" font-size="25" font-weight="900">arah baru lebih sehat</text>
     </g>
-    <text x="110" y="1630" fill="#D8E8E3" font-size="30" font-weight="900">${escapeXml(footer)}</text>
-    <text x="110" y="1688" fill="#B8F1CE" font-size="24" font-weight="750">Progress ini boleh dibagikan seperlunya.</text>
-    <text x="110" y="1780" fill="#9DE5BD" font-size="29" font-weight="950">Kartu Perjalanan</text>
+    <text x="78" y="590" fill="#D8E8E3" font-size="23" font-weight="900">${escapeXml(footer)}</text>
+    <text x="78" y="626" fill="#9DE5BD" font-size="24" font-weight="950">Kartu Perjalanan</text>
   `);
 }
 
@@ -434,21 +433,21 @@ function renderProgressRing(
   color: string,
   track: string,
 ) {
-  const radius = 72;
+  const radius = 58;
   const circumference = Math.round(2 * Math.PI * radius);
   const active = Math.round(circumference * progress);
 
   return `
     <g>
-      <circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${track}" stroke-width="18"/>
-      <circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${color}" stroke-width="18" stroke-linecap="round" stroke-dasharray="${active} ${circumference - active}" transform="rotate(-90 ${cx} ${cy})"/>
+      <circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${track}" stroke-width="15"/>
+      <circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${color}" stroke-width="15" stroke-linecap="round" stroke-dasharray="${active} ${circumference - active}" transform="rotate(-90 ${cx} ${cy})"/>
     </g>
   `;
 }
 
 function svgShell(content: string) {
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
   <style>
     text {
       font-family: 'Plus Jakarta Sans', 'Inter', 'Segoe UI', Arial, sans-serif;

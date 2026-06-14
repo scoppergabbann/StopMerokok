@@ -89,9 +89,8 @@ export default function SharePage() {
                 Bagikan progress kecil dengan cara yang tetap nyaman.
               </h1>
               <p className="mt-4 max-w-2xl text-lg font-medium leading-8 text-slate-200">
-                Tidak semua perjalanan harus dipamerkan. Tapi kalau kamu ingin
-                merayakannya, kartu ini siap diunduh, dibagikan, atau cukup
-                disimpan sendiri.
+                Format landscape ini enak untuk Threads, X, Facebook, WhatsApp,
+                atau cukup disimpan sebagai progress banner pribadi.
               </p>
             </div>
             <div className="rounded-[1.6rem] border border-white/10 bg-white/10 p-5">

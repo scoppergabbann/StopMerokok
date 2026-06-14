@@ -33,8 +33,8 @@ async function svgToPngBlob(svg: string) {
   });
 
   const canvas = document.createElement("canvas");
-  canvas.width = 1080;
-  canvas.height = 1920;
+  canvas.width = 1200;
+  canvas.height = 675;
   const context = canvas.getContext("2d");
 
   if (!context) {
@@ -145,8 +145,8 @@ export function ShareCardPreview({
 
   return (
     <section className="grid gap-6 xl:grid-cols-[minmax(0,0.88fr)_minmax(340px,0.56fr)] xl:items-start">
-      <div className="rounded-[2rem] border border-[#DFF3E8] bg-white p-4 shadow-xl shadow-slate-200/70 sm:p-5">
-        <div className="mx-auto aspect-[9/16] w-full max-w-[min(360px,78vw)] overflow-hidden rounded-[1.6rem] bg-[#F7FBF9] shadow-inner sm:max-w-[390px] xl:max-w-[420px]">
+      <div className="rounded-[2rem] border border-[#DFF3E8] bg-white p-3 shadow-xl shadow-slate-200/70 sm:p-5">
+        <div className="mx-auto aspect-video w-full max-w-[min(760px,92vw)] overflow-hidden rounded-[1.35rem] bg-[#F7FBF9] shadow-inner xl:max-w-[780px]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt="Preview Kartu Perjalanan"
