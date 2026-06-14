@@ -36,29 +36,12 @@ export function clearRememberedAuthSession() {
   window.sessionStorage.removeItem(AUTH_BROWSER_SESSION_KEY);
 }
 
-export function rememberAuthForBrowserSession() {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  window.localStorage.removeItem(AUTH_SESSION_EXPIRES_AT_KEY);
-  window.sessionStorage.setItem(AUTH_BROWSER_SESSION_KEY, "true");
-}
-
 export function hasRememberedAuthSession() {
   if (typeof window === "undefined") {
     return false;
   }
 
   return Boolean(window.localStorage.getItem(AUTH_SESSION_EXPIRES_AT_KEY));
-}
-
-export function hasBrowserSessionAuth() {
-  if (typeof window === "undefined") {
-    return false;
-  }
-
-  return window.sessionStorage.getItem(AUTH_BROWSER_SESSION_KEY) === "true";
 }
 
 export function hasRememberedAuthSessionExpired() {

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Eye, EyeOff, LockKeyhole, Mail, ShieldCheck, Sparkles } from "lucide-react";
 import {
   hasTurnstileSiteKey,
@@ -15,7 +15,6 @@ import { trackEvent } from "@/lib/analytics";
 import { loadProfile } from "@/lib/client-data";
 import {
   isSupabaseConfigured,
-  rememberAuthForBrowserSession,
   rememberAuthSession,
   supabase,
 } from "@/lib/supabase";
@@ -30,6 +29,28 @@ export default function LoginPage() {
   const [isSendingReset, setIsSendingReset] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
   const captchaRef = useRef<TurnstileCaptchaHandle | null>(null);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) {
+      return;
+    }
+
+    let isMounted = true;
+
+    supabase.auth.getSession().then(async ({ data }) => {
+      if (!isMounted || !data.session) {
+        return;
+      }
+
+      rememberAuthSession(7);
+      const profile = await loadProfile();
+      router.replace(profile ? "/dashboard" : "/onboarding");
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [router]);
 
   function resetCaptcha() {
     setCaptchaToken("");
@@ -240,8 +261,6 @@ export default function LoginPage() {
 
                   if (rememberMe) {
                     rememberAuthSession(7);
-                  } else {
-                    rememberAuthForBrowserSession();
                   }
 
                   const profile = await loadProfile();

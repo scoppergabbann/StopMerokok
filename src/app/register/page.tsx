@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Eye, EyeOff, LockKeyhole, Mail, ShieldCheck, Sparkles } from "lucide-react";
 import {
   hasTurnstileSiteKey,
@@ -11,6 +11,7 @@ import {
   type TurnstileCaptchaHandle,
 } from "@/components/turnstile-captcha";
 import { useToast } from "@/components/toast-provider";
+import { loadProfile } from "@/lib/client-data";
 import {
   isSupabaseConfigured,
   rememberAuthSession,
@@ -25,6 +26,28 @@ export default function RegisterPage() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
   const captchaRef = useRef<TurnstileCaptchaHandle | null>(null);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) {
+      return;
+    }
+
+    let isMounted = true;
+
+    supabase.auth.getSession().then(async ({ data }) => {
+      if (!isMounted || !data.session) {
+        return;
+      }
+
+      rememberAuthSession(7);
+      const profile = await loadProfile();
+      router.replace(profile ? "/dashboard" : "/onboarding");
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [router]);
 
   function resetCaptcha() {
     setCaptchaToken("");

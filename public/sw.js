@@ -1,5 +1,5 @@
-const CACHE_NAME = "stopmerokok-shell-v1";
-const APP_SHELL = ["/", "/manifest.webmanifest", "/images/icon-192.png"];
+const CACHE_NAME = "stopmerokok-shell-v2";
+const APP_SHELL = ["/", "/dashboard", "/manifest.webmanifest", "/images/icon-192.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -35,12 +35,12 @@ self.addEventListener("fetch", (event) => {
           const copy = response.clone();
 
           caches.open(CACHE_NAME).then((cache) => {
-            cache.put("/", copy);
+            cache.put(event.request, copy);
           });
 
           return response;
         })
-        .catch(() => caches.match("/")),
+        .catch(() => caches.match(event.request).then((cached) => cached || caches.match("/dashboard") || caches.match("/"))),
     );
 
     return;
